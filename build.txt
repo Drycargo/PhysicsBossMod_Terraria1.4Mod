@@ -1,0 +1,3 @@
+displayName = Physics Boss Mod
+author = Drycargo-HT4
+version = 0.1

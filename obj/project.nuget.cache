@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "id8uSgYAqqPiYUkES7LVGR10NKWPN+ITTWVOwGJHr5BOKbs1RkXXDaxEd6Vtb3ccMKuNiTxXGXZWyHhzjlHcUw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\HTF\\OneDrive - UBC\\文档\\My Games\\Terraria\\tModLoader\\ModSources\\PhysicsBoss\\PhysicsBoss.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\HTF\\.nuget\\packages\\tmodloader.codeassist\\0.1.3\\tmodloader.codeassist.0.1.3.nupkg.sha512"
+  ],
+  "logs": []
+}
