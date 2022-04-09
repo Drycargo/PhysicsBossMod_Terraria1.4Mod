@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ModLoader;
 
 namespace PhysicsBoss.NPC
 {
-    public interface EnemyInterface1
-    {
-        public static Player seekTarget(Vector2 myCenter, float minDist) {
+    public abstract class TargetEnemy: ModNPC {
+        protected Player target;
+        public static Player seekTarget(Vector2 myCenter, float minDist)
+        {
             Player target = null;
             foreach (var player in Main.player)
             {
@@ -21,6 +23,10 @@ namespace PhysicsBoss.NPC
                 }
             }
             return target;
+        }
+
+        public void setTarget(Player t) {
+            target = t;
         }
     }
 }

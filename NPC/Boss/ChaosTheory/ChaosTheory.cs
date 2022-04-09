@@ -17,18 +17,36 @@ using Terraria.ModLoader;
 namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     [AutoloadBossHead]
-    public class ChaosTheory : ModNPC
+    public class ChaosTheory : TargetEnemy
     {
         public static readonly float MAX_DISTANCE = 2000f;
+        public static readonly int PHASE_COUNT = 2;
         public enum phase
         {
             INIT = 0,
+            PendulumOne1 = 1
         }
 
+        public static readonly float[] phaseTiming = new float[] {
+            0,
+            2};
+
         private Texture2D tex;
-        private Player target;
         private phase currentPhase;
 
+        public float GeneralTimer {
+            get { return NPC.ai[2]; }
+            set { NPC.ai[2] = value; }
+        }
+
+        public float Timer {
+            get { return NPC.ai[3]; }
+            set { NPC.ai[3] = value; }
+        }
+
+        private float transparency;
+
+        private bool summoned;
         public override string BossHeadTexture => base.BossHeadTexture;
         public override void SetStaticDefaults()
         {
@@ -86,44 +104,73 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             {
                 Music = MusicLoader.GetMusicSlot(Mod, "Sound/Music/CanonRockCut");
             }
+
+            summoned = false;
         }
 
         public override void AI()
         {
+            if (!summoned) {
+                Main.NewText("Hello, Lorentz.", Color.LightGreen);
+                NPC.alpha = 255;
+                summoned=true;
+            }
             // frame animation
-            if ((++NPC.frameCounter) % 10 == 0)
-                NPC.frameCounter = 0;
+            if ((GeneralTimer) % 10 == 0)
+            {
+                NPC.frameCounter++;
+                NPC.frameCounter %= Main.npcFrameCount[NPC.type];
+            }
 
             // seek target
             if (target == null)
             {
-                target = EnemyInterface1.seekTarget(NPC.Center, MAX_DISTANCE);
+                target = seekTarget(NPC.Center, MAX_DISTANCE);
             }
 
             if (target != null) {
-                Main.NewText(target);
+                //Main.NewText(target);
 
                 switch (currentPhase) {
                     case phase.INIT: {
                             init();
+                            Timer++;
                             break;
-                        }
+                    }
                 }
             }
+
+            GeneralTimer++;
         }
 
         public override void FindFrame(int frameHeight)
         {
-            NPC.frame.Y = (int)(NPC.frameCounter/10 * Main.npcFrameCount[NPC.type]) * NPC.height;
+            NPC.frame.Y = (int)NPC.frameCounter * NPC.height;
+        }
+
+
+        public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            Color c = Color.White * ((255f - NPC.alpha)/255f);
+            c.A = 150;
+            spriteBatch.Draw(tex, NPC.position - screenPos, new Rectangle(0,NPC.frame.Y, NPC.width, NPC.height) ,c);
+            //base.PostDraw(spriteBatch, screenPos, Color.White);
         }
 
         private void init()
         {
-            
+            if (NPC.alpha >0 && Timer < 600) {
+                int newA = (int)MathHelper.Max(NPC.alpha - (255f / 600f), 0);
+                NPC.alpha = newA;
+            }
+            hover(target.Center - 300*Vector2.UnitY, 45, 0.3f, 600);
         }
 
-        private void hover(Vector3 hoverCenter, float hoverRadius) {
-
+        private void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period) {
+            float degree = (NPC.Center - hoverCenter).ToRotation() + MathHelper.TwoPi/period;
+            
+            NPC.Center = degree.ToRotationVector2()*hoverRadius + hoverCenter 
+                + noise * 2 * (Main.rand.NextFloat() - 0.5f) * Vector2.One;
         }
     }
 }
