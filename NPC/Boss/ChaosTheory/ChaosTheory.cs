@@ -44,9 +44,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             set { NPC.ai[3] = value; }
         }
 
-        private float transparency;
-
         private bool summoned;
+
+        private DimNode dimNode;
         public override string BossHeadTexture => base.BossHeadTexture;
         public override void SetStaticDefaults()
         {
@@ -62,11 +62,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             base.SetDefaults();
             tex = ModContent.Request<Texture2D>(Texture).Value;
             target = null;
+            dimNode = null;
 
             NPC.width = tex.Width;
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
 
             NPC.damage = 50;
+            NPC.friendly = false;
 
             NPC.lifeMax = 1100;
             NPC.defense = 100;
@@ -129,18 +131,27 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             if (target != null) {
-                //Main.NewText(target);
-
                 switch (currentPhase) {
                     case phase.INIT: {
                             init();
                             Timer++;
                             break;
                     }
+                    case phase.PendulumOne1: {
+                            pendulumeOne1();
+                            break;
+                    }
                 }
             }
 
+            // update timer
             GeneralTimer++;
+
+            // update phase
+            if ((int)currentPhase + 1 < PHASE_COUNT && GeneralTimer >= phaseTiming[(int)currentPhase + 1] * 60) {
+                currentPhase++;
+                Timer = 0;
+            }
         }
 
         public override void FindFrame(int frameHeight)
@@ -152,18 +163,27 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Color c = Color.White * ((255f - NPC.alpha)/255f);
-            c.A = 150;
-            spriteBatch.Draw(tex, NPC.position - screenPos, new Rectangle(0,NPC.frame.Y, NPC.width, NPC.height) ,c);
+            spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0,NPC.frame.Y, NPC.width, NPC.height) ,c);
             //base.PostDraw(spriteBatch, screenPos, Color.White);
         }
 
+        public override void OnKill()
+        {
+            if (dimNode != null) {
+                dimNode.NPC.active = false;
+                dimNode.NPC.life = -1;
+            }
+            base.OnKill();
+        }
+
+        #region private methods
         private void init()
         {
             if (NPC.alpha >0 && Timer < 600) {
                 int newA = (int)MathHelper.Max(NPC.alpha - (255f / 600f), 0);
                 NPC.alpha = newA;
             }
-            hover(target.Center - 300*Vector2.UnitY, 45, 0.3f, 600);
+            hover(target.Center - 250*Vector2.UnitY, 25, 0.3f, 600);
         }
 
         private void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period) {
@@ -172,5 +192,23 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.Center = degree.ToRotationVector2()*hoverRadius + hoverCenter 
                 + noise * 2 * (Main.rand.NextFloat() - 0.5f) * Vector2.One;
         }
+
+        private void pendulumeOne1()
+        {
+            hover(target.Center - 250 * Vector2.UnitY, 25, 0.3f, 600);
+            if (dimNode == null) {
+                createDimNode();
+                dimNode.setPhase((int)DimNode.phase.SIGNLE_PENDULUM);
+            }
+        }
+
+        private void createDimNode() {
+            int id = Terraria.NPC.NewNPC(NPC.GetSpawnSourceForProjectileNPC(),
+                    (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());
+            dimNode = (DimNode)Main.npc[id].ModNPC;
+            dimNode.setOwner(this);
+            dimNode.setTarget(target);
+        }
+        #endregion
     }
 }
