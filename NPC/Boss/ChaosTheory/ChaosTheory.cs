@@ -20,16 +20,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
     public class ChaosTheory : TargetEnemy
     {
         public static readonly float MAX_DISTANCE = 2000f;
-        public static readonly int PHASE_COUNT = 2;
+        public static readonly int PHASE_COUNT = Enum.GetNames(typeof(phase)).Length;
+        public static readonly int HOVER_DIST = 280;
         public enum phase
         {
             INIT = 0,
-            PendulumOne1 = 1
+            PendulumOne1 = 1,
+            PendulumOnePhaseTwo2 = 2,
         }
 
         public static readonly float[] phaseTiming = new float[] {
             0,
-            2};
+            2,
+            11.75f,
+        };
 
         private Texture2D tex;
         private phase currentPhase;
@@ -46,7 +50,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private bool summoned;
 
-        private DimNode dimNode;
+        public DimNode dimNode;
+        public BrightNode brightNode;
         public override string BossHeadTexture => base.BossHeadTexture;
         public override void SetStaticDefaults()
         {
@@ -132,15 +137,23 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             if (target != null) {
                 switch (currentPhase) {
-                    case phase.INIT: {
+                    case phase.INIT: 
+                        {
                             init();
                             Timer++;
                             break;
-                    }
-                    case phase.PendulumOne1: {
+                        }
+                    case phase.PendulumOne1: 
+                        {
                             pendulumeOne1();
                             break;
-                    }
+                        }
+                    case phase.PendulumOnePhaseTwo2:
+                        {
+                            pendulumeOne2();
+                            break;    
+                        }
+                    default: break;
                 }
             }
 
@@ -173,6 +186,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 dimNode.NPC.active = false;
                 dimNode.NPC.life = -1;
             }
+
+            if (brightNode != null)
+            {
+                brightNode.NPC.active = false;
+                brightNode.NPC.life = -1;
+            }
+
             base.OnKill();
         }
 
@@ -186,19 +206,22 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             hover(target.Center - 250*Vector2.UnitY, 25, 0.3f, 600);
         }
 
-        private void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period) {
-            float degree = (NPC.Center - hoverCenter).ToRotation() + MathHelper.TwoPi/period;
-            
-            NPC.Center = degree.ToRotationVector2()*hoverRadius + hoverCenter 
-                + noise * 2 * (Main.rand.NextFloat() - 0.5f) * Vector2.One;
-        }
-
         private void pendulumeOne1()
         {
-            hover(target.Center - 250 * Vector2.UnitY, 25, 0.3f, 600);
+            hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
             if (dimNode == null) {
                 createDimNode();
                 dimNode.setPhase((int)DimNode.phase.SIGNLE_PENDULUM);
+            }
+        }
+        private void pendulumeOne2()
+        {
+            hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
+            dimNode.setPhase((int)DimNode.phase.SIGNLE_PENDULUM_TWO);
+            if (brightNode == null)
+            {
+                createBrightNode();
+                brightNode.setPhase((int)BrightNode.phase.SIGNLE_PENDULUM_TWO);
             }
         }
 
@@ -208,6 +231,26 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             dimNode = (DimNode)Main.npc[id].ModNPC;
             dimNode.setOwner(this);
             dimNode.setTarget(target);
+            SoundEngine.PlaySound(SoundID.DrumTomHigh);
+        }
+
+
+        private void createBrightNode()
+        {
+            int id = Terraria.NPC.NewNPC(NPC.GetSpawnSourceForProjectileNPC(),
+                    (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<BrightNode>());
+            brightNode = (BrightNode)Main.npc[id].ModNPC;
+            brightNode.setOwner(this);
+            brightNode.setTarget(target);
+            SoundEngine.PlaySound(SoundID.DrumTomHigh);
+        }
+
+        private void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period)
+        {
+            float degree = (NPC.Center - hoverCenter).ToRotation() + MathHelper.TwoPi / period;
+
+            NPC.Center = degree.ToRotationVector2() * hoverRadius + hoverCenter
+                + noise * 2 * (Main.rand.NextFloat() - 0.5f) * Vector2.One;
         }
         #endregion
     }

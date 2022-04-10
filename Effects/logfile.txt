@@ -1,0 +1,116 @@
+Message at 2022-03-31 6:30:28 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:30:28 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:30:28 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 6:30:28 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:30:28 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-03-31 6:30:28 PM: Errors compiling C:\E\Software\TMod\XNACompiler\input\Trailing.fx:
+(16,20): error X4502: invalid output semantic 'POSITION1': Legal indices are in [0,0]
+(16,20): error X4502: invalid vs_2_0 output semantic 'POSITION1'
+(37,24): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-03-31 6:31:54 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:31:54 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:31:54 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 6:31:54 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:31:54 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-03-31 6:31:54 PM: Errors compiling C:\E\Software\TMod\XNACompiler\input\Trailing.fx:
+(31,18): error X3017: cannot implicitly convert from 'float2' to 'float3'
+Message at 2022-03-31 6:32:07 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:07 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:07 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 6:32:07 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:07 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:07 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 6:32:07 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:07 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:07 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-03-31 6:32:25 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:25 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:25 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 6:32:25 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:25 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:25 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 6:32:25 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:25 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:25 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-03-31 6:32:44 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:44 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:44 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 6:32:44 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:44 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:44 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 6:32:44 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:32:44 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:32:44 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-03-31 6:33:54 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:33:54 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:33:54 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 6:33:54 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:33:54 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:33:54 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 6:33:54 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 6:33:54 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 6:33:54 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-03-31 8:17:32 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:17:32 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:17:32 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 8:17:32 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:17:32 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:17:32 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 8:17:32 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:17:32 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:17:32 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-03-31 8:19:10 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:19:10 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:19:10 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 8:19:10 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:19:10 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:19:10 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 8:19:10 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:19:10 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:19:10 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-03-31 8:20:02 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:20:02 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:20:02 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 8:20:02 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:20:02 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:20:02 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 8:20:02 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:20:02 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:20:02 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-03-31 8:21:36 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:21:36 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:21:36 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Eff.xnb
+Message at 2022-03-31 8:21:36 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:21:36 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:21:36 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\Trailing.xnb
+Message at 2022-03-31 8:21:36 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-03-31 8:21:36 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-03-31 8:21:36 PM: Compiling C:\E\Software\TMod\XNACompiler\Content\WorldM.xnb
+Message at 2022-04-09 11:57:52 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-09 11:57:52 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-09 11:57:52 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-04-09 11:57:52 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-09 11:57:52 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-09 11:57:52 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-04-09 11:57:52 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-09 11:57:52 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-09 11:57:52 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-04-10 12:27:44 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-10 12:27:44 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-10 12:27:44 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-04-10 12:27:44 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-10 12:27:44 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-10 12:27:44 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-04-10 12:27:44 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-10 12:27:44 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-10 12:27:44 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-04-10 11:37:54 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-10 11:37:54 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-10 11:37:54 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-04-10 11:37:54 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-10 11:37:54 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-10 11:37:54 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-04-10 11:37:54 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-04-10 11:37:54 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-04-10 11:37:54 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb

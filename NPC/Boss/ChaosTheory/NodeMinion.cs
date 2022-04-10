@@ -23,6 +23,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         protected ChaosTheory owner;
         protected int currentPhase;
         protected bool drawConnection;
+        protected Texture2D beamTex;
+
+        protected bool onSummon;
 
         protected enum trail {
             DEFAULT = 0,
@@ -48,6 +51,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             drawTrail = trail.DEFAULT;
             drawConnection = false;
+            onSummon = false;
+
+            beamTex = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
         }
 
         public void setOwner(ChaosTheory o) { 
@@ -59,7 +65,19 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         }
         public override void AI()
         {
+            if (onSummon == false) {
+                summonEvent();
+                onSummon = true;
+            }
             base.AI();
+        }
+
+        protected abstract void summonEvent();
+
+        protected void drawConnectionLine(SpriteBatch spriteBatch,Vector2 targetPos, Color color, float width) {
+            spriteBatch.Draw(beamTex, (NPC.Center + targetPos) / 2 - Main.screenPosition, 
+                null, color, (NPC.Center - targetPos).ToRotation() + MathHelper.PiOver2, beamTex.Size() / 2f,
+                new Vector2(width / (float)beamTex.Width, (NPC.Center - targetPos).Length() / (float)beamTex.Height), SpriteEffects.None, 0);
         }
     }
 }

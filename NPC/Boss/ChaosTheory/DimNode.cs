@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsBoss.Projectiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -16,8 +18,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
     {
         private Texture2D tex;
         public static readonly int SINGLE_PENDULUM_DIST = 600;
+        public static readonly double SINGLE_PENDULUM_PERIOD = 21/4;
         public enum phase {
             SIGNLE_PENDULUM = 0,
+            SIGNLE_PENDULUM_TWO = 1,
         }
         public override void SetStaticDefaults()
         {
@@ -56,14 +60,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             if (owner != null && target != null) {
                 switch (currentPhase) {
-                    case (int)phase.SIGNLE_PENDULUM: {
-                            singlePendulum();
+                    case (int)phase.SIGNLE_PENDULUM: 
+                        {
+                            singlePendulum(true);
                             break;
                         }
-
+                    case (int)phase.SIGNLE_PENDULUM_TWO:
+                        {
+                            singlePendulum(false);
+                            break;
+                        }
                     default: break;
                 }
             }
+            base.AI();
         }
 
         public override void FindFrame(int frameHeight)
@@ -76,9 +86,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             Texture2D bt = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
             //spriteBatch.Begin()
-            spriteBatch.Draw(bt, (NPC.Center + owner.NPC.Center)/2 - Main.screenPosition, null, Color.Blue*1.5f,
-                (NPC.Center - owner.NPC.Center).ToRotation() + MathHelper.PiOver2, bt.Size()/2f,
-                new Vector2(10/(float)bt.Width, (float)SINGLE_PENDULUM_DIST/(float)bt.Height), SpriteEffects.None,0);
+            
+            if (drawConnection)
+                drawConnectionLine(spriteBatch, owner.NPC.Center, Color.Blue*2.5f, 10f);
 
             int l = NPC.oldPos.Length;
             for (int i = l - 1; i >= 0; i--) {
@@ -96,15 +106,29 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             return false;
         }
 
+        protected override void summonEvent() {
+            SoundEngine.PlaySound(SoundID.DrumTomHigh);
+            for (int i = 0; i < 60; i++) {
+                Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.Clentaminator_Cyan);
+                d.velocity = Main.rand.NextVector2Unit()* 15;
+                d.noGravity = true;
+            }
+        }
 
-
-        private void singlePendulum()
+        private void singlePendulum(bool shootStars)
         {
             if (!drawConnection)
                 drawConnection = true;
-            float angle = (float)(MathHelper.PiOver4 * Math.Cos(Timer*MathHelper.TwoPi/(5*60)) + MathHelper.PiOver2);
+            float angle = (float)(MathHelper.PiOver4 * 
+                Math.Cos(Timer*MathHelper.TwoPi/(SINGLE_PENDULUM_PERIOD*60)) + MathHelper.PiOver2);
             NPC.Center = owner.NPC.Center + angle.ToRotationVector2() * SINGLE_PENDULUM_DIST;
             Timer ++;
+
+            // shoot rising stars
+            if (shootStars && (int)(Timer % (SINGLE_PENDULUM_PERIOD / 13 * 60)) == 0) {
+                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.UnitY*5,
+                    ModContent.ProjectileType<TrailingStar>(), 50, 0);
+            }
         }
     }
 }
