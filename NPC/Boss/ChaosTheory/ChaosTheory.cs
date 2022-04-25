@@ -32,7 +32,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public static readonly float[] phaseTiming = new float[] {
             0,
             2,
-            11.75f,
+            2.5f//11.75f,
         };
 
         private Texture2D tex;
@@ -145,6 +145,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         }
                     case phase.PendulumOne1: 
                         {
+                            NPC.alpha = 0;
                             pendulumeOne1();
                             break;
                         }
@@ -199,7 +200,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         #region private methods
         private void init()
         {
-            if (NPC.alpha >0 && Timer < 600) {
+            if (NPC.alpha >0 && GeneralTimer < 600) {
                 int newA = (int)MathHelper.Max(NPC.alpha - (255f / 600f), 0);
                 NPC.alpha = newA;
             }

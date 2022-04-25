@@ -4,6 +4,17 @@ sampler uImage2 : register(s2); // tint
 
 float4x4 uTransform;
 float uTime;
+float intensity;
+texture2D tex0;
+
+sampler2D uIm1 = sampler_state
+{
+    Texture = <tex0>;
+    MinFilter = Linear;
+    MagFilter = Linear;
+    AddressU = wrap;
+    AddressV = wrap;
+};
 
 struct VSInput{
     float2 Pos : POSITION0;
@@ -18,6 +29,28 @@ struct PSInput{
     float3 myPos : TEXCOORD1;
 };
 
+float4 DefaultFn(float2 coords : TEXCOORD0) : COLOR0
+{
+    return tex2D(uImage0, coords);
+}
+
+float4 Displacement(float2 coords: TEXCOORD0) : COLOR0
+{
+    float4 originalC = tex2D(uImage0, coords);
+    float4 displaceC = tex2D(uIm1, coords);
+    
+    float4 temp = displaceC; //float4(displaceC.rgb, 0);
+    if (!any(temp))
+        return originalC;
+
+    //return float4(1,1,1,0);
+
+    float rot = displaceC.r * 6.28;
+    float2 disVec = float2(cos(rot), sin(rot)) * displaceC.g * intensity;
+
+    return tex2D(uImage0, coords + disVec);
+}
+
 float4 StaticTrail(PSInput input) : COLOR0
 {
     float3 coord = input.Texcoord;
@@ -26,7 +59,7 @@ float4 StaticTrail(PSInput input) : COLOR0
     float4 tintColor = tex2D(uImage2, float2(coord.x, coord.y + uTime * 0.03));
     tintColor *= lumColor;
     
-    return tintColor * 1.5;
+    return tintColor * 1.25;
 }
 
 
@@ -62,5 +95,22 @@ technique Technique1 {
     {
         VertexShader = compile vs_2_0 VertexFn();
         PixelShader = compile ps_2_0 StaticTrail();
+    }
+
+    Pass Displacement
+    {
+        PixelShader = compile ps_2_0 Displacement();
+    }
+
+    Pass Default
+    {
+        PixelShader = compile ps_2_0 DefaultFn();
+
+    }
+
+    Pass DefaultTrail
+    {
+        VertexShader = compile vs_2_0 VertexFn();
+        PixelShader = compile ps_2_0 DefaultFn();
     }
 }

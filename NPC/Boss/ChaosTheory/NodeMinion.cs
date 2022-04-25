@@ -19,7 +19,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     public abstract class NodeMinion: TargetEnemy
     {
-
+        protected Texture2D tex;
         protected ChaosTheory owner;
         protected int currentPhase;
         protected bool drawConnection;
@@ -78,6 +78,33 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             spriteBatch.Draw(beamTex, (NPC.Center + targetPos) / 2 - Main.screenPosition, 
                 null, color, (NPC.Center - targetPos).ToRotation() + MathHelper.PiOver2, beamTex.Size() / 2f,
                 new Vector2(width / (float)beamTex.Width, (NPC.Center - targetPos).Length() / (float)beamTex.Height), SpriteEffects.None, 0);
+        }
+
+        protected void drawShadow(SpriteBatch spriteBatch, Color tint) {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.AlphaBlend,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+            int l = NPC.oldPos.Length;
+            for (int i = l - 1; i >= 0; i--)
+            {
+                if (NPC.oldPos[i] != Vector2.Zero)
+                {
+                    Color c = tint * (1f - (float)i / l) * 0.5f;
+                    spriteBatch.Draw(tex, NPC.oldPos[i] - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), c);
+                }
+            }
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsBoss.Projectiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     public class BrightNode:NodeMinion
     {
-        private Texture2D tex;
         public static readonly int SINGLE_PENDULUM_DIST = 200;
         public static readonly double SINGLE_PENDULUM_PERIOD = 0.8;
 
@@ -104,6 +104,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             #region drawtail
+            /*
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
                 BlendState.Additive,
@@ -138,8 +139,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
+                Main.GameViewMatrix.TransformationMatrix);*/
             #endregion
+
+            drawShadow(spriteBatch, Color.Red);
             return false;
         }
 
@@ -161,10 +164,29 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             float angle = -(float)(Timer * MathHelper.TwoPi / (SINGLE_PENDULUM_PERIOD * 60));
             NPC.Center = owner.dimNode.NPC.Center + angle.ToRotationVector2() * SINGLE_PENDULUM_DIST;
             NPC.rotation = angle;
-            Timer++;
 
             for (int i = 0; i < 10; i++)
                 Dust.NewDust(NPC.Center, 5,5,DustID.Flare);
+            /*
+            if ((int)(Timer % 90) == 0) {
+                
+                Projectile p = Projectile.NewProjectileDirect(NPC.GetSpawnSource_ForProjectile(), 
+                    owner.dimNode.NPC.Center, Vector2.Zero, ModContent.ProjectileType<NewtonBeamLong>(), 50, 0);
+                p.rotation = (NPC.Center - owner.dimNode.NPC.Center).ToRotation();
+                NewtonBeamLong np = (NewtonBeamLong)p.ModProjectile;
+                np.initialize(target);
+
+            SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFurySwing);
+
+                for (int i = 0; i < 30; i++)
+                {
+                    Dust d = Dust.NewDustDirect(p.Center, 0, 0, DustID.FlameBurst);
+                    d.velocity = Main.rand.NextVector2Unit() * (5 + 10 * Main.rand.NextFloat());
+                    d.noGravity = true;
+                }
+            }*/
+
+            Timer++;
         }
     }
 }

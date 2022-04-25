@@ -43,7 +43,7 @@ namespace PhysicsBoss.Projectiles
 
             Projectile.timeLeft = (int)(3.75 * 60);
             Projectile.damage = 50;
-            Projectile.velocity = Vector2.UnitY*5;
+            Projectile.velocity = Vector2.UnitY*15;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;

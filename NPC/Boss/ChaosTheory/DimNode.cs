@@ -16,7 +16,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     public class DimNode:NodeMinion
     {
-        private Texture2D tex;
         public static readonly int SINGLE_PENDULUM_DIST = 600;
         public static readonly double SINGLE_PENDULUM_PERIOD = 21/4;
         public enum phase {
@@ -90,6 +89,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (drawConnection)
                 drawConnectionLine(spriteBatch, owner.NPC.Center, Color.Blue*2.5f, 10f);
 
+            /*
             int l = NPC.oldPos.Length;
             for (int i = l - 1; i >= 0; i--) {
                 if (NPC.oldPos[i] != Vector2.Zero) {
@@ -97,7 +97,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     c.B +=50;
                     spriteBatch.Draw(tex, NPC.oldPos[i] - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), c);
                 }
-            }
+            }*/
+            drawShadow(spriteBatch, Color.Blue*3.5f);
             spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White);
         }
 
@@ -125,7 +126,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Timer ++;
 
             // shoot rising stars
-            if (shootStars && (int)(Timer % (SINGLE_PENDULUM_PERIOD / 13 * 60)) == 0) {
+            if (shootStars && (int)(Timer % (SINGLE_PENDULUM_PERIOD / 9 * 60)) == 0) {
                 Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.UnitY*5,
                     ModContent.ProjectileType<TrailingStar>(), 50, 0);
             }
