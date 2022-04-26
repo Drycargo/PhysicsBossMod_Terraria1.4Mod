@@ -46,6 +46,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             NPC.width = tex.Width;
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
+            NPC.rotation = 0;
 
             NPC.lifeMax = 1100;
             NPC.defense = 100;
@@ -62,11 +63,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPCID.Sets.TrailCacheLength[NPC.type] = TRAILING_CONST;
 
             backTex =
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNNormal").Value;
+                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNMotion").Value;
             luminanceTex =
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/LuminanceGradient").Value;
             colorTex =
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/RedOrangeGradient").Value;
+
         }
 
         public override void AI()
@@ -98,51 +100,16 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (drawConnection && owner.dimNode != null)
                 drawConnectionLine(spriteBatch, owner.dimNode.NPC.Center, Color.Red * 2.5f, 10f);
 
-            spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White);
+            spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White,
+                NPC.rotation, tex.Size()/2, 1f, SpriteEffects.None, 0);
         }
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            #region drawtail
-            /*
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.Additive,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
-
-            var proj = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
-            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
-
-            PhysicsBoss.trailingEffect.Parameters["uTransform"].SetValue(model * proj);
-            PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue((float)Main.time);
-
-            Main.graphics.GraphicsDevice.Textures[0] = backTex;
-            Main.graphics.GraphicsDevice.Textures[1] = luminanceTex;
-            Main.graphics.GraphicsDevice.Textures[2] = colorTex;
-            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
-            Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
-            Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
-
-            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["Trail"].Apply();
-
-            tail.PrepareStrip(NPC.oldPos, NPC.oldRot, progress => Color.White * 0.6f,
-                progress => (progress < 0.1 ? MathHelper.Lerp(0.5f, 22.5f, progress * 10) : MathHelper.Lerp(25f, 0f, progress)),
-                tex.Size() / 2, TRAILING_CONST);
-            tail.DrawTrail();
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);*/
-            #endregion
-
             drawShadow(spriteBatch, Color.Red);
+            if (currentPhase == (int)phase.SIGNLE_PENDULUM_TWO) {
+                drawDisplacement();
+            }
             return false;
         }
 
@@ -162,31 +129,83 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (!drawConnection)
                 drawConnection = true;
             float angle = -(float)(Timer * MathHelper.TwoPi / (SINGLE_PENDULUM_PERIOD * 60));
+            angle %= MathHelper.TwoPi;
             NPC.Center = owner.dimNode.NPC.Center + angle.ToRotationVector2() * SINGLE_PENDULUM_DIST;
             NPC.rotation = angle;
 
-            for (int i = 0; i < 10; i++)
-                Dust.NewDust(NPC.Center, 5,5,DustID.Flare);
-            /*
-            if ((int)(Timer % 90) == 0) {
-                
-                Projectile p = Projectile.NewProjectileDirect(NPC.GetSpawnSource_ForProjectile(), 
-                    owner.dimNode.NPC.Center, Vector2.Zero, ModContent.ProjectileType<NewtonBeamLong>(), 50, 0);
-                p.rotation = (NPC.Center - owner.dimNode.NPC.Center).ToRotation();
-                NewtonBeamLong np = (NewtonBeamLong)p.ModProjectile;
-                np.initialize(target);
-
-            SoundEngine.PlaySound(SoundID.DD2_SkyDragonsFurySwing);
-
-                for (int i = 0; i < 30; i++)
-                {
-                    Dust d = Dust.NewDustDirect(p.Center, 0, 0, DustID.FlameBurst);
-                    d.velocity = Main.rand.NextVector2Unit() * (5 + 10 * Main.rand.NextFloat());
-                    d.noGravity = true;
-                }
-            }*/
-
             Timer++;
+        }
+
+        private void drawDisplacement()
+        {
+            GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
+            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
+            SpriteBatch spriteBatch = Main.spriteBatch;
+            spriteBatch.End();
+
+            #region drawtail
+
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.Clear(Color.Transparent);
+
+            spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.AlphaBlend,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+
+            Main.graphics.GraphicsDevice.Textures[0] = backTex;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
+
+            Vector2[] pos = new Vector2[TRAILING_CONST];
+
+            for (int i = TRAILING_CONST - 1; i >= 0; i--)
+            {
+                if (i == 0)
+                {
+                    NPC.oldRot[0] = NPC.rotation + MathHelper.PiOver2;
+                }
+                else
+                {
+                    NPC.oldRot[i] = NPC.oldRot[i - 1];
+                }
+                //pos[i] = NPC.oldPos[i] - Main.screenPosition;
+                pos[i] = owner.dimNode.NPC.position + (NPC.oldRot[i] - MathHelper.PiOver2).ToRotationVector2() * SINGLE_PENDULUM_DIST / 2 - Main.screenPosition;
+            }
+
+
+            tail.PrepareStrip(pos, NPC.oldRot, progress => Color.White * (1 - progress),
+                progress => (1-progress)*SINGLE_PENDULUM_DIST/2,
+                tex.Size() / 2, TRAILING_CONST);
+            tail.DrawTrail();
+
+            spriteBatch.End();
+
+            #endregion
+
+
+            graphicsDevice.SetRenderTarget(screenTemp);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["Displacement"].Apply();
+            PhysicsBoss.trailingEffect.Parameters["tex0"].SetValue(Main.screenTargetSwap);
+            PhysicsBoss.trailingEffect.Parameters["intensity"].SetValue(0.05f);
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            graphicsDevice.SetRenderTarget(Main.screenTarget);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
         }
     }
 }
