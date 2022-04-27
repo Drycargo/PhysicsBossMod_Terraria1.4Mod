@@ -21,18 +21,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
     {
         public static readonly float MAX_DISTANCE = 2000f;
         public static readonly int PHASE_COUNT = Enum.GetNames(typeof(phase)).Length;
-        public static readonly int HOVER_DIST = 280;
+        public static readonly int HOVER_DIST = 330;
         public enum phase
         {
             INIT = 0,
             PendulumOne1 = 1,
             PendulumOnePhaseTwo2 = 2,
+            ElectricCharge3 = 3,
         }
 
         public static readonly float[] phaseTiming = new float[] {
             0,
             2,
-            2.5f//11.75f,
+            11.75f,
+            23.25f,
         };
 
         private Texture2D tex;
@@ -154,6 +156,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             pendulumeOne2();
                             break;    
                         }
+                    case phase.ElectricCharge3: {
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -204,7 +209,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 int newA = (int)MathHelper.Max(NPC.alpha - (255f / 600f), 0);
                 NPC.alpha = newA;
             }
-            hover(target.Center - 250*Vector2.UnitY, 25, 0.3f, 600);
+            hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
         }
 
         private void pendulumeOne1()

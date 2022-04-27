@@ -16,7 +16,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     public class DimNode:NodeMinion
     {
-        public static readonly int SINGLE_PENDULUM_DIST = 600;
+        public static readonly int SINGLE_PENDULUM_DIST = 750;
         public static readonly double SINGLE_PENDULUM_PERIOD = 21/4;
         public enum phase {
             SIGNLE_PENDULUM = 0,
@@ -84,20 +84,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             Texture2D bt = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
-            //spriteBatch.Begin()
             
             if (drawConnection)
-                drawConnectionLine(spriteBatch, owner.NPC.Center, Color.Blue*2.5f, 10f);
+                drawConnectionLine(spriteBatch, owner.NPC.Center, Color.Blue*1.5f, 10f);
 
-            /*
-            int l = NPC.oldPos.Length;
-            for (int i = l - 1; i >= 0; i--) {
-                if (NPC.oldPos[i] != Vector2.Zero) {
-                    Color c = Color.White * (1f - (float)i / l)*0.5f;
-                    c.B +=50;
-                    spriteBatch.Draw(tex, NPC.oldPos[i] - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), c);
-                }
-            }*/
             drawShadow(spriteBatch, Color.Blue*3.5f);
             spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White);
         }
@@ -126,9 +116,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Timer ++;
 
             // shoot rising stars
-            if (shootStars && (int)(Timer % (SINGLE_PENDULUM_PERIOD / 9 * 60)) == 0) {
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.UnitY*5,
-                    ModContent.ProjectileType<TrailingStar>(), 50, 0);
+            if (shootStars)
+            {
+                if ((int)(Timer % (SINGLE_PENDULUM_PERIOD / 8 * 60)) == 0)
+                {
+                    SoundEngine.PlaySound(SoundID.Shatter);
+                    Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.UnitY * 7.5f,
+                        ModContent.ProjectileType<TrailingStar>(), 50, 0);
+                }
+            }
+            else {
+                int factor = (int)(Timer % (SINGLE_PENDULUM_PERIOD / 2 * 60));
+                if (factor < 18 && factor % 6 == 0) {
+                    owner.brightNode.summonBareLightning(12);
+                }
             }
         }
     }

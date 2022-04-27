@@ -75,9 +75,29 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         protected abstract void summonEvent();
 
         protected void drawConnectionLine(SpriteBatch spriteBatch,Vector2 targetPos, Color color, float width) {
+            spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.Additive,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+
+            PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(color.ToVector4());
+            PhysicsBoss.shineEffect.Parameters["threashold"].SetValue(0.8f);
+            PhysicsBoss.shineEffect.CurrentTechnique.Passes["Beam"].Apply();
+
             spriteBatch.Draw(beamTex, (NPC.Center + targetPos) / 2 - Main.screenPosition, 
-                null, color, (NPC.Center - targetPos).ToRotation() + MathHelper.PiOver2, beamTex.Size() / 2f,
+                null, Color.White, (NPC.Center - targetPos).ToRotation() + MathHelper.PiOver2, beamTex.Size() / 2f,
                 new Vector2(width / (float)beamTex.Width, (NPC.Center - targetPos).Length() / (float)beamTex.Height), SpriteEffects.None, 0);
+
+            spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
         }
 
         protected void drawShadow(SpriteBatch spriteBatch, Color tint) {

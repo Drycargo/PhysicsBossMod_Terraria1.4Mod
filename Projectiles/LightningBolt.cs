@@ -48,13 +48,13 @@ namespace PhysicsBoss.Projectiles
             Projectile.timeLeft = (int)(10 * 60);
             Projectile.damage = 50;
 
-            //tex = ModContent.Request<Texture2D>(Texture).Value;
-            tex = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
+            tex = ModContent.Request<Texture2D>(Texture).Value;
+            //tex = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             Timer = PERIOD/2;
 
-            Projectile.width = 16;//tex.Width;
+            Projectile.width = 10;//tex.Width;
             Projectile.height = 10;//tex.Height;
 
             dir = Vector2.Zero;
@@ -81,23 +81,6 @@ namespace PhysicsBoss.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
-            /*
-            for (int i = 0; i < TRAILING_CONST; i++) {
-                float scaleFactor = 1f;
-                if (i < 8)
-                {
-                    scaleFactor = i / 8f;
-                }
-                else if (i > TRAILING_CONST - 8)
-                {
-                    scaleFactor = (TRAILING_CONST - i) / 8f;
-                }
-                if (Projectile.oldPos[i] != Vector2.Zero) {
-                    Main.spriteBatch.Draw(tex, tex.Size() / 2+Projectile.oldPos[i]-Main.screenPosition,null, Color.HotPink,
-                        Projectile.oldRot[i], tex.Size()/2, scaleFactor*1f, SpriteEffects.None, 0);
-                }
-            }*/
-
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
@@ -122,7 +105,7 @@ namespace PhysicsBoss.Projectiles
                     }
                     return (float)scaleFactor * Projectile.width/2;
                 },
-                new Vector2(Projectile.width, Projectile.height)/ 2 - Main.screenPosition, TRAILING_CONST);
+                Projectile.Size/ 2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
             Main.spriteBatch.End();
@@ -137,5 +120,13 @@ namespace PhysicsBoss.Projectiles
             return false;
         }
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            float point = 0f;
+            if (Projectile.oldPos[TRAILING_CONST - 1] == Vector2.Zero)
+                return base.Colliding(projHitbox, targetHitbox);
+            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
+                Projectile.Center, Projectile.oldPos[TRAILING_CONST - 1] + Projectile.Size / 2, Projectile.width * 0.8f, ref point);
+        }
     }
 }

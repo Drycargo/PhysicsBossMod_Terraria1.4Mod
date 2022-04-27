@@ -65,8 +65,8 @@ namespace PhysicsBoss.Projectiles
         public override void AI()
         {
             Timer++;
-            if (Projectile.velocity.Length() < 60) {
-                Projectile.velocity.Y -= (float)(Timer * 0.05);
+            if (Projectile.velocity.Length() < 45) {
+                Projectile.velocity.Y -= (float)(0.5);
             }
         }
 
@@ -96,12 +96,6 @@ namespace PhysicsBoss.Projectiles
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
-            var proj = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
-            var model = Matrix.CreateTranslation(new Vector3(-Main.screenPosition.X, -Main.screenPosition.Y, 0));
-
-            PhysicsBoss.trailingEffect.Parameters["uTransform"].SetValue(model * proj);
-            PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue((float)Main.time);
-
             Main.graphics.GraphicsDevice.Textures[0] = backTex;
             Main.graphics.GraphicsDevice.Textures[1] = luminanceTex;
             Main.graphics.GraphicsDevice.Textures[2] = colorTex;
@@ -109,11 +103,15 @@ namespace PhysicsBoss.Projectiles
             Main.graphics.GraphicsDevice.SamplerStates[1] = SamplerState.PointWrap;
             Main.graphics.GraphicsDevice.SamplerStates[2] = SamplerState.PointWrap;
 
-            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["StaticTrail"].Apply();
 
-            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.White*0.6f, 
-                progress => (progress<0.1 ? MathHelper.Lerp(0.5f, 22.5f, progress*10):MathHelper.Lerp(25f, 0f, progress)), 
-                tex.Size()/2, TRAILING_CONST);
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, 
+                progress => {
+                    Color c1 = Color.LightGreen * progress;
+                    Color c2 = Color.Cyan*((float)(1.0f - progress));
+                    return new Color(c1.R + c2.R, c1.G + c2.G, c1.B + c2.B)*2.5f;
+                }, 
+                progress => (progress<0.1 ? MathHelper.Lerp(0.5f, 18f, progress*10):MathHelper.Lerp(20f, 0f, progress)), 
+                tex.Size()/2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
             Main.spriteBatch.End();

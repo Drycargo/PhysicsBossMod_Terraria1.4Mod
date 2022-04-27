@@ -62,7 +62,6 @@ float4 StaticTrail(PSInput input) : COLOR0
     return tintColor * 1.25;
 }
 
-
 float4 DynamicTrail(PSInput input) : COLOR0
 {
     float3 coord = input.Texcoord;

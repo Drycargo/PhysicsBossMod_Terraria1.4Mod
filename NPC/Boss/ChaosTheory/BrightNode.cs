@@ -98,7 +98,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
             if (drawConnection && owner.dimNode != null)
-                drawConnectionLine(spriteBatch, owner.dimNode.NPC.Center, Color.Red * 2.5f, 10f);
+                drawConnectionLine(spriteBatch, owner.dimNode.NPC.Center, Color.Red * 1.5f, 10f);
 
             spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White,
                 NPC.rotation, tex.Size()/2, 1f, SpriteEffects.None, 0);
@@ -124,6 +124,22 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
         }
 
+        public void summonBareLightning(float vel) {
+            if (target != null)
+            {
+                for (int i = 0; i < 120; i++)
+                {
+                    Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RedTorch);
+                    d.velocity = Main.rand.NextVector2Unit() * 10;
+                    d.noGravity = true;
+                }
+                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
+                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, 
+                    (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX)*vel,
+                    ModContent.ProjectileType<LightningBolt>(), 50, 0);
+            }
+        }
+
         private void singlePendulum()
         {
             if (!drawConnection)
@@ -141,6 +157,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
             RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
             SpriteBatch spriteBatch = Main.spriteBatch;
+            spriteBatch.End();
+
+            graphicsDevice.SetRenderTarget(screenTemp);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             #region drawtail
@@ -184,19 +206,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             #endregion
 
-
-            graphicsDevice.SetRenderTarget(screenTemp);
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["Displacement"].Apply();
-            PhysicsBoss.trailingEffect.Parameters["tex0"].SetValue(Main.screenTargetSwap);
-            PhysicsBoss.trailingEffect.Parameters["intensity"].SetValue(0.05f);
-            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-            spriteBatch.End();
-
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["Displacement"].Apply();
+            PhysicsBoss.trailingEffect.Parameters["tex0"].SetValue(Main.screenTargetSwap);
+            PhysicsBoss.trailingEffect.Parameters["intensity"].SetValue(0.05f);
             spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
             spriteBatch.End();
 

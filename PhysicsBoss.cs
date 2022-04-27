@@ -6,6 +6,7 @@ namespace PhysicsBoss
 	public class PhysicsBoss : Mod
 	{
         public static Effect trailingEffect;
+        public static Effect shineEffect;
 
         private static PhysicsBoss instance;
 
@@ -21,17 +22,21 @@ namespace PhysicsBoss
         public override void Load()
         {
             trailingEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/Trailing").Value;
+            shineEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/Shine").Value;
             base.Load();
         }
 
         public override void PostSetupContent()
         {
             trailingEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/Trailing").Value;
+            shineEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/Shine").Value;
+            base.PostSetupContent();
         }
 
         public override void Unload()
         {
             trailingEffect = null;
+            shineEffect = null;
             base.Unload();
         }
     }
