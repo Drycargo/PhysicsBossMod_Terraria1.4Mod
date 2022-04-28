@@ -84,7 +84,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 Main.GameViewMatrix.TransformationMatrix);
 
             PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(color.ToVector4());
-            PhysicsBoss.shineEffect.Parameters["threashold"].SetValue(0.8f);
+            PhysicsBoss.shineEffect.Parameters["threashold"].SetValue(0.9f);
             PhysicsBoss.shineEffect.CurrentTechnique.Passes["Beam"].Apply();
 
             spriteBatch.Draw(beamTex, (NPC.Center + targetPos) / 2 - Main.screenPosition, 
