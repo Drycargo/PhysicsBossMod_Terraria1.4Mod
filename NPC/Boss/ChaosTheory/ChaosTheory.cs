@@ -24,7 +24,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const float MAX_DISTANCE = 2000f;
         public static readonly int PHASE_COUNT = Enum.GetNames(typeof(phase)).Length;
         public const int HOVER_DIST = 330;
-        public const float ELE_CHARGE_DURATION = 2 * 1.21f* 60;
+        public const float ELE_CHARGE_DURATION = 2 * 1.19f* 60;
         public enum phase
         {
             INIT = 0,
@@ -33,20 +33,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ElectricCharge3 = 3,
         }
 
-        /*
+        
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.5f,
             12.25f,//11.75f,
             23.25f,
-        };*/
-
+        };
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0.1f,
             0.2f,
             0.3f,
-        };
+        };*/
 
         private Texture2D tex;
         private phase currentPhase;

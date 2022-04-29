@@ -69,9 +69,12 @@ namespace PhysicsBoss.Projectiles
                 {
                     for (int j = 0; j < i; j++)
                     {
+                        float factor = (Timer > ChaosTheory.ELE_CHARGE_DURATION * 0.35f) ?
+                            0.75f : (0.75f * Timer / (ChaosTheory.ELE_CHARGE_DURATION * 0.35f));
                         if (charges[i].getCharge() * charges[j].getCharge() < 0)
-                            GlobalEffectController.drawAimLine(Main.spriteBatch, 
-                                charges[i].Projectile.Center, charges[j].Projectile.Center, Color.SkyBlue * 0.5f, 10f);
+                            GlobalEffectController.drawRayLine(Main.spriteBatch, 
+                                charges[i].Projectile.Center, charges[j].Projectile.Center, 
+                                Color.SkyBlue * factor, 10f);
                     }
                 }
             }
@@ -121,6 +124,8 @@ namespace PhysicsBoss.Projectiles
                     charges[i].Projectile.velocity *= (currSpeed / speed);
                 }
             }
+
+            Timer++;
         }
 
         public override void Kill(int timeLeft)
@@ -132,10 +137,12 @@ namespace PhysicsBoss.Projectiles
                     for (int j = 0; j < CAPACITY; j++)
                     {
                         if (charges[j].getCharge() < 0) {
-                            Projectile.NewProjectile(charges[i].Projectile.GetProjectileSource_FromThis(),
+                            Vector2 displacement = charges[j].Projectile.Center - charges[i].Projectile.Center;
+
+                            Projectile.NewProjectileDirect(charges[i].Projectile.GetProjectileSource_FromThis(),
                                 charges[i].Projectile.Center, 
-                                30f * (charges[j].Projectile.Center - charges[i].Projectile.Center).SafeNormalize(Vector2.UnitX),
-                                ModContent.ProjectileType<LightningBolt>(), 50, 0);
+                                30f * displacement.SafeNormalize(Vector2.UnitX),
+                                ModContent.ProjectileType<LightningBoltAdvance>(), 50, 0);
                         }
                     }
                 }
@@ -146,7 +153,7 @@ namespace PhysicsBoss.Projectiles
                 charges[i].Projectile.Kill();
             }
 
-            SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
+            SoundEngine.PlaySound(SoundID.DD2_LightningBugZap);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

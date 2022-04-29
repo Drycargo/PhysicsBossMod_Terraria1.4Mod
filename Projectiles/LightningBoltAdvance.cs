@@ -13,14 +13,17 @@ using Terraria.ModLoader;
 
 namespace PhysicsBoss.Projectiles
 {
-    public class LightningBolt: ModProjectile
+    public class LightningBoltAdvance: ModProjectile
     {
-        public static readonly int TRAILING_CONST = 30;
-        public static readonly float DEV_ANGLE = 10f/180f*MathHelper.Pi;
-        public static readonly float PERIOD = 0.1f*60;
+        public const int TRAILING_CONST = 18;
+        public const float DEV_ANGLE = 45f / 180f * MathHelper.Pi;
+        public const int MAX_PERIOD = (int)(2f * 60);
+        public const float MAX_DEV = 30f;
         private VertexStrip tail = new VertexStrip();
 
         private int turn;
+        private Vector2 origin;
+        private Vector2 dest;
 
         public float Timer
         {
@@ -32,8 +35,8 @@ namespace PhysicsBoss.Projectiles
         private Vector2 dir;
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Lightning Bolt");
-            DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "闪电");
+            DisplayName.SetDefault("Lightning Bolt Advance");
+            DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "高级闪电");
             base.SetStaticDefaults();
         }
 
@@ -45,37 +48,53 @@ namespace PhysicsBoss.Projectiles
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(10 * 60);
-            Projectile.damage = 50;
+            Projectile.timeLeft = (int)(2.5 * 60);
+            Projectile.damage = 10;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
-            //tex = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            Timer = PERIOD/2;
+            Timer = 0;
 
-            Projectile.width = 7;//tex.Width;
+            Projectile.width = 10;//tex.Width;
             Projectile.height = 10;//tex.Height;
 
             dir = Vector2.Zero;
+            origin = Vector2.Zero;
             turn = -1;
         }
 
         public override void AI()
         {
+            Projectile.rotation = Projectile.velocity.ToRotation();
             if (dir == Vector2.Zero)
             {
                 dir = Projectile.velocity;
-                Projectile.velocity = Projectile.velocity.RotatedBy(DEV_ANGLE);
-                Projectile.rotation = Projectile.velocity.ToRotation();
-                turn = -1;
+                origin = Projectile.Center;
+                turn = Main.rand.NextBool() ? 1 : -1;
+                Timer = MAX_PERIOD;
             }
-            if (Timer >= PERIOD) {
-                Timer = 0;
-                Projectile.rotation = turn * DEV_ANGLE + dir.ToRotation();
-                Projectile.velocity = Projectile.velocity.Length() * Projectile.rotation.ToRotationVector2();
+
+            bool timeReached = (Timer >= MAX_PERIOD || (Main.rand.NextFloat() < 0.2f));
+
+            Vector2 displacement = Projectile.Center - origin;
+            float projection = Vector2.Dot(displacement, dir.SafeNormalize(Vector2.UnitX));
+            bool exceededRange = (Math.Sqrt(displacement.LengthSquared() - projection * projection)) > MAX_DEV;
+
+            if (Timer >= 0.02 * MAX_PERIOD && (timeReached || exceededRange))
+            {
                 turn *= -1;
+                Projectile.velocity = Projectile.velocity.RotatedBy(
+                    (Main.rand.NextFloat()*0.8f + 0.2f) * DEV_ANGLE * (float)turn);
+                Timer = 0;
             }
+
+            for (int i = 0; i < 5; i++) {
+                Dust d = Dust.NewDustDirect(Projectile.position - Vector2.One * 15f, 30, 30, DustID.Electric);
+                d.noGravity = true;
+                d.scale *= 0.5f;
+            }
+
             Timer++;
         }
 
@@ -84,7 +103,7 @@ namespace PhysicsBoss.Projectiles
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.AlphaBlend,
+                BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -92,20 +111,8 @@ namespace PhysicsBoss.Projectiles
 
             Main.graphics.GraphicsDevice.Textures[0] = tex;
 
-            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Red,
-                progress => {
-                    double scaleFactor = 1;
-                    if (progress < 0.25)
-                    {
-                        scaleFactor = progress / 0.25;
-                    }
-                    else if (progress > 0.75)
-                    {
-                        scaleFactor = (1f - progress) / 0.25;
-                    }
-                    return (float)scaleFactor * Projectile.width/2;
-                },
-                Projectile.Size/ 2 - Main.screenPosition, TRAILING_CONST);
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Cyan *3f,
+                progress => Projectile.width / 2, - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
             Main.spriteBatch.End();
@@ -122,11 +129,17 @@ namespace PhysicsBoss.Projectiles
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            float point = 0f;
-            if (Projectile.oldPos[TRAILING_CONST - 1] == Vector2.Zero)
+            if (origin == Vector2.Zero || Projectile.oldPos[TRAILING_CONST - 1] == Vector2.Zero)
                 return base.Colliding(projHitbox, targetHitbox);
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                Projectile.Center, Projectile.oldPos[TRAILING_CONST - 1] + Projectile.Size / 2, Projectile.width * 0.8f, ref point);
+
+            for (int i = 0; i < TRAILING_CONST-1; i++) {
+                float point = 0f;
+                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
+                    Projectile.oldPos[i] + Projectile.Size/2, Projectile.oldPos[i + 1] + Projectile.Size / 2, Projectile.width / 2, ref point))
+                    return true;
+            }
+
+            return base.Colliding(projHitbox, targetHitbox);
         }
     }
 }
