@@ -28,6 +28,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public enum phase
         {
             SIGNLE_PENDULUM_TWO = 0,
+            ORBIT = 1,
         }
         public override void SetStaticDefaults()
         {
@@ -82,7 +83,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             singlePendulum();
                             break;
                         }
-
+                    case (int)phase.ORBIT:
+                        {
+                            orbit((owner.Timer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            break;
+                        }
                     default: break;
                 }
             }

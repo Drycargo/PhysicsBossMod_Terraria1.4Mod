@@ -19,6 +19,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     public abstract class NodeMinion: TargetEnemy
     {
+        public const int ORBIT_DIST = 50;
+        public const int ORBIT_PERIOD = (int)(5 * 60);
+
         protected Texture2D tex;
         protected ChaosTheory owner;
         protected int currentPhase;
@@ -48,6 +51,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.dontTakeDamage = true;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
+            NPC.HitSound = SoundID.NPCHit4;
 
             drawTrail = trail.DEFAULT;
             drawConnection = false;
@@ -58,6 +62,14 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public void setOwner(ChaosTheory o) { 
             owner = o;
+            NPC.realLife = o.NPC.whoAmI;
+            NPC.dontTakeDamage = false;
+            NPC.lifeMax = o.NPC.lifeMax;
+        }
+
+        public override void HitEffect(int hitDirection, double damage)
+        {
+            base.HitEffect(hitDirection, damage);
         }
 
         public void setPhase(int phase) { 
@@ -69,10 +81,35 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 summonEvent();
                 onSummon = true;
             }
+
+            //if (NPC.)
             base.AI();
         }
 
         protected abstract void summonEvent();
+
+        public void orbit(float degree)
+        {
+            if (owner != null && owner.NPC.active) {
+                // return to position
+                Vector2 aim = owner.NPC.Center + Vector2.UnitY.RotatedBy(degree)
+                    * (ORBIT_DIST + owner.NPC.width/2 + NPC.width/2);
+
+                if (aim.Distance(NPC.Center) > 0.2 * (float)ORBIT_DIST)
+                {
+                    NPC.Center = 0.8f * NPC.Center + 0.2f * aim;
+                }
+                else {
+                    NPC.velocity *= 0;
+                    NPC.Center = aim;
+                }
+            }
+        }
+
+        public void setDrawConnection(bool b)
+        {
+            drawConnection = b;
+        }
 
         protected void drawConnectionLine(SpriteBatch spriteBatch,Vector2 targetPos, Color color, float width) {
             spriteBatch.End();

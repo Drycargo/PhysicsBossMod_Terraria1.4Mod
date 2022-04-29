@@ -17,6 +17,7 @@ namespace PhysicsBoss.Projectiles
     {
         private float charge = 0.0f;
         private bool initialized = false;
+        private bool activated = false;
         Texture2D tex;
         Texture2D texNeg;
         public override void SetStaticDefaults()
@@ -36,8 +37,6 @@ namespace PhysicsBoss.Projectiles
 
             Projectile.timeLeft = (int)(8 * 60);
             Projectile.damage = 30;
-            //Projectile.velocity = Vector2.Zero;
-
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
             texNeg = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/ElectricChargeNegative").Value;
@@ -77,8 +76,26 @@ namespace PhysicsBoss.Projectiles
             return false;
         }
 
+
+        public override void Kill(int timeLeft)
+        {
+            int dustId = (charge > 0f) ? DustID.FlameBurst : DustID.Clentaminator_Cyan;
+            for (int i = 0; i < 30; i++)
+            {
+                Dust d = Dust.NewDustDirect(Projectile.Center, 0, 0, dustId);
+                d.velocity = Main.rand.NextVector2Unit()*15f;
+                d.noGravity = true;
+            }
+
+            base.Kill(timeLeft);
+        }
+
         public float getCharge() { 
             return charge;
+        }
+
+        public void activate() {
+            activated = true;
         }
     }
 }

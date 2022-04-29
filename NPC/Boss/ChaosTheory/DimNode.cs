@@ -21,6 +21,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public enum phase {
             SIGNLE_PENDULUM = 0,
             SIGNLE_PENDULUM_TWO = 1,
+            ORBIT = 2,
         }
         public override void SetStaticDefaults()
         {
@@ -67,6 +68,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     case (int)phase.SIGNLE_PENDULUM_TWO:
                         {
                             singlePendulum(false);
+                            break;
+                        }
+                    case (int)phase.ORBIT:
+                        {
+                            orbit(owner.Timer/ORBIT_PERIOD * MathHelper.TwoPi);
                             break;
                         }
                     default: break;
@@ -120,7 +126,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             {
                 if ((int)(Timer % (SINGLE_PENDULUM_PERIOD / 8 * 60)) == 0)
                 {
-                    SoundEngine.PlaySound(SoundID.Shatter);
+                    SoundEngine.PlaySound(SoundID.DD2_PhantomPhoenixShot);
                     Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.UnitY * 7.5f,
                         ModContent.ProjectileType<TrailingStar>(), 50, 0);
                 }

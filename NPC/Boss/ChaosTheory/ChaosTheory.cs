@@ -13,15 +13,18 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using PhysicsBoss.Projectiles;
+using PhysicsBoss.Effects;
 
 namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     [AutoloadBossHead]
     public class ChaosTheory : TargetEnemy
     {
-        public static readonly float MAX_DISTANCE = 2000f;
+        public const float MAX_DISTANCE = 2000f;
         public static readonly int PHASE_COUNT = Enum.GetNames(typeof(phase)).Length;
-        public static readonly int HOVER_DIST = 330;
+        public const int HOVER_DIST = 330;
+        public const float ELE_CHARGE_DURATION = 2 * 1.21f* 60;
         public enum phase
         {
             INIT = 0,
@@ -30,11 +33,19 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ElectricCharge3 = 3,
         }
 
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
-            2,
-            11.75f,
+            2.5f,
+            12.25f,//11.75f,
             23.25f,
+        };*/
+
+        public static readonly float[] phaseTiming = new float[] {
+            0,
+            0.1f,
+            0.2f,
+            0.3f,
         };
 
         private Texture2D tex;
@@ -54,6 +65,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public DimNode dimNode;
         public BrightNode brightNode;
+
+        private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
         public override void SetStaticDefaults()
         {
@@ -115,6 +128,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             summoned = false;
+
+            lastLife = NPC.lifeMax;
         }
 
         public override void AI()
@@ -157,6 +172,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             break;    
                         }
                     case phase.ElectricCharge3: {
+                            electricCharge3();
                             break;
                         }
                     default: break;
@@ -171,7 +187,24 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 currentPhase++;
                 Timer = 0;
             }
+
+            // deal with damage
+            if (lastLife != NPC.life)
+            {
+                lastLife = NPC.life;
+                if (dimNode!= null)
+                {
+                    dimNode.NPC.life = NPC.life;
+                }
+
+                if (brightNode != null)
+                {
+                    brightNode.NPC.life = NPC.life;
+                }
+            }
         }
+
+       
 
         public override void FindFrame(int frameHeight)
         {
@@ -202,6 +235,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             base.OnKill();
         }
 
+
         #region private methods
         private void init()
         {
@@ -211,7 +245,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
         }
-
         private void pendulumeOne1()
         {
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
@@ -229,6 +262,48 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 createBrightNode();
                 brightNode.setPhase((int)BrightNode.phase.SIGNLE_PENDULUM_TWO);
             }
+        }
+
+        private void electricCharge3()
+        {
+            if ((int)Timer == 0)
+            {
+                dimNode.setPhase((int)DimNode.phase.ORBIT);
+                dimNode.setDrawConnection(false);
+
+                brightNode.setPhase((int)BrightNode.phase.ORBIT);
+                brightNode.setDrawConnection(false);
+            }
+
+            // chase or hover
+            Vector2 dist = NPC.Center - target.Center;
+            if (dist.Length() < 300f)
+            {
+                hover(dist.SafeNormalize(Vector2.UnitX) * 250f + target.Center, 30f, 0.3f, 1200);
+            }
+            else
+            {
+                NPC.velocity.X = -1f * dist.X - 1f * dist.Y;
+                NPC.velocity.Y = 1f * dist.X - 1f * dist.Y;
+
+                float speed = NPC.velocity.Length();
+
+                if (speed > 10f)
+                {
+                    NPC.velocity *= (10f / speed);
+                }
+
+            }
+
+            // call charges
+            if ((int)(Timer % (ELE_CHARGE_DURATION)) == 0)
+            {
+                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), target.Center, Vector2.Zero,
+                    ModContent.ProjectileType<ElectricChargeController>(), 0,0);
+                SoundEngine.PlaySound(SoundID.Shatter);
+            }
+
+            Timer++;
         }
 
         private void createDimNode() {
@@ -251,13 +326,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             SoundEngine.PlaySound(SoundID.DrumTomHigh);
         }
 
-        private void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period)
-        {
-            float degree = (NPC.Center - hoverCenter).ToRotation() + MathHelper.TwoPi / period;
-
-            NPC.Center = degree.ToRotationVector2() * hoverRadius + hoverCenter
-                + noise * 2 * (Main.rand.NextFloat() - 0.5f) * Vector2.One;
-        }
         #endregion
     }
 }
