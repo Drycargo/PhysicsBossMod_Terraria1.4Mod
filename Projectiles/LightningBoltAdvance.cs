@@ -31,7 +31,7 @@ namespace PhysicsBoss.Projectiles
             set { Projectile.ai[0] = value; }
         }
 
-        private Texture2D tex;
+       // private Texture2D tex;
         private Vector2 dir;
         public override void SetStaticDefaults()
         {
@@ -51,7 +51,7 @@ namespace PhysicsBoss.Projectiles
             Projectile.timeLeft = (int)(2.5 * 60);
             Projectile.damage = 10;
 
-            tex = ModContent.Request<Texture2D>(Texture).Value;
+            //tex = ModContent.Request<Texture2D>(Texture).Value;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             Timer = 0;
@@ -109,7 +109,7 @@ namespace PhysicsBoss.Projectiles
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
-            Main.graphics.GraphicsDevice.Textures[0] = tex;
+            Main.graphics.GraphicsDevice.Textures[0] = ModContent.Request<Texture2D>(Texture).Value;
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Cyan *3f,
                 progress => Projectile.width / 2, - Main.screenPosition, TRAILING_CONST);

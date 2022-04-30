@@ -100,6 +100,9 @@ namespace PhysicsBoss.Projectiles
 
                     charges[i] = (ElectricCharge)Main.projectile[id].ModProjectile;
                 }
+
+                if (charges[0].getCharge() * charges[CAPACITY - 1].getCharge() > 0)
+                    charges[0].setCharge(-charges[0].getCharge());
                 initialized = true;
             }
 

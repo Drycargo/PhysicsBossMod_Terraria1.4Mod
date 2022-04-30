@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using PhysicsBoss.Projectiles;
+using PhysicsBoss.Projectiles.ConwayGame;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<ElectricChargeController>();
+            Item.shoot = ModContent.ProjectileType<ConwayGameController>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

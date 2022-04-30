@@ -94,6 +94,11 @@ namespace PhysicsBoss.Projectiles
             return charge;
         }
 
+        public void setCharge(float newCharge)
+        {
+            charge = newCharge;
+        }
+
         public void activate() {
             activated = true;
         }
