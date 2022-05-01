@@ -94,7 +94,7 @@ namespace PhysicsBoss.Projectiles
                 float offset = 0.25f + 0.5f * Main.rand.NextFloat();
 
                 for (int i = 0; i < CAPACITY; i++) {
-                    int id = Projectile.NewProjectile(Projectile.GetProjectileSource_FromThis(),
+                    int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
                         Projectile.Center + RADIUS * (MathHelper.TwoPi * ((float) i + offset)/((float)CAPACITY)).ToRotationVector2(),
                         Vector2.Zero, ModContent.ProjectileType<ElectricCharge>(), 30, 0);
 
@@ -142,7 +142,7 @@ namespace PhysicsBoss.Projectiles
                         if (charges[j].getCharge() < 0) {
                             Vector2 displacement = charges[j].Projectile.Center - charges[i].Projectile.Center;
 
-                            Projectile.NewProjectileDirect(charges[i].Projectile.GetProjectileSource_FromThis(),
+                            Projectile.NewProjectileDirect(charges[i].Projectile.GetSource_FromThis(),
                                 charges[i].Projectile.Center, 
                                 30f * displacement.SafeNormalize(Vector2.UnitX),
                                 ModContent.ProjectileType<LightningBoltAdvance>(), 50, 0);

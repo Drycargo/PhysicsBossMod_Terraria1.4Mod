@@ -139,7 +139,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     d.noGravity = true;
                 }
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, 
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, 
                     (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX)*vel,
                     ModContent.ProjectileType<LightningBolt>(), 50, 0);
             }

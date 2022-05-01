@@ -231,7 +231,7 @@ namespace PhysicsBoss.Projectiles
         {
             target = t;
             Projectile p = 
-                Projectile.NewProjectileDirect(Projectile.GetProjectileSource_FromThis(),
+                Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(),
                 Projectile.Center, Vector2.Zero, ModContent.ProjectileType<NewtonBeamShort>(), 50, 0);
             appendage = (NewtonBeamShort)p.ModProjectile;
         }

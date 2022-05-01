@@ -36,46 +36,50 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
             mid = (-1 <= r && r <= 1 && -1 <= c && c <= 1);
             currPhase = phase.INITIALIZING;
-            toSet = phase.INITIALIZING;
+            toSet = Main.rand.NextBool()? phase.LIVE : phase.DEAD;
 
-            drawPos = new Vector2(((float)c - 0.5f) * tex.Width + Main.screenWidth/2, ((float)r - 0.5f) * tex.Height + Main.screenHeight/2);
+            drawPos = new Vector2(((float)c - 0.5f) * tex.Width, ((float)r - 0.5f) * tex.Height);
         }
 
-        public void drawBlock() {
-            float factor = mid ? 0.4f : 0.8f;
+        public void drawBlock1(Vector2 origin) {
+            float factor = mid ? 0.4f : 2f;
             Color baseColor = Color.Ivory;
 
-            if (toSet == phase.LIVE)
+            switch (currPhase)
             {
-                baseColor = Color.Red;
-            }
-            else
-            {
-                switch (currPhase)
-                {
-                    case phase.INITIALIZING:
-                        {
-                            factor *= (progress < 0 ? 0 : progress);
-                            baseColor = Color.Ivory;
-                            break;
-                        }
-                    case phase.LIVE:
-                        {
-                            baseColor = Color.LightBlue;
-                            break;
-                        }
-                    case phase.DEAD:
-                        {
-                            baseColor = Color.Ivory;
-                            break;
-                        }
-                    default: break;
-                }
+                case phase.INITIALIZING:
+                    {
+                        factor *= (progress < 0 ? 0 : progress);
+                        baseColor = Color.Ivory;
+                        break;
+                    }
+                case phase.LIVE:
+                    {
+                        baseColor = Color.DarkBlue;
+                        break;
+                    }
+                case phase.DEAD:
+                    {
+                        baseColor = Color.Ivory;
+                        break;
+                    }
+                default: break;
             }
 
             baseColor *= factor;
 
-            Main.spriteBatch.Draw(tex, drawPos, baseColor);
+            Main.spriteBatch.Draw(tex, origin + drawPos, baseColor);
+        }
+
+        public void drawBlock2(Vector2 origin, float timer)
+        {
+            if (toSet == phase.LIVE)
+            {
+                Main.spriteBatch.Draw(tex, origin + drawPos, Color.DarkRed * (timer % 7 < 3.5 ? 0.7f : 0.2f));
+            } else
+            {
+                drawBlock1(origin);
+            }
         }
 
         public void incProgress(float inc) {
@@ -84,6 +88,14 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 progress = 1f;
         }
 
+        public float getProgress() { 
+            return progress;
+        }
+
+        public phase getPhase()
+        {
+            return currPhase;
+        }
         public void setPhase()
         {
             currPhase = toSet;

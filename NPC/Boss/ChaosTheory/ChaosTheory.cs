@@ -39,7 +39,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             2.25f,
             12.25f,//11.75f,
             23.25f,
-            32,//33
+            31.5f,//33
         };
         
         /*
@@ -302,7 +302,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             // call charges
             if ((int)(Timer % (ELE_CHARGE_DURATION)) == 0)
             {
-                Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), target.Center, Vector2.Zero,
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), target.Center, Vector2.Zero,
                     ModContent.ProjectileType<ElectricChargeController>(), 0,0);
                 SoundEngine.PlaySound(SoundID.Shatter);
             }
@@ -311,7 +311,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         }
 
         private void createDimNode() {
-            int id = Terraria.NPC.NewNPC(NPC.GetSpawnSourceForProjectileNPC(),
+            int id = Terraria.NPC.NewNPC(NPC.GetSource_FromThis(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());
             dimNode = (DimNode)Main.npc[id].ModNPC;
             dimNode.setOwner(this);
@@ -322,7 +322,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void createBrightNode()
         {
-            int id = Terraria.NPC.NewNPC(NPC.GetSpawnSourceForProjectileNPC(),
+            int id = Terraria.NPC.NewNPC(NPC.GetSource_FromThis(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<BrightNode>());
             brightNode = (BrightNode)Main.npc[id].ModNPC;
             brightNode.setOwner(this);

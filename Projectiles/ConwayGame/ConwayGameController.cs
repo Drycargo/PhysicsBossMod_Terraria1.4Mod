@@ -18,7 +18,19 @@ namespace PhysicsBoss.Projectiles.ConwayGame
         public const int ROW = 9;
         public const int COL = 9;
 
+        public const int INIT_TIME_MAX = (int)(1.5 * 60);
+
+        public const float STEP = 1f/(INIT_TIME_MAX/2);
+
         private ConwayBlock[][] blocks;
+        private bool allInitialized;
+        private bool readyToFire;
+
+        public float Timer
+        {
+            get { return Projectile.ai[0]; }
+            set { Projectile.ai[0] = value; }
+        }
 
         public override void SetStaticDefaults()
         {
@@ -35,7 +47,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(8 * 60);
+            Projectile.timeLeft = (int)(18 * 60);
             Projectile.damage = 0;
 
             Projectile.width = 0;
@@ -47,14 +59,54 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 blocks[i] = new ConwayBlock[COL];
                 for (int j = 0; j < COL; j++)
                 {
-                    blocks[i][j] = new ConwayBlock(i - (ROW / 2), j - (COL / 2), 1.0f);
+                    blocks[i][j] = new ConwayBlock(i - (ROW / 2), j - (COL / 2), -Main.rand.NextFloat());
                 }
             }
+
+            allInitialized = false;
+            readyToFire = false;
+            Timer = 0;
         }
 
         public override void AI()
         {
             Projectile.velocity *= 0;
+
+            if (!allInitialized)
+                incAll();
+            else
+            {
+                if ((int)Timer % 180 == 0)
+                {
+                    preUpdate();
+                    readyToFire = true;
+                    //Main.NewText("ready");
+                } else if ((int)Timer % 180 == 90) {
+                    update();
+                    readyToFire = false;
+                    //Main.NewText("Fire");
+                }
+                Timer++;
+            }
+        }
+        public void incAll()
+        {
+            bool flag = true;
+            for (int i = 0; i < ROW; i++)
+            {
+                for (int j = 0; j < COL; j++)
+                {
+                    blocks[i][j].incProgress(STEP);
+                    if (blocks[i][j].getProgress() < 1f)
+                        flag = false;
+                }
+            }
+
+            if (flag && !allInitialized)
+            {
+                allInitialized = true;
+
+            }
         }
 
         public void preUpdate()
@@ -81,6 +133,9 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
         private void updateSingleBlock(int r, int c)
         {
+            if (blocks[r][c].getPhase() == ConwayBlock.phase.INITIALIZING)
+                return;
+            
             int aliveCount = 0;
             int row, col;
 
@@ -132,7 +187,10 @@ namespace PhysicsBoss.Projectiles.ConwayGame
             {
                 for (int j = 0; j < COL; j++)
                 {
-                    blocks[i][j].drawBlock();
+                    if (readyToFire)
+                        blocks[i][j].drawBlock2(Projectile.Center - Main.screenPosition, Timer);
+                    else
+                        blocks[i][j].drawBlock1(Projectile.Center - Main.screenPosition);
                 }
             }
 

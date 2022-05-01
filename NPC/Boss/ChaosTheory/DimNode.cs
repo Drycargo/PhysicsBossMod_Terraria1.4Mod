@@ -127,7 +127,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 if ((int)(Timer % (SINGLE_PENDULUM_PERIOD / 8 * 60)) == 0)
                 {
                     SoundEngine.PlaySound(SoundID.DD2_PhantomPhoenixShot);
-                    Projectile.NewProjectile(NPC.GetSpawnSource_ForProjectile(), NPC.Center, Vector2.UnitY * 7.5f,
+                    Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, Vector2.UnitY * 7.5f,
                         ModContent.ProjectileType<TrailingStar>(), 50, 0);
                 }
             }
