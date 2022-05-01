@@ -80,11 +80,9 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 {
                     preUpdate();
                     readyToFire = true;
-                    //Main.NewText("ready");
                 } else if ((int)Timer % 180 == 90) {
                     update();
                     readyToFire = false;
-                    //Main.NewText("Fire");
                 }
                 Timer++;
             }

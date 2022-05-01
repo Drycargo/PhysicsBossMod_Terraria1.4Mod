@@ -1,9 +1,22 @@
 ﻿sampler uImage0 : register(s0);
+sampler uImage1 : register(s1);
+
 float4 shineColor;
 float threashold;
 
 float timer;
 float2 texSize;
+
+texture2D tex0;
+
+sampler2D uIm1 = sampler_state
+{
+    Texture = <tex0>;
+    MinFilter = Linear;
+    MagFilter = Linear;
+    AddressU = wrap;
+    AddressV = wrap;
+};
 
 float gauss[3][3] =
 {
@@ -11,6 +24,7 @@ float gauss[3][3] =
     0.124, 0.204, 0.124,
     0.075, 0.124, 0.075
 };
+
 
 float4 Blur(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -42,6 +56,75 @@ float4 BeamShine(float2 coords : TEXCOORD0) : COLOR0
     return 0.5*brightness * float4(1, 1, 1, 1) + (1 - 0.5*brightness) * shineColor;
 }
 
+float4 ColorGradient()
+{
+    return tex2D(uIm1, float2(timer, 0));
+}
+
+float4 DynamicColorTail(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 c = ColorGradient();
+    float4 origC = tex2D(uImage0, coords);
+    c.a = (origC.r * 0.7 + 0.3) * (1.0 - coords.x);
+
+    return c;
+}
+
+float4 DynamicContourShine(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 origColor = tex2D(uImage0, coords);
+    if (origColor.a != 0)
+        return origColor;
+    
+    float stepX = 1.0 / texSize.x;
+    float stepY = 1.0 / texSize.y;
+   
+    
+    float4 c = ColorGradient();
+    
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i != 0 && j != 0)
+            {
+                float4 neighbourC = tex2D(uImage0, coords + float2(stepX * (float) i, stepY * (float) j));
+                if (any(neighbourC))
+                    return c;
+            }
+        }
+    }
+
+    return origColor;
+}
+
+float4 ContourShine(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 origColor = tex2D(uImage0, coords);
+    if (origColor.a != 0)
+        return origColor;
+    
+    float stepX = 1.0 / texSize.x;
+    float stepY = 1.0 / texSize.y;
+    float4 c = shineColor;
+    c.a = 0.5;
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (i != 0 && j != 0)
+            {
+                float4 neighbourC = tex2D(uImage0, coords + float2(stepX * (float) i, stepY * (float) j));
+                if (any(neighbourC))
+                    return c;
+            }
+        }
+    }
+
+    return origColor;
+}
+
+
 technique Technique1
 {
     pass Beam
@@ -52,5 +135,20 @@ technique Technique1
     pass Blur
     {
         PixelShader = compile ps_2_0 Blur();
+    }
+
+    pass Contour
+    {
+        PixelShader = compile ps_2_0 ContourShine();
+    }
+
+    pass DynamicContour
+    {
+        PixelShader = compile ps_2_0 DynamicContourShine();
+    }
+
+    pass DynamicColorTail
+    {
+        PixelShader = compile ps_2_0 DynamicColorTail();
     }
 }

@@ -18,7 +18,7 @@ namespace PhysicsBoss.Projectiles
         public const int TRAILING_CONST = 18;
         public const float DEV_ANGLE = 45f / 180f * MathHelper.Pi;
         public const int MAX_PERIOD = (int)(2f * 60);
-        public const float MAX_DEV = 30f;
+        public const float MAX_DEV = 15f;
         private VertexStrip tail = new VertexStrip();
 
         private int turn;
@@ -83,9 +83,18 @@ namespace PhysicsBoss.Projectiles
 
             if (Timer >= 0.02 * MAX_PERIOD && (timeReached || exceededRange))
             {
-                turn *= -1;
-                Projectile.velocity = Projectile.velocity.RotatedBy(
-                    (Main.rand.NextFloat()*0.8f + 0.2f) * DEV_ANGLE * (float)turn);
+                if (exceededRange)
+                {
+                    turn *= -1;
+                    Projectile.velocity = dir.RotatedBy(
+                        (Main.rand.NextFloat() * 0.8f + 0.2f) * 0.5 * DEV_ANGLE * (float)turn);
+                }
+                else
+                {
+                    turn = Main.rand.NextBool() ? -1 : 1;
+                    Projectile.velocity = Projectile.velocity.RotatedBy(
+                        (Main.rand.NextFloat() * 0.8f + 0.2f) * DEV_ANGLE * (float)turn);
+                }
                 Timer = 0;
             }
 
