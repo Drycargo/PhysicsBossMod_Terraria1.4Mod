@@ -1,4 +1,4 @@
-# PhysicsBossMod_Terraria1.4Mod
+﻿# PhysicsBossMod_Terraria1.4Mod
 Mod of Physics-themed Bosses in Terraria, based on TModLoader
 
 ## Introduction
@@ -42,6 +42,18 @@ of Chaos Phenomenon; with proper restrictions, they can be implemented into boss
 playability with the element of randomness.  
  
 I intend to implement the following Patterns into the boss fight:
+- **2D Dynamic system:** Used to implement the hovering behavior of the boss. Mainly used the pattern of *Spiral Sink (2 complex eigenvalues, both with negative real parts)* 
+near a critical point;
 - **Single Pendulum:** This is not necessarily a Chaos pattern, but it involves differential equations for solving a dynamic system. It is 
 regarded as an intro to the boss fight;
-- **Electro-static Forces:** Following the formula $k\frac{Q_1Q_2}{r^2}$
+- **Electro-static Forces:** Following the formula ![equation](https://latex.codecogs.com/svg.image?F&space;=&space;k\frac{Q_1Q_2}{r^2}), electric 
+charges with randomly assigned charge (positive or negative) move in unpredictable patterns; electric fields with direction from positive to negative charges 
+are therefore formed as well;
+- **Conway's Game of Life:** an automatic cellular simulation designed by John Horton Conway, which simulates life in the form of blocks, which live, compete, reproduce 
+or die based on the population nearby. It can be designed as a large chess board that moves with respect to the player, and release projectile attacks from the living blocks;
+- *(Implementing)Lorentz Attractor*
+- *(Implementing)Rössler attractor*
+- *(Implementing)Chen attractor*
+- *(Implementing)Double Pendulum*
+- *(Implementing)Three-body Problem*
+- *(Implementing)Butterfly Effect (purely conceptual)*
