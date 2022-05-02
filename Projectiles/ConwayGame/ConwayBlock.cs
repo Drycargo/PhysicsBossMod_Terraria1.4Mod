@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.Localization;
@@ -30,19 +31,82 @@ namespace PhysicsBoss.Projectiles.ConwayGame
         private Texture2D tex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/ConwayGame/ConwayBlock").Value;
 
         private Vector2 drawPos = Vector2.Zero;
+        private int row, col;
 
         public ConwayBlock(int r, int c, float prog) {
             progress = prog;
 
             mid = (-1 <= r && r <= 1 && -1 <= c && c <= 1);
             currPhase = phase.INITIALIZING;
-            toSet = Main.rand.NextBool()? phase.LIVE : phase.DEAD;
+            toSet = (Main.rand.NextFloat() < 2.5f/8f)? phase.LIVE : phase.DEAD;
 
+            row = r;
+            col = c;
             drawPos = new Vector2(((float)c - 0.5f) * tex.Width, ((float)r - 0.5f) * tex.Height);
         }
 
+        public void launch(Projectile parent) {
+            if (mid || currPhase != phase.LIVE)
+                return;
+
+            for (int i = 0; i < 30; i++)
+            {
+                float a = 2f * (Main.rand.NextFloat() - 0.5f) * 0.4f * tex.Width/2;
+                float b = (Main.rand.NextBool() ? 1 : -1) * 0.4f * tex.Width / 2;
+
+                float x, y;
+
+                if (Main.rand.NextBool())
+                {
+                    x = a; y = b;
+                }
+                else
+                {
+                    x = b; y = a;
+                }
+
+                Dust d = Dust.NewDustDirect(new Vector2(x, y) + parent.Center + drawPos + tex.Size()/2, 0,0,DustID.FlameBurst);
+                d.noGravity = true;
+                d.velocity = -5f * Vector2.UnitY;
+            }
+
+            float direction = 0f;
+            /* //include diagonal
+            if ((row <= -2 && col <= -2) || (row >= 2 && col >= 2))
+            {
+                direction = (row <= 2 ? 0 : MathHelper.Pi) + MathHelper.PiOver4;
+            }
+            else if ((row <= -2 && col >= 2) || (row >= 2 && col <= -2))
+            {
+                direction = (row <= -2 ? 0 : MathHelper.Pi) - MathHelper.PiOver4;
+            }
+            else if (col <= -2 || col >= 2)
+            {
+                direction = (col <= -2 ? 0 : MathHelper.Pi);
+            }
+            else {
+                direction = (row <= -2 ? 0 : MathHelper.Pi) + MathHelper.PiOver2;
+            }*/
+
+            if (row <= -2 && col >= -1)
+            {
+                direction = MathHelper.PiOver2;
+            }
+            else if (row >= 2 && col <= 1)
+            {
+                direction = -MathHelper.PiOver2;
+            }
+            else if (row >= -1 && col >= 2) {
+                direction = MathHelper.Pi;
+            }
+
+            Projectile.NewProjectile(parent.GetSource_FromThis(), parent.Center + drawPos + tex.Size()/2, 
+                -direction.ToRotationVector2() * ConwayGlider.INIT_SPEED, ModContent.ProjectileType<ConwayGlider>(), 25, 0);
+            
+        }
+
         public void drawBlock1(Vector2 origin) {
-            float factor = mid ? 0.4f : 2f;
+            float factor = mid ? 0.5f : 1.2f;
             Color baseColor = Color.Ivory;
 
             switch (currPhase)
@@ -55,7 +119,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                     }
                 case phase.LIVE:
                     {
-                        baseColor = Color.DarkBlue;
+                        baseColor = Color.Green;
                         break;
                     }
                 case phase.DEAD:
@@ -75,7 +139,8 @@ namespace PhysicsBoss.Projectiles.ConwayGame
         {
             if (toSet == phase.LIVE)
             {
-                Main.spriteBatch.Draw(tex, origin + drawPos, Color.DarkRed * (timer % 7 < 3.5 ? 0.7f : 0.2f));
+                bool factor = timer % 7 < 3.5;
+                Main.spriteBatch.Draw(tex, origin + drawPos, Color.DarkRed * (factor ? 1.2f : 0.2f));
             } else
             {
                 drawBlock1(origin);

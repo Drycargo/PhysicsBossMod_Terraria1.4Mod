@@ -1,11 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsBoss.NPC.Boss.ChaosTheory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.Localization;
@@ -18,7 +20,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
         public const int ROW = 9;
         public const int COL = 9;
 
-        public const int INIT_TIME_MAX = (int)(1.5 * 60);
+        public const int INIT_TIME_MAX = (int)(1.2f * 60);
 
         public const float STEP = 1f/(INIT_TIME_MAX/2);
 
@@ -65,7 +67,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
             allInitialized = false;
             readyToFire = false;
-            Timer = 0;
+            Timer = -INIT_TIME_MAX;
         }
 
         public override void AI()
@@ -74,19 +76,40 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
             if (!allInitialized)
                 incAll();
-            else
+            else if (Timer >= 0)
             {
-                if ((int)Timer % 180 == 0)
+                if ((int)Timer % ((int)ChaosTheory.ELE_CHARGE_DURATION) == 0)
                 {
                     preUpdate();
                     readyToFire = true;
-                } else if ((int)Timer % 180 == 90) {
+                } else if ((int)Timer % ((int)ChaosTheory.ELE_CHARGE_DURATION) == 
+                    ((int)(ChaosTheory.ELE_CHARGE_DURATION/2))) {
                     update();
                     readyToFire = false;
+                    launch();
                 }
-                Timer++;
+
+                if ((int)Timer % ((int)ChaosTheory.ELE_CHARGE_DURATION) < (int)(ChaosTheory.ELE_CHARGE_DURATION / 2) 
+                    && Timer% 7 < 3.5)
+                    SoundEngine.PlaySound(SoundID.MaxMana);
             }
+
+            Timer++;
         }
+
+        private void launch()
+        {
+            for (int i = 0; i < ROW; i++)
+            {
+                for (int j = 0; j < COL; j++)
+                {
+                    blocks[i][j].launch(Projectile);
+                }
+            }
+
+            SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion);
+        }
+
         public void incAll()
         {
             bool flag = true;
@@ -145,7 +168,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 {
                     col = (j < 0) ? COL - 1 : j % COL;
 
-                    if (row != r && col!= c && blocks[row][col].alive()){
+                    if ((row != r || col!= c) && blocks[row][col].alive()){
                         aliveCount++;
                         // overpopulation
                         if (aliveCount > 3)
@@ -175,7 +198,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
         {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.Additive,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,

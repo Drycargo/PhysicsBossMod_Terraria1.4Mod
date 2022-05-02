@@ -15,6 +15,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using PhysicsBoss.Projectiles;
 using PhysicsBoss.Effects;
+using PhysicsBoss.Projectiles.ConwayGame;
 
 namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
@@ -25,12 +26,15 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public static readonly int PHASE_COUNT = Enum.GetNames(typeof(phase)).Length;
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
+
+
         public enum phase
         {
             INIT = 0,
             PendulumOne1 = 1,
             PendulumOnePhaseTwo2 = 2,
             ElectricCharge3 = 3,
+            ConwayGame4 = 4,
         }
 
         
@@ -42,15 +46,16 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             31.5f,//33
         };
         
-        /*
         
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0.1f,
             0.2f,
             0.3f,
             0.4f,
-        };*/
+        };
+        */
 
         private Texture2D tex;
         private phase currentPhase;
@@ -69,6 +74,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public DimNode dimNode;
         public BrightNode brightNode;
+
+        private Projectile conwayGameController = null;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -179,6 +186,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             electricCharge3();
                             break;
                         }
+                    case phase.ConwayGame4:
+                        {
+                            conwayGame4();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -208,8 +220,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
         }
 
-       
-
         public override void FindFrame(int frameHeight)
         {
             NPC.frame.Y = (int)NPC.frameCounter * NPC.height;
@@ -234,6 +244,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             {
                 brightNode.NPC.active = false;
                 brightNode.NPC.life = -1;
+            }
+
+            if (conwayGameController != null) {
+                conwayGameController.Kill();
+                conwayGameController = null;
             }
 
             base.OnKill();
@@ -292,9 +307,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
                 float speed = NPC.velocity.Length();
 
-                if (speed > 10f)
+                if (speed > 20f)
                 {
-                    NPC.velocity *= (10f / speed);
+                    NPC.velocity *= (20f / speed);
                 }
 
             }
@@ -310,6 +325,42 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Timer++;
         }
 
+        private void conwayGame4()
+        {
+            if (conwayGameController == null)
+                conwayGameController =
+                    Projectile.NewProjectileDirect(null, target.Center, Vector2.Zero,
+                    ModContent.ProjectileType<ConwayGameController>(), 0, 0);
+            
+            conwayGameController.Center = target.Center;
+
+            // chase or hover
+            Vector2 dist = NPC.Center - target.Center;
+            if (dist.Length() < 300f)
+            {
+                hover(dist.SafeNormalize(Vector2.UnitX) * 250f + target.Center, 30f, 0.3f, 1200);
+            }
+            else
+            {
+                NPC.velocity.X = -1f * dist.X - 1f * dist.Y;
+                NPC.velocity.Y = 1f * dist.X - 1f * dist.Y;
+
+                float speed = NPC.velocity.Length();
+
+                if (speed > 10f)
+                {
+                    if (dist.Length() < 800f)
+                        NPC.velocity *= (10f / speed);
+                    else if (speed > 50f)
+                    {
+                        NPC.velocity *= (50f / speed);
+                    }
+
+                }
+
+            }
+
+        }
         private void createDimNode() {
             int id = Terraria.NPC.NewNPC(NPC.GetSource_FromThis(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());

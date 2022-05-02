@@ -18,8 +18,11 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 {
     public class ConwayGlider: ModProjectile
     {
+        public const float INIT_SPEED = 7.5f;
+        
         public static readonly int TRAILING_CONST = 15;
         private VertexStrip tail = new VertexStrip();
+        private Vector2 initialDirection = Vector2.Zero;
 
         public float Timer
         {
@@ -42,7 +45,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(10 * 60);
+            Projectile.timeLeft = (int)(1.75 * 60);
             Projectile.damage = 50;
 
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -54,15 +57,29 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
             Projectile.width = tex.Width;
             Projectile.height = tex.Height / (Projectile.frame);
-            Projectile.rotation = MathHelper.PiOver4;
+            Projectile.rotation = -MathHelper.PiOver4;
 
             Timer = 0;
         }
 
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < 25; i++) {
+                Dust d = Dust.NewDustDirect(Projectile.Center, 0,0,DustID.Flare);
+                d.velocity *= 5;
+            }
+        }
         public override void AI()
         {
-            //Projectile.velocity *= 0;
-            Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+            if (initialDirection == Vector2.Zero) {
+                initialDirection = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+            }
+
+            if (Projectile.velocity.Length() <= 1.2 * INIT_SPEED) {
+                Projectile.velocity -= initialDirection * 0.25f;
+            }
+
+            Projectile.rotation = Projectile.velocity.ToRotation() - MathHelper.PiOver4;
             Timer++;
             if ((int)Timer % 15 == 0)
             {
@@ -110,7 +127,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.AlphaBlend,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -124,8 +141,8 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
             Main.spriteBatch.Draw(tex,Projectile.Center - Main.screenPosition, 
                 new Rectangle(0, Projectile.frameCounter * (tex.Height / Projectile.frame), tex.Width, (tex.Height / Projectile.frame)),
-                Color.White, Projectile.rotation, Projectile.Size/2, 1f, SpriteEffects.None, 0);
-
+                Color.White, Projectile.rotation, Projectile.Size/2, 1f, SpriteEffects.None, 1);
+            /*
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.NonPremultiplied,
@@ -133,6 +150,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+            */
         }
     }
 }
