@@ -20,7 +20,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
         public const int ROW = 9;
         public const int COL = 9;
 
-        public const int INIT_TIME_MAX = (int)(1.2f * 60);
+        public const int INIT_TIME_MAX = (int)(1.3f * 60);
 
         public const float STEP = 1f/(INIT_TIME_MAX/2);
 
