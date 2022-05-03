@@ -22,6 +22,12 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             base.SetStaticDefaults();
         }
 
+        protected override void setBasicDefaults()
+        {
+            base.setBasicDefaults();
+            Projectile.timeLeft = 8 * 60;
+        }
+
         protected override void motionUpdate()
         {
             float a = 36, b = 3, c = 20, u = -15.15f;
@@ -31,7 +37,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 (1 - z) * x + c * y + u,
                 x*y - b*z);
 
-            float speed = realVel.Length();
+            float speed = realVel.Length() * SHRINK_CONST;
 
             if (speed > SPEED_LIMIT) {
                 realVel *= (SPEED_LIMIT / speed);

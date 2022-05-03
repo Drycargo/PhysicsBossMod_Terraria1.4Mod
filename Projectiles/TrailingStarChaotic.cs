@@ -15,9 +15,9 @@ namespace PhysicsBoss.Projectiles
 {
     public class TrailingStarChaotic: TrailingStarPlain
     {
-        public const float PERSPECTIVE_CONST = 0.01f;
-        public const float SHINK_CONST = 500f;
-        public const float SPEED_LIMIT = 5f;
+        public const float PERSPECTIVE_CONST = 0.05f;
+        public const float SHRINK_CONST = 7f;
+        public const float SPEED_LIMIT = 45f;
 
         protected Vector3 realCenter;
         protected Vector3[] oldRealPos;
@@ -51,8 +51,8 @@ namespace PhysicsBoss.Projectiles
         {
             if (realCenter == Vector3.Zero) {
                 if (controller != null && controller.Projectile.active) {
-                    realCenter.X = (Projectile.Center.X - controller.Projectile.Center.X)/SHINK_CONST;
-                    realCenter.Y = (Projectile.Center.Y - controller.Projectile.Center.Y)/SHINK_CONST;
+                    realCenter.X = (Projectile.Center.X - controller.Projectile.Center.X)/SHRINK_CONST;
+                    realCenter.Y = (Projectile.Center.Y - controller.Projectile.Center.Y)/SHRINK_CONST;
                 }
             }
 
@@ -62,17 +62,23 @@ namespace PhysicsBoss.Projectiles
             }
             oldRealPos[0] = realCenter;
 
-            for (int i = 0; i < TRAILING_CONST; i++)
-            {
-                Projectile.oldPos[i] = render(oldRealPos[i]) - tex.Size()/2;
-            }
+
 
             Projectile.Center = render(realCenter);
 
 
             motionUpdate();
+        }
 
-            Main.NewText(realCenter);
+        public override bool PreDraw(ref Color lightColor)
+        {
+            
+            for (int i = 0; i < TRAILING_CONST; i++)
+            {
+                Projectile.oldPos[i] = render(oldRealPos[i]) - tex.Size()/2;
+            }
+
+            return base.PreDraw(ref lightColor);
         }
 
         protected virtual void motionUpdate() {
@@ -91,9 +97,11 @@ namespace PhysicsBoss.Projectiles
                 origin = controller.Projectile.Center;
             }
 
+            float factor = (float)Math.Atan(pos.Z) / (MathHelper.PiOver2);
+
             return new Vector2(
-                origin.X + realCenter.X * (realCenter.Z * PERSPECTIVE_CONST + 1f) * SHINK_CONST,
-                origin.Y + realCenter.Y * (realCenter.Z * PERSPECTIVE_CONST + 1f) * SHINK_CONST);
+                origin.X + pos.X * (factor * PERSPECTIVE_CONST + 1f) * SHRINK_CONST,
+                origin.Y + pos.Y * (factor * PERSPECTIVE_CONST + 1f) * SHRINK_CONST);
         }
 
         public void setOwner(ModProjectile owner) {

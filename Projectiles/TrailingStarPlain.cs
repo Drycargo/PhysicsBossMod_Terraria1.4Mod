@@ -35,7 +35,7 @@ namespace PhysicsBoss.Projectiles
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
-        protected void setBasicDefaults()
+        protected virtual void setBasicDefaults()
         {
             base.SetDefaults();
             Projectile.friendly = false;
@@ -58,7 +58,7 @@ namespace PhysicsBoss.Projectiles
         }
 
         private float widthFun(float progress){
-            return (1f-progress) * tex.Width* 0.3f;
+            return (1f-progress) * tex.Width* 0.2f;
         }
 
         public override bool PreDraw(ref Color lightColor)

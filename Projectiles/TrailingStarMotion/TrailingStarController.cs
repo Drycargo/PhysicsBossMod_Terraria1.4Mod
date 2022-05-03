@@ -37,7 +37,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(ChaosTheory.ELE_CHARGE_DURATION * 0.5);//(int)(8 * 60);
+            Projectile.timeLeft = (int)(8 * 60);
             Projectile.damage = 0;
             Projectile.velocity = Vector2.Zero;
 
@@ -49,12 +49,14 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override void AI()
         {
             Projectile.velocity *= 0;
-            if (Timer == 0) {
+            if ((int)Timer % 60 == 0) {
                 int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                    Projectile.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarChua>(), 50, 0);
+                    Projectile.Center + Main.rand.NextFloat() * Main.rand.NextVector2Unit(), Vector2.Zero, ModContent.ProjectileType<TrailingStarChua>(), 50, 0);
                 TrailingStarChaotic tsc = (TrailingStarChaotic)Main.projectile[id].ModProjectile;
                 tsc.setOwner(this);
             }
+
+            Timer++;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
