@@ -29,6 +29,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             get { return Projectile.ai[0]; }
             set { Projectile.ai[0] = value; }
         }
+
+        public static Color[] colors = { Color.Green, Color.Cyan, Color.Blue, Color.Violet };
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -41,8 +43,10 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Projectile.damage = 0;
             Projectile.velocity = Vector2.Zero;
 
-            Projectile.width = 0;
-            Projectile.height = 0;
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
+            Projectile.width = tex.Width;
+            Projectile.height = tex.Height;
             Timer = 0;
         }
 
@@ -51,9 +55,10 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Projectile.velocity *= 0;
             if ((int)Timer % 60 == 0) {
                 int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                    Projectile.Center + Main.rand.NextFloat() * Main.rand.NextVector2Unit(), Vector2.Zero, ModContent.ProjectileType<TrailingStarChua>(), 50, 0);
+                    Projectile.Center +  + 10 * Main.rand.NextFloat() * Main.rand.NextVector2Unit(), Vector2.Zero, ModContent.ProjectileType<TrailingStarChua>(), 50, 0);
                 TrailingStarChaotic tsc = (TrailingStarChaotic)Main.projectile[id].ModProjectile;
                 tsc.setOwner(this);
+                tsc.setColor(colors[((int)Timer / 60) % colors.Length]);
             }
 
             Timer++;

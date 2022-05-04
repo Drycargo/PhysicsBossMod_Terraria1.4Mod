@@ -13,11 +13,23 @@ using Terraria.ModLoader;
 
 namespace PhysicsBoss.Projectiles
 {
-    public class TrailingStarChaotic: TrailingStarPlain
+    public class TrailingStarChaotic : TrailingStarPlain
     {
-        public const float PERSPECTIVE_CONST = 0.05f;
-        public const float SHRINK_CONST = 7f;
-        public const float SPEED_LIMIT = 45f;
+        public virtual float PERSPECTIVE_CONST{
+            get { return 0.05f; } 
+        }
+        public virtual float SHRINK_CONST
+        {
+            get { return 7f; }
+        }
+
+        public virtual float SPEED_LIMIT
+        {
+            get { return 45f; }
+        }
+
+        protected static Matrix Transform = Matrix.Identity;
+        //Matrix.CreateRotationX(-MathHelper.PiOver4/2);
 
         protected Vector3 realCenter;
         protected Vector3[] oldRealPos;
@@ -96,6 +108,11 @@ namespace PhysicsBoss.Projectiles
             else {
                 origin = controller.Projectile.Center;
             }
+
+            Transform = Matrix.CreateRotationZ((float)(Main.time * 0.05));//Matrix.CreateRotationX((float)(Main.time * 0.05)) * Matrix.CreateRotationY((float)(Main.time * 0.05));
+
+            Vector3.Transform(ref pos, ref Transform, out pos);
+
 
             float factor = (float)Math.Atan(pos.Z) / (MathHelper.PiOver2);
 
