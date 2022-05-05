@@ -137,7 +137,7 @@ namespace PhysicsBoss.Projectiles
         {
             for (int i = 0; i < 30; i++) {
                 Vector2 dir = 15 * Main.rand.NextVector2Unit();
-                Dust.NewDust(Projectile.Center, 0,0,DustID.WhiteTorch, dir.X,dir.Y,0,drawColor);
+                Dust.NewDust(Projectile.Center, 0,0,DustID.RainbowTorch, dir.X,dir.Y,0,drawColor);
             }
 
             SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact, Projectile.Center);

@@ -33,6 +33,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public static Color[] colors = { Color.Green, Color.Cyan, Color.Blue, Color.DarkViolet};
 
         private Queue<TrailingStarChaotic> stars;
+        private Player lastTarget;
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -52,6 +53,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Timer = 0;
 
             stars = new Queue<TrailingStarChaotic>();
+            lastTarget = null;
         }
 
         public override void AI()
@@ -89,6 +91,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             {
                 TrailingStarChaotic tsc = stars.Dequeue();
                 tsc.releaseProj(target);
+                if (lastTarget != target) {
+                    lastTarget = target;
+                }
             }
             catch (System.InvalidOperationException e) {
                 Main.NewText("TrailingStarController.stars is empty.", Color.Red);
@@ -120,6 +125,13 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            while (stars.Any())
+                releaseStar(lastTarget);
+            SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

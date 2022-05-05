@@ -71,7 +71,7 @@ namespace PhysicsBoss.Projectiles
             if (released)
             {
                 if (Projectile.velocity == Vector2.Zero)
-                    Projectile.velocity = 0.4f * SPEED_LIMIT * (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Vector2.UnitX);
+                    Projectile.velocity = 0.5f * SPEED_LIMIT * (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Vector2.UnitX);
                 chase();
             }
             else
@@ -107,10 +107,25 @@ namespace PhysicsBoss.Projectiles
                 return;
             }
 
+            if (target == null) {
+                float minDist = 2000f;
+                foreach (var player in Main.player)
+                {
+                    if (player.active && Vector2.Distance(player.Center, Projectile.Center) < minDist)
+                    {
+                        minDist = Vector2.Distance(player.Center, Projectile.Center);
+                        target = player;
+                    }
+                }
+            }
+
+            if (target == null)
+                return;
+
             Vector2 disp = target.Center - Projectile.Center;
             if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.8 || disp.Length() < 180f)
                 stopAcc = true;
-            else if (target != null && target.active)
+            else if (target.active)
             {
                 Projectile.velocity = 0.8f * Projectile.velocity +
                     3f * disp.SafeNormalize(Vector2.UnitX);

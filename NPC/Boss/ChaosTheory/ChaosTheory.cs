@@ -37,7 +37,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ElectricCharge3 = 3,
             ConwayGame4 = 4,
             ChuaCircuit5 = 5,
-            TEMP = 6,
+            ChuaCircuitFinale6 = 6,
         }
 
         
@@ -49,6 +49,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             31.5f,//33
             42.3f,
             49.65f,
+            52f,
         };
         
         
@@ -59,8 +60,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             0,
             0,
             0,
+            0,
+            0,
             0.1f,
-        };*/
+        };
+        */
         
 
         private Texture2D tex;
@@ -167,6 +171,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (target == null)
             {
                 target = seekTarget(NPC.Center, MAX_DISTANCE);
+                if (target != null)
+                {
+                    if (dimNode != null)
+                        dimNode.setTarget(target);
+                    if (brightNode != null)
+                        brightNode.setTarget(target);
+                }
             }
 
             if (target != null) {
@@ -200,6 +211,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     case phase.ChuaCircuit5:
                         {
                             chuaCircuit5();
+                            break;
+                        }
+                    case phase.ChuaCircuitFinale6: 
+                        {
+                            chuaCircuitFinale6();
                             break;
                         }
                     default: break;
@@ -373,7 +389,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 }
 
             }
-
+            Timer++;
         }
         private void chuaCircuit5()
         {
@@ -384,6 +400,19 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             hover(target.Center + (-MathHelper.Pi/6).ToRotationVector2() * 500f, 20f, 0.3f, 1200, 10, 500f, 0.97f);
+            Timer++;
+        }
+
+        private void chuaCircuitFinale6()
+        {
+            if ((int)Timer == 0)
+            {
+                //brightNode.setPhase((int)BrightNode.phase.CHUA_CIRCUIT);
+                dimNode.setPhase((int)DimNode.phase.CHUA_CIRCUIT_FINALE);
+                dimNode.Timer = 0;
+            }
+            hover(target.Center + (-MathHelper.Pi / 6).ToRotationVector2() * 500f, 20f, 0.3f, 1200, 10, 500f, 0.97f);
+            Timer++;
         }
 
         #endregion
