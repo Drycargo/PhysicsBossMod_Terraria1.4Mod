@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsBoss.Projectiles.TrailingStarMotion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,11 +30,14 @@ namespace PhysicsBoss.Projectiles
         }
 
         protected static Matrix Transform = Matrix.Identity;
-        //Matrix.CreateRotationX(-MathHelper.PiOver4/2);
 
         protected Vector3 realCenter;
         protected Vector3[] oldRealPos;
-        protected ModProjectile controller;
+        protected TrailingStarController controller;
+        protected bool released;
+        protected bool stopAcc;
+
+        protected Player target;
 
         public override void SetStaticDefaults()
         {
@@ -57,44 +61,83 @@ namespace PhysicsBoss.Projectiles
 
             controller = null;
             realCenter = Vector3.Zero;
+            released = false;
+            stopAcc = false;
+            target = null;
         }
 
         public override void AI()
         {
-            if (realCenter == Vector3.Zero) {
-                if (controller != null && controller.Projectile.active) {
-                    realCenter.X = (Projectile.Center.X - controller.Projectile.Center.X)/SHRINK_CONST;
-                    realCenter.Y = (Projectile.Center.Y - controller.Projectile.Center.Y)/SHRINK_CONST;
-                }
-            }
-
-            for (int i = TRAILING_CONST - 1; i > 0; i--)
+            if (released)
             {
-                oldRealPos[i] = oldRealPos[i - 1];
+                if (Projectile.velocity == Vector2.Zero)
+                    Projectile.velocity = 0.4f * SPEED_LIMIT * (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Vector2.UnitX);
+                chase();
             }
-            oldRealPos[0] = realCenter;
+            else
+            {
 
+                if (realCenter == Vector3.Zero)
+                {
+                    if (controller != null && controller.Projectile.active)
+                    {
+                        realCenter.X = (Projectile.Center.X - controller.Projectile.Center.X) / SHRINK_CONST;
+                        realCenter.Y = (Projectile.Center.Y - controller.Projectile.Center.Y) / SHRINK_CONST;
+                    }
+                }
 
+                for (int i = TRAILING_CONST - 1; i > 0; i--)
+                {
+                    oldRealPos[i] = oldRealPos[i - 1];
+                }
+                oldRealPos[0] = realCenter;
 
-            Projectile.Center = render(realCenter);
+                Projectile.Center = render(realCenter);
 
+                Projectile.velocity *= 0;
+            }
 
             motionUpdate();
         }
 
+        private void chase()
+        {
+            if (stopAcc)
+            {
+                return;
+            }
+
+            Vector2 disp = target.Center - Projectile.Center;
+            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.8 || disp.Length() < 180f)
+                stopAcc = true;
+            else if (target != null && target.active)
+            {
+                Projectile.velocity = 0.8f * Projectile.velocity +
+                    3f * disp.SafeNormalize(Vector2.UnitX);
+            }
+        }
+
+        public void releaseProj(Player t) {
+            if (!released) {
+                released = true;
+                target = t;
+            }
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
-            
-            for (int i = 0; i < TRAILING_CONST; i++)
+            if (!released)
             {
-                Projectile.oldPos[i] = render(oldRealPos[i]) - tex.Size()/2;
+                for (int i = 0; i < TRAILING_CONST; i++)
+                {
+                    Projectile.oldPos[i] = render(oldRealPos[i]) - tex.Size() / 2;
+                }
             }
 
             return base.PreDraw(ref lightColor);
         }
 
         protected virtual void motionUpdate() {
-            Projectile.velocity *= 0;
             Projectile.rotation = (Projectile.oldPos[1] - Projectile.oldPos[0]).ToRotation();
         }
 
@@ -107,9 +150,8 @@ namespace PhysicsBoss.Projectiles
             }
             else {
                 origin = controller.Projectile.Center;
+                Transform = Matrix.CreateRotationZ((float)(controller.Timer * 0.025));
             }
-
-            Transform = Matrix.CreateRotationZ((float)(Main.time * 0.05));//Matrix.CreateRotationX((float)(Main.time * 0.05)) * Matrix.CreateRotationY((float)(Main.time * 0.05));
 
             Vector3.Transform(ref pos, ref Transform, out pos);
 
@@ -121,8 +163,14 @@ namespace PhysicsBoss.Projectiles
                 origin.Y + pos.Y * (factor * PERSPECTIVE_CONST + 1f) * SHRINK_CONST);
         }
 
-        public void setOwner(ModProjectile owner) {
+        public void setOwner(TrailingStarController owner) {
             controller = owner;
+        }
+
+        public override void OnHitPlayer(Player target, int damage, bool crit)
+        {
+            if (released)
+                Projectile.Kill();
         }
     }
 }

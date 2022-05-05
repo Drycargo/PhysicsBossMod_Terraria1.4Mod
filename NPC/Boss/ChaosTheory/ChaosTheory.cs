@@ -26,6 +26,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public static readonly int PHASE_COUNT = Enum.GetNames(typeof(phase)).Length;
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
+        public const float CHAOTIC_DURATION = 7.35f/3* 60;
 
 
         public enum phase
@@ -35,6 +36,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             PendulumOnePhaseTwo2 = 2,
             ElectricCharge3 = 3,
             ConwayGame4 = 4,
+            ChuaCircuit5 = 5,
+            TEMP = 6,
         }
 
         
@@ -44,18 +47,21 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             12.25f,//11.75f,
             23.25f,
             31.5f,//33
+            42.3f,
+            49.65f,
         };
         
         
         /*
         public static readonly float[] phaseTiming = new float[] {
             0,
+            0,
+            0,
+            0,
+            0,
             0.1f,
-            0.2f,
-            0.3f,
-            0.4f,
-        };
-        */
+        };*/
+        
 
         private Texture2D tex;
         private phase currentPhase;
@@ -191,6 +197,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             conwayGame4();
                             break;
                         }
+                    case phase.ChuaCircuit5:
+                        {
+                            chuaCircuit5();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -230,18 +241,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             Color c = Color.White * ((255f - NPC.alpha)/255f);
             spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0,NPC.frame.Y, NPC.width, NPC.height) ,c);
-            //base.PostDraw(spriteBatch, screenPos, Color.White);
+            Lighting.AddLight(NPC.Center, Color.White.ToVector3());
         }
 
         public override void OnKill()
         {
             if (dimNode != null) {
+                dimNode.OnKill();
                 dimNode.NPC.active = false;
                 dimNode.NPC.life = -1;
             }
 
             if (brightNode != null)
             {
+                brightNode.OnKill();
                 brightNode.NPC.active = false;
                 brightNode.NPC.life = -1;
             }
@@ -307,11 +320,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
                 float speed = NPC.velocity.Length();
 
-                if (speed > 20f)
+                if (dist.Length() < 800f)
+                    NPC.velocity *= (10f / speed);
+                else if (speed > 50f)
                 {
-                    NPC.velocity *= (20f / speed);
+                    NPC.velocity *= (50f / speed);
                 }
-
             }
 
             // call charges
@@ -319,7 +333,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             {
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), target.Center, Vector2.Zero,
                     ModContent.ProjectileType<ElectricChargeController>(), 0,0);
-                SoundEngine.PlaySound(SoundID.Shatter);
+                SoundEngine.PlaySound(SoundID.Item4);
             }
 
             Timer++;
@@ -361,6 +375,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
         }
+        private void chuaCircuit5()
+        {
+            if ((int)Timer == 0) {
+                conwayGameController = null;
+                brightNode.setPhase((int)BrightNode.phase.CHUA_CIRCUIT);
+                dimNode.setPhase((int)DimNode.phase.CHUA_CIRCUIT);
+            }
+
+            hover(target.Center + (-MathHelper.Pi/6).ToRotationVector2() * 500f, 20f, 0.3f, 1200, 10, 500f, 0.97f);
+        }
+
+        #endregion
+
+        #region Helpers
         private void createDimNode() {
             int id = Terraria.NPC.NewNPC(NPC.GetSource_FromThis(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());

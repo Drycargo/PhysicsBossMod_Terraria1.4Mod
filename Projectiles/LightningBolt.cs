@@ -117,6 +117,8 @@ namespace PhysicsBoss.Projectiles
                 Main.GameViewMatrix.TransformationMatrix);
             #endregion
 
+            //Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
+
             return false;
         }
 

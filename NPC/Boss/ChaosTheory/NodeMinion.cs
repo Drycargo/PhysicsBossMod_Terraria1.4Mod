@@ -19,7 +19,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     public abstract class NodeMinion: TargetEnemy
     {
-        public const int ORBIT_DIST = 50;
+        public const int ORBIT_DIST = 25;
         public const int ORBIT_PERIOD = (int)(5 * 60);
 
         protected Texture2D tex;
@@ -82,7 +82,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 onSummon = true;
             }
 
-            //if (NPC.)
             base.AI();
         }
 
@@ -90,17 +89,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public void orbit(float degree)
         {
+            NPC.velocity *= 0;
             if (owner != null && owner.NPC.active) {
                 // return to position
                 Vector2 aim = owner.NPC.Center + Vector2.UnitY.RotatedBy(degree)
                     * (ORBIT_DIST + owner.NPC.width/2 + NPC.width/2);
 
-                if (aim.Distance(NPC.Center) > 0.2 * (float)ORBIT_DIST)
+                if (aim.Distance(NPC.Center) > 0.3 * (float)ORBIT_DIST)
                 {
-                    NPC.Center = 0.8f * NPC.Center + 0.2f * aim;
+                    if (aim.Distance(NPC.Center) > ChaosTheory.MAX_DISTANCE)
+                        NPC.Center = aim;
+                    else
+                        NPC.Center = 0.7f * NPC.Center + 0.3f * aim;
                 }
                 else {
-                    NPC.velocity *= 0;
                     NPC.Center = aim;
                 }
             }
@@ -135,6 +137,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+
         }
 
         protected void drawShadow(SpriteBatch spriteBatch, Color tint) {

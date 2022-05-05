@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsBoss.Effects;
 using PhysicsBoss.Projectiles;
+using PhysicsBoss.Projectiles.TrailingStarMotion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
+using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -18,10 +21,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
     {
         public static readonly int SINGLE_PENDULUM_DIST = 750;
         public static readonly double SINGLE_PENDULUM_PERIOD = 21/4;
+
+        private TrailingStarController trailingStarController;
         public enum phase {
             SIGNLE_PENDULUM = 0,
             SIGNLE_PENDULUM_TWO = 1,
             ORBIT = 2,
+            CHUA_CIRCUIT = 3,
         }
         public override void SetStaticDefaults()
         {
@@ -54,6 +60,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             NPCID.Sets.TrailingMode[NPC.type] = 0;
             NPCID.Sets.TrailCacheLength[NPC.type] = 8;
+
+            trailingStarController = null;
         }
 
         public override void AI()
@@ -72,7 +80,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         }
                     case (int)phase.ORBIT:
                         {
-                            orbit(owner.Timer/ORBIT_PERIOD * MathHelper.TwoPi);
+                            orbit(owner.GeneralTimer/ORBIT_PERIOD * MathHelper.TwoPi);
+                            break;
+                        }
+                    case (int)phase.CHUA_CIRCUIT: 
+                        {
+                            chuaCircuit();
                             break;
                         }
                     default: break;
@@ -80,6 +93,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
             base.AI();
         }
+
+
 
         public override void FindFrame(int frameHeight)
         {
@@ -89,7 +104,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            Texture2D bt = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
             
             if (drawConnection)
                 drawConnectionLine(spriteBatch, owner.NPC.Center, Color.Blue*1.5f, 10f);
@@ -137,6 +151,46 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     owner.brightNode.summonBareLightning(12);
                 }
             }
+        }
+
+        private void chuaCircuit()
+        {
+            if (trailingStarController == null) {
+                Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarController>(),0,0);
+                trailingStarController = (TrailingStarController)p.ModProjectile;
+
+                Timer = 0;
+            }
+
+            hover(target.Center + 
+                550f * ((float)( MathHelper.Pi/3.5 * Math.Sin(Timer/(180f/MathHelper.TwoPi)) 
+                + MathHelper.Pi * (1f -  1 / 7f))).ToRotationVector2(),
+                30, 0.3f, 1200);
+
+            trailingStarController.Projectile.Center = NPC.Center;
+
+            int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
+
+            if (factor == 0 || factor == 10 || factor == 20 || factor == 30)
+                trailingStarController.summonStarBundle();
+            else if (factor == (int)(ChaosTheory.CHAOTIC_DURATION/2) 
+                || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) +10
+                || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) +20)
+                trailingStarController.releaseStarBundle(target);
+
+            trailingStarController.Projectile.timeLeft++;
+
+            Timer++;
+        }
+
+        public override void OnKill()
+        {
+            if (trailingStarController != null) {
+                trailingStarController.Projectile.Kill();
+                trailingStarController = null;
+            }
+            base.OnKill();
         }
     }
 }

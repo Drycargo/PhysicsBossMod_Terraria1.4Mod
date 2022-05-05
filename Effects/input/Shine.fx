@@ -56,6 +56,14 @@ float4 BeamShine(float2 coords : TEXCOORD0) : COLOR0
     return 0.5*brightness * float4(1, 1, 1, 1) + (1 - 0.5*brightness) * shineColor;
 }
 
+float4 DynamicBeam(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 baseColor = BeamShine(float2(coords.x + timer / texSize.x, coords.y));
+    baseColor.a = (0.2 + 0.8 * tex2D(uIm1, coords).r);
+
+    return baseColor;
+}
+
 float4 ColorGradient()
 {
     return tex2D(uIm1, float2(timer, 0));
@@ -130,6 +138,11 @@ technique Technique1
     pass Beam
     {
         PixelShader = compile ps_2_0 BeamShine();
+    }
+
+    pass DynamicBeam
+    {
+        PixelShader = compile ps_2_0 DynamicBeam();
     }
 
     pass Blur

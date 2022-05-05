@@ -194,3 +194,39 @@ Message at 2022-05-01 1:52:17 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\M
 Message at 2022-05-01 1:52:17 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
 Message at 2022-05-01 1:52:17 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
 Message at 2022-05-01 1:52:17 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-04 12:25:24 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:25:24 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:25:24 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-04 12:25:24 PM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:25:24 PM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:25:24 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-04 12:25:24 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:25:24 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:25:24 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-04 12:25:24 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:25:24 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:25:24 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-04 12:33:33 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:33:33 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:33:33 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-04 12:33:33 PM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:33:33 PM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:33:33 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-04 12:33:33 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:33:33 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:33:33 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-04 12:33:33 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:33:33 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:33:33 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-04 12:34:21 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:34:21 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:34:21 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-04 12:34:21 PM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:34:21 PM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:34:21 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-04 12:34:21 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:34:21 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:34:21 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-04 12:34:21 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-04 12:34:21 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-04 12:34:21 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb

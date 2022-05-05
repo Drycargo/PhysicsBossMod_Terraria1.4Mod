@@ -30,7 +30,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             set { Projectile.ai[0] = value; }
         }
 
-        public static Color[] colors = { Color.Green, Color.Cyan, Color.Blue, Color.Violet };
+        public static Color[] colors = { Color.Green, Color.Cyan, Color.Blue, Color.DarkViolet};
+
+        private Queue<TrailingStarChaotic> stars;
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -48,20 +50,76 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Projectile.width = tex.Width;
             Projectile.height = tex.Height;
             Timer = 0;
+
+            stars = new Queue<TrailingStarChaotic>();
         }
 
         public override void AI()
         {
             Projectile.velocity *= 0;
-            if ((int)Timer % 60 == 0) {
-                int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                    Projectile.Center +  + 10 * Main.rand.NextFloat() * Main.rand.NextVector2Unit(), Vector2.Zero, ModContent.ProjectileType<TrailingStarChua>(), 50, 0);
-                TrailingStarChaotic tsc = (TrailingStarChaotic)Main.projectile[id].ModProjectile;
-                tsc.setOwner(this);
-                tsc.setColor(colors[((int)Timer / 60) % colors.Length]);
-            }
 
             Timer++;
+        }
+
+        public void summonStarBundle() {
+            for (int i = 0; i < 4; i++)
+                summonStar(colors[i]);
+            SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
+        }
+
+        private void summonStar(Color c) {
+            int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
+                    Projectile.Center + 20 * Main.rand.NextFloat() * Main.rand.NextVector2Unit(), Vector2.Zero, ModContent.ProjectileType<TrailingStarChua>(), 50, 0);
+            TrailingStarChaotic tsc = (TrailingStarChaotic)Main.projectile[id].ModProjectile;
+            tsc.setOwner(this);
+            tsc.setColor(c);
+
+            stars.Enqueue(tsc);
+        }
+
+        public void releaseStarBundle(Player target)
+        {
+            for (int i = 0; i < 4; i++)
+                releaseStar(target);
+            SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact, Projectile.Center);
+        }
+
+        private void releaseStar(Player target) {
+            try
+            {
+                TrailingStarChaotic tsc = stars.Dequeue();
+                tsc.releaseProj(target);
+            }
+            catch (System.InvalidOperationException e) {
+                Main.NewText("TrailingStarController.stars is empty.", Color.Red);
+            }
+        }
+
+        public override bool PreDraw(ref Color lightColor)
+        {
+            return false;
+        }
+
+        public override void PostDraw(Color lightColor)
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.Additive,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+
+            Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value,
+                Projectile.position - Main.screenPosition, Color.LightCyan);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

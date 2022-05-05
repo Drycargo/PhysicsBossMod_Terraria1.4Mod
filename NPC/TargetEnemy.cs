@@ -31,14 +31,23 @@ namespace PhysicsBoss.NPC
 
         protected void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period)
         {
+            hover(hoverCenter, hoverRadius, noise, period, 10f,-1f, 0.7f);
+        }
+
+        protected void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period, float safetyDistance, float traceDistance,float inertia)
+        {
             float degree = (NPC.Center - hoverCenter).ToRotation() + MathHelper.TwoPi / period;
 
             Vector2 aim = degree.ToRotationVector2() * hoverRadius + hoverCenter
                 + noise * 2 * (Main.rand.NextFloat() - 0.5f) * Vector2.One;
 
-            if (aim.Distance(NPC.Center) > 10f)
-                NPC.Center = 0.8f * NPC.Center + 0.2f * aim;
-            else
+            if (aim.Distance(NPC.Center) > safetyDistance)
+            {
+                if (traceDistance >= 0 && aim.Distance(NPC.Center) > traceDistance)
+                    NPC.Center = 0.8f * inertia * NPC.Center + (1f - inertia * 0.8f) * aim;
+                else
+                    NPC.Center = inertia * NPC.Center + (1f - inertia) * aim;
+            } else
                 NPC.Center = aim;
         }
     }

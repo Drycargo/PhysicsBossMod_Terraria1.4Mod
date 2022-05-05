@@ -28,6 +28,8 @@ namespace PhysicsBoss.Projectiles.ConwayGame
         private bool allInitialized;
         private bool readyToFire;
 
+        private int firedCounts = 0;
+
         public float Timer
         {
             get { return Projectile.ai[0]; }
@@ -91,7 +93,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
                 if ((int)Timer % ((int)ChaosTheory.ELE_CHARGE_DURATION) < (int)(ChaosTheory.ELE_CHARGE_DURATION / 2) 
                     && Timer% 7 < 3.5)
-                    SoundEngine.PlaySound(SoundID.MaxMana);
+                    SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
             }
 
             Timer++;
@@ -107,7 +109,13 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 }
             }
 
-            SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion);
+            SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion, Projectile.Center);
+
+            firedCounts++;
+            if (firedCounts >= 4)
+            {
+                Projectile.Kill();
+            }
         }
 
         public void incAll()

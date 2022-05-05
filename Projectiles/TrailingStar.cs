@@ -85,8 +85,6 @@ namespace PhysicsBoss.Projectiles
 
         public override void PostDraw(Color lightColor)
         {
-            Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition, Color.White);
-
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
@@ -124,6 +122,8 @@ namespace PhysicsBoss.Projectiles
             #endregion
 
             Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition, Color.White);
+
+            //Lighting.AddLight(Projectile.Center, Color.LightGreen.ToVector3());
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

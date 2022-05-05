@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.Localization;
@@ -97,7 +98,7 @@ namespace PhysicsBoss.Projectiles
         {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.Additive,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -108,6 +109,8 @@ namespace PhysicsBoss.Projectiles
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition,
                 null, Color.White, Projectile.rotation, tex.Size() / 2, 0.6f, SpriteEffects.None, 0);
+
+            Lighting.AddLight(Projectile.Center, drawColor.ToVector3());
         }
 
         public void setColor(Color c) { 
@@ -128,6 +131,17 @@ namespace PhysicsBoss.Projectiles
             }
 
             return base.Colliding(projHitbox, targetHitbox);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < 30; i++) {
+                Vector2 dir = 15 * Main.rand.NextVector2Unit();
+                Dust.NewDust(Projectile.Center, 0,0,DustID.WhiteTorch, dir.X,dir.Y,0,drawColor);
+            }
+
+            SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact, Projectile.Center);
+            base.Kill(timeLeft);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PhysicsBoss.Effects;
 using PhysicsBoss.Projectiles;
 using System;
 using System.Collections.Generic;
@@ -25,10 +26,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private Texture2D backTex;
         private Texture2D luminanceTex;
         private Texture2D colorTex;
+
+        private Projectile[] sinlasers;
         public enum phase
         {
             SIGNLE_PENDULUM_TWO = 0,
             ORBIT = 1,
+            CHUA_CIRCUIT = 2,
         }
         public override void SetStaticDefaults()
         {
@@ -70,11 +74,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             colorTex =
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/RedOrangeGradient").Value;
 
+            sinlasers = new Projectile[2];
+
         }
 
         public override void AI()
         {
-            if (owner != null && target != null)
+            if (owner != null && target != null && target.active)
             {
                 switch (currentPhase)
                 {
@@ -85,13 +91,47 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         }
                     case (int)phase.ORBIT:
                         {
-                            orbit((owner.Timer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            if (Timer != 0)
+                                Timer = 0;
+                            orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            break;
+                        }
+                    case (int)phase.CHUA_CIRCUIT: {
+                            orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            chuaCircuit();
                             break;
                         }
                     default: break;
                 }
             }
             base.AI();
+        }
+
+        private void chuaCircuit()
+        {
+            Vector2 dist = (target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
+                //(MathHelper.Pi*5/6 + (float)Math.Sin(Timer / 60f) /36f).ToRotationVector2();
+            float angle = (float)(MathHelper.Pi / 5.5f + Math.Sin(Timer / 60f) / 24f);
+
+            Vector2 dir1 = dist.RotatedBy(angle);
+
+            Vector2 dir2 = dist.RotatedBy(-angle);
+
+            if ((int)Timer == 0) {
+                sinlasers[0] = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
+                sinlasers[1] = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
+                ((SinLaser)sinlasers[1].ModProjectile).reverseAmp();
+            }
+
+            sinlasers[0].rotation = dir1.ToRotation();
+            sinlasers[1].rotation = dir2.ToRotation();
+
+            sinlasers[0].Center = NPC.Center;
+            sinlasers[1].Center = NPC.Center;
+
+            Timer++;
         }
 
         public override void FindFrame(int frameHeight)
@@ -142,6 +182,22 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, 
                     (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX)*vel,
                     ModContent.ProjectileType<LightningBolt>(), 50, 0);
+            }
+        }
+
+        public void summonBareLightning(Vector2 velocity)
+        {
+            if (target != null)
+            {
+                for (int i = 0; i < 120; i++)
+                {
+                    Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RedTorch);
+                    d.velocity = Main.rand.NextVector2Unit() * 10;
+                    d.noGravity = true;
+                }
+                SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
+                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center,
+                    velocity, ModContent.ProjectileType<LightningBolt>(), 50, 0);
             }
         }
 
@@ -226,6 +282,19 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public override void OnKill()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                if (sinlasers[i] != null)
+                {
+                    sinlasers[i].Kill();
+                    sinlasers[i] = null;
+                }
+            }
+            base.OnKill();
         }
     }
 }
