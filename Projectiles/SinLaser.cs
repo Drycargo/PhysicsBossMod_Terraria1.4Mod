@@ -22,10 +22,12 @@ namespace PhysicsBoss.Projectiles
         public const float AMPLITUDE = 30;
         public const float LENGTH = 2000;
         public const float TRANSIT = 30;
+        public const float WIDTH = 10;
 
         private Vector2[] components;
         private float[] rotations;
         private int reverse;
+        private float prog;
 
         protected Texture2D tex;
 
@@ -63,10 +65,13 @@ namespace PhysicsBoss.Projectiles
 
             Timer = 0;
             reverse = 1;
+
+            prog = 0.0f;
         }
 
         public override void AI()
         {
+            prog = Math.Min(Math.Min(Timer / TRANSIT, Projectile.timeLeft / TRANSIT), 1f);
             Projectile.velocity *= 0;
             if (Timer == 0)
                 update();
@@ -77,8 +82,6 @@ namespace PhysicsBoss.Projectiles
         {
 
             update();
-
-            float prog = Math.Min(Math.Min(Timer / TRANSIT, Projectile.timeLeft / TRANSIT), 1f);
 
             #region drawtail
             Main.spriteBatch.End();
@@ -102,7 +105,7 @@ namespace PhysicsBoss.Projectiles
 
             tail.PrepareStrip(components, rotations,
                 progress => Color.White * 0.8f,
-                progress=>15f * prog * (float)Math.Pow(progress, 0.1),
+                progress=>WIDTH * prog * (float)Math.Pow(progress, 0.1),
                 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
@@ -143,7 +146,7 @@ namespace PhysicsBoss.Projectiles
             for (int i = 0; i < TRAILING_CONST - 1; i++)
             {
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                   components[i], components[i + 1], 15f/2, ref point))
+                   components[i], components[i + 1], WIDTH/2 * prog, ref point))
                 {
                     return true;
                 }

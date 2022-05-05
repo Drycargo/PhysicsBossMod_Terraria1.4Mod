@@ -14,6 +14,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
+using Terraria.Graphics;
 
 namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
@@ -138,6 +139,34 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
+        }
+
+        protected void drawTail(SpriteBatch spriteBatch, Color tint)
+        {
+            VertexStrip tail = new VertexStrip();
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.Additive,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+
+            Main.graphics.GraphicsDevice.Textures[0] =
+                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
+
+            tail.PrepareStrip(NPC.oldPos, NPC.oldRot,
+                progress => tint,progress => tex.Width * 0.5f * (1f-progress),
+                tex.Size() / 2 - Main.screenPosition, NPC.oldPos.Length);
+            tail.DrawTrail();
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
         }
 
         protected void drawShadow(SpriteBatch spriteBatch, Color tint) {

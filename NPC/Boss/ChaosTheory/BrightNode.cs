@@ -33,6 +33,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             SIGNLE_PENDULUM_TWO = 0,
             ORBIT = 1,
             CHUA_CIRCUIT = 2,
+            CHUA_CIRCUIT_FINALE = 3,
         }
         public override void SetStaticDefaults()
         {
@@ -101,16 +102,29 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             chuaCircuit();
                             break;
                         }
+                    case (int)phase.CHUA_CIRCUIT_FINALE: {
+                            orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            chuaCircuitFinale();
+                            break;
+                        }
                     default: break;
                 }
             }
             base.AI();
         }
 
+        private void chuaCircuitFinale()
+        {
+            for (int i = 0; i < 2; i++) {
+                if (sinlasers[i] != null && sinlasers[i].timeLeft > (int)SinLaser.TRANSIT)
+                    sinlasers[i].timeLeft = (int)SinLaser.TRANSIT;
+            }
+        }
+
         private void chuaCircuit()
         {
-            Vector2 dist = (target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
-                //(MathHelper.Pi*5/6 + (float)Math.Sin(Timer / 60f) /36f).ToRotationVector2();
+            Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
+                (MathHelper.Pi*5/6 + (float)Math.Sin(Timer / 60f) /36f).ToRotationVector2();
             float angle = (float)(MathHelper.Pi / 5.5f + Math.Sin(Timer / 60f) / 24f);
 
             Vector2 dir1 = dist.RotatedBy(angle);

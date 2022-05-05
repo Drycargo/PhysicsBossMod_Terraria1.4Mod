@@ -49,6 +49,8 @@ namespace PhysicsBoss.NPC
                     NPC.Center = inertia * NPC.Center + (1f - inertia) * aim;
             } else
                 NPC.Center = aim;
+
+            NPC.rotation = (hoverCenter - NPC.Center).ToRotation();
         }
     }
 }

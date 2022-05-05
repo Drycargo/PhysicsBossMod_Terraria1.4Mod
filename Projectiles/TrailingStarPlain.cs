@@ -77,7 +77,7 @@ namespace PhysicsBoss.Projectiles
                 ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvance").Value;
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
-                progress => drawColor,
+                progress => drawColor * 0.8f,
                 widthFun,
                 tex.Size() / 2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
@@ -137,7 +137,9 @@ namespace PhysicsBoss.Projectiles
         {
             for (int i = 0; i < 30; i++) {
                 Vector2 dir = 15 * Main.rand.NextVector2Unit();
-                Dust.NewDust(Projectile.Center, 0,0,DustID.RainbowTorch, dir.X,dir.Y,0,drawColor);
+                Dust d = Dust.NewDustDirect(Projectile.Center, 0,0,DustID.RainbowTorch, dir.X,dir.Y,0,drawColor, 2f);
+                d.noGravity = true;
+                d.noLight = false;
             }
 
             SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact, Projectile.Center);

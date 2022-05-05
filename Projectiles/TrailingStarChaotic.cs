@@ -71,7 +71,8 @@ namespace PhysicsBoss.Projectiles
             if (released)
             {
                 if (Projectile.velocity == Vector2.Zero)
-                    Projectile.velocity = 0.5f * SPEED_LIMIT * (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Vector2.UnitX);
+                    Projectile.velocity = 0.6f * SPEED_LIMIT * 
+                        (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
                 chase();
             }
             else
