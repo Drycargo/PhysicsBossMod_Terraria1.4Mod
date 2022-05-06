@@ -98,7 +98,7 @@ namespace PhysicsBoss.Projectiles
                 Timer = 0;
             }
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 Dust d = Dust.NewDustDirect(Projectile.position - Vector2.One * 15f, 30, 30, DustID.Electric);
                 d.noGravity = true;
                 d.scale *= 0.5f;

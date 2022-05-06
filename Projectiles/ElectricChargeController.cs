@@ -72,9 +72,21 @@ namespace PhysicsBoss.Projectiles
                         float factor = (Timer > ChaosTheory.ELE_CHARGE_DURATION * 0.35f) ?
                             0.75f : (0.75f * Timer / (ChaosTheory.ELE_CHARGE_DURATION * 0.35f));
                         if (charges[i].getCharge() * charges[j].getCharge() < 0)
-                            GlobalEffectController.drawRayLine(Main.spriteBatch, 
-                                charges[i].Projectile.Center, charges[j].Projectile.Center, 
+                        {
+                            Vector2 source, dest;
+                            if (charges[i].getCharge() > 0)
+                            {
+                                source = charges[i].Projectile.Center;
+                                dest = charges[j].Projectile.Center;
+                            }
+                            else {
+                                source = charges[j].Projectile.Center;
+                                dest = charges[i].Projectile.Center;
+                            }
+                            GlobalEffectController.drawRayLine(Main.spriteBatch,
+                                source, dest,
                                 Color.SkyBlue * factor, 10f);
+                        }
                     }
                 }
             }

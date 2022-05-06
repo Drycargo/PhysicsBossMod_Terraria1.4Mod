@@ -29,13 +29,18 @@ namespace PhysicsBoss.Projectiles
             get { return 45f; }
         }
 
-        protected static Matrix Transform = Matrix.Identity;
+        public float Timer
+        {
+            get { return Projectile.ai[0]; }
+            set { Projectile.ai[0] = value; }
+        }
+
+        public virtual Matrix Transform => Matrix.Identity;
 
         protected Vector3 realCenter;
         protected Vector3[] oldRealPos;
         protected TrailingStarController controller;
         protected bool released;
-        protected bool stopAcc;
 
         protected Player target;
 
@@ -62,18 +67,16 @@ namespace PhysicsBoss.Projectiles
             controller = null;
             realCenter = Vector3.Zero;
             released = false;
-            stopAcc = false;
+
             target = null;
+            Timer = 0;
         }
 
         public override void AI()
         {
             if (released)
             {
-                if (Projectile.velocity == Vector2.Zero)
-                    Projectile.velocity = 0.6f * SPEED_LIMIT * 
-                        (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
-                chase();
+                releaseAction();
             }
             else
             {
@@ -99,39 +102,10 @@ namespace PhysicsBoss.Projectiles
             }
 
             motionUpdate();
+            Timer++;
         }
 
-        private void chase()
-        {
-            if (stopAcc)
-            {
-                return;
-            }
-
-            if (target == null) {
-                float minDist = 2000f;
-                foreach (var player in Main.player)
-                {
-                    if (player.active && Vector2.Distance(player.Center, Projectile.Center) < minDist)
-                    {
-                        minDist = Vector2.Distance(player.Center, Projectile.Center);
-                        target = player;
-                    }
-                }
-            }
-
-            if (target == null)
-                return;
-
-            Vector2 disp = target.Center - Projectile.Center;
-            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.8 || disp.Length() < 180f)
-                stopAcc = true;
-            else if (target.active)
-            {
-                Projectile.velocity = 0.8f * Projectile.velocity +
-                    3f * disp.SafeNormalize(Vector2.UnitX);
-            }
-        }
+        protected virtual void releaseAction() { }
 
         public void releaseProj(Player t) {
             if (!released) {
@@ -166,10 +140,12 @@ namespace PhysicsBoss.Projectiles
             }
             else {
                 origin = controller.Projectile.Center;
-                Transform = Matrix.CreateRotationZ((float)(controller.Timer * 0.025));
+                //Transform = Matrix.CreateRotationZ((float)(controller.Timer * 0.025));
             }
 
-            Vector3.Transform(ref pos, ref Transform, out pos);
+            Matrix t = Transform;
+
+            Vector3.Transform(ref pos, ref t, out pos);
 
 
             float factor = (float)Math.Atan(pos.Z) / (MathHelper.PiOver2);

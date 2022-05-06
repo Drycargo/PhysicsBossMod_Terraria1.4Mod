@@ -113,7 +113,7 @@ namespace PhysicsBoss.Projectiles
             tail.DrawTrail();
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,

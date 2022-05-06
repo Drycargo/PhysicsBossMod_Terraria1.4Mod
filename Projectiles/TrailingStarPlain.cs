@@ -62,6 +62,10 @@ namespace PhysicsBoss.Projectiles
             return (1f-progress) * tex.Width* 0.2f;
         }
 
+        protected virtual Color colorFun(float progress) {
+            return drawColor * 0.8f;
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
             #region drawtail
@@ -77,8 +81,7 @@ namespace PhysicsBoss.Projectiles
                 ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvance").Value;
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
-                progress => drawColor * 0.8f,
-                widthFun,
+                colorFun, widthFun,
                 tex.Size() / 2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
@@ -113,17 +116,20 @@ namespace PhysicsBoss.Projectiles
             Lighting.AddLight(Projectile.Center, drawColor.ToVector3());
         }
 
+        public virtual void setColor(int colorIndex)
+        {
+        }
         public void setColor(Color c) { 
             drawColor = c;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            if (Projectile.oldPos[TRAILING_CONST - 1] == Vector2.Zero)
-                return base.Colliding(projHitbox, targetHitbox);
-
             for (int i = 0; i < TRAILING_CONST - 1; i++)
             {
+                if (Projectile.oldPos[i] == Vector2.Zero || Projectile.oldPos[i + 1] == Vector2.Zero)
+                    break;
+                
                 float point = 0f;
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
                     Projectile.oldPos[i] + Projectile.Size / 2, Projectile.oldPos[i + 1] + Projectile.Size / 2, widthFun((float)i / TRAILING_CONST) / 2, ref point))

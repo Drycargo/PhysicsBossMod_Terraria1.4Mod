@@ -38,9 +38,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ConwayGame4 = 4,
             ChuaCircuit5 = 5,
             ChuaCircuitFinale6 = 6,
+            Rosller7 = 7,
         }
 
-        /*
+        
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -51,19 +52,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             49.65f,
             52f,
         };
-        */
         
         
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
             0,
             0,
             0,
+            0,
+            0,
+            0,
             0.1f,
-            7.36f,
-            9.8f,
-        };
+        };*/
         
         
 
@@ -218,6 +220,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             chuaCircuitFinale6();
                             break;
                         }
+                    case phase.Rosller7: 
+                        {
+                            rosller7();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -246,6 +253,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 }
             }
         }
+
 
         public override void FindFrame(int frameHeight)
         {
@@ -399,7 +407,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.CHUA_CIRCUIT);
             }
 
-            hover(target.Center + (-MathHelper.Pi/6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.97f * Math.Min(1, Timer/30));
+            hover(target.Center + (-MathHelper.Pi/6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.85f * Math.Min(1, Timer/30));
             Timer++;
         }
 
@@ -411,7 +419,21 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.CHUA_CIRCUIT_FINALE);
                 dimNode.Timer = 0;
             }
-            hover(target.Center + (-MathHelper.Pi / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.97f);
+            hover(target.Center + (-MathHelper.Pi / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            Timer++;
+        }
+
+        private void rosller7()
+        {
+            if ((int)Timer == 0)
+            {
+                //brightNode.setPhase((int)BrightNode.phase.CHUA_CIRCUIT_FINALE);
+                dimNode.setPhase((int)DimNode.phase.ROSLLER);
+                dimNode.Timer = 0;
+            }
+
+            hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 500f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+
             Timer++;
         }
 

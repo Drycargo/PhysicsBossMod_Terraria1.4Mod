@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Terraria.Graphics.Effects;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,37 @@ namespace PhysicsBoss.Effects
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public static void shake(float intensity) {
+            if (intensity < 0 && Filters.Scene["PhysicsBoss:Shake"].IsActive())
+            {
+                Filters.Scene.Deactivate("PhysicsBoss:Shake");
+                return;
+            }
+
+            if (!Filters.Scene["PhysicsBoss:Shake"].IsActive())
+            {
+                Filters.Scene.Activate("PhysicsBoss:Shake");
+            }
+
+            PhysicsBoss.worldEffect.Parameters["vibInten"].SetValue(
+                     Main.rand.NextVector2Unit() * intensity);
+        }
+
+        public static void blur(float intensity)
+        {
+            if (intensity < 0 && Filters.Scene["PhysicsBoss:Blur"].IsActive()) {
+                Filters.Scene.Deactivate("PhysicsBoss:Blur");
+                return;
+            }
+
+            if (!Filters.Scene["PhysicsBoss:Blur"].IsActive())
+            {
+                Filters.Scene.Activate("PhysicsBoss:Blur");
+            }
+
+            PhysicsBoss.worldEffect.Parameters["blurInten"].SetValue(intensity);
         }
     }
 }

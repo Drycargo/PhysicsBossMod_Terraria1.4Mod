@@ -22,7 +22,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int SINGLE_PENDULUM_DIST = 750;
         public const double SINGLE_PENDULUM_PERIOD = 21/4;
 
-        public const float CHUA_ORBIT_PERIOD = 1f * 60 / 5;
+        public const float CHUA_ORBIT_PERIOD = 1f * 60 / 3f;
 
         private TrailingStarController trailingStarController;
         public enum phase {
@@ -31,7 +31,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ORBIT = 2,
             CHUA_CIRCUIT = 3,
             CHUA_CIRCUIT_FINALE = 4,
-            TEMP = 5,
+            ROSLLER = 5,
         }
         public override void SetStaticDefaults()
         {
@@ -84,6 +84,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         }
                     case (int)phase.ORBIT:
                         {
+                            if (drawTrail != trail.SHADOW)
+                                drawTrail = trail.SHADOW;
                             orbit(owner.GeneralTimer/ORBIT_PERIOD * MathHelper.TwoPi);
                             break;
                         }
@@ -99,11 +101,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             chuaCircuitFinale();
                             break;
                         }
-                    case (int)phase.TEMP:
+                    case (int)phase.ROSLLER:
                         {
                             if (drawTrail != trail.SHADOW)
                                 drawTrail = trail.SHADOW;
                             orbit(owner.GeneralTimer / ORBIT_PERIOD * MathHelper.TwoPi);
+                            rosller();
                             break;
                         }
                     default: break;
@@ -112,7 +115,25 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             base.AI();
         }
 
+        private void rosller()
+        {
+            if (Timer % 12 == 0) {
+                Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
+                for (int i = 0; i < 2; i++) {
+                    int reverse = (i == 0) ? 1 : -1;
+                    Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(),
+                        NPC.Center, 45f * dir.RotatedBy((float)reverse * MathHelper.Pi / 4),
+                        ModContent.ProjectileType<TrailingStarCircular>(), 75, 0);
+                    TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
+                    tsc.setRadius(1200f);
+                    if (reverse > 0) {
+                        tsc.changeClockWise();
+                    }
+                }
+            }
 
+            Timer++;
+        }
 
         public override void FindFrame(int frameHeight)
         {
@@ -180,12 +201,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(),
                     NPC.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarController>(),0,0);
                 trailingStarController = (TrailingStarController)p.ModProjectile;
-                trailingStarController.summonStarBundle();
+                trailingStarController.summonStarBundle<TrailingStarChua>();
                 Timer = 0;
             }
 
             hover(target.Center + 
-                600f * ((float)( MathHelper.Pi/3.5 * Math.Sin(Timer/(180f/MathHelper.TwoPi)) 
+                600f * ((float)( MathHelper.Pi/5 * Math.Pow(Math.Sin(Timer/(180f/MathHelper.TwoPi)), 3) 
                 + MathHelper.Pi * (1f -  1 / 7f))).ToRotationVector2(),
                 30, 0.3f, 1200);
 
@@ -194,7 +215,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
 
             if (factor == 0 || factor == 10 || factor == 20)
-                trailingStarController.summonStarBundle();
+                trailingStarController.summonStarBundle<TrailingStarChua>();
             else if (factor == (int)(ChaosTheory.CHAOTIC_DURATION/2) 
                 || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) +10
                 || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) +20)
@@ -210,28 +231,28 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (trailingStarController != null)
             {
                 trailingStarController.Projectile.Center = NPC.Center;
-                hover(target.Center, 400f + Timer * 5, 0f, CHUA_ORBIT_PERIOD, 50f, 1000f, 0.5f);
+                hover(target.Center, 300f + Timer * 5, 0f, CHUA_ORBIT_PERIOD, 50f, 1000f, 0.5f);
             }
 
-            if (Timer >= CHUA_ORBIT_PERIOD * 5)
+            if (Timer >= CHUA_ORBIT_PERIOD * 3)
             {
-                if (Timer >= CHUA_ORBIT_PERIOD * 6 && trailingStarController != null)
+                if (Timer >= CHUA_ORBIT_PERIOD * 4 && trailingStarController != null)
                 {
                     trailingStarController.Projectile.Kill();
                     trailingStarController = null;
-                    setPhase((int)phase.TEMP);
+                    setPhase((int)phase.ORBIT);
                 }
                 else {
-                    if ((int)Timer % (int)(CHUA_ORBIT_PERIOD / 5) == 0)
+                    if ((int)Timer % (int)(CHUA_ORBIT_PERIOD / 6) == 0)
                         trailingStarController.releaseStarBundle(target);
                 }
                 
             }
             else
             {
-                if ((int)Timer % (int)CHUA_ORBIT_PERIOD == 0)
+                if ((int)Timer % (int)(CHUA_ORBIT_PERIOD/2) == 0)
                 {
-                    trailingStarController.summonStarBundle();
+                    trailingStarController.summonStarBundle<TrailingStarChua>();
                 }
             }
 

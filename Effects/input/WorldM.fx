@@ -16,6 +16,31 @@ float2 uImageSize0;
 float2 uImageSize1;
 
 float2 vibInten;
+float blurInten;
+
+float gauss[3][3] =
+{
+    0.075, 0.124, 0.075,
+    0.124, 0.204, 0.124,
+    0.075, 0.124, 0.075
+};
+
+
+float4 GaussBlur(float2 coords : TEXCOORD0) : COLOR0
+{
+    float dx = 1 / uScreenResolution.x;
+    float dy = 1 / uScreenResolution.y;
+    float4 color = float4(0, 0, 0, 0);
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            color += gauss[i + 1][j + 1] * tex2D(uImage0, float2(coords.x + dx * i, coords.y + dy * j));
+        }
+    }
+    return blurInten * color + (1 - blurInten) * tex2D(uImage0, coords);
+
+}
 
 float4 Inverse(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -40,5 +65,10 @@ technique Technique1
     pass Shake
     {
         PixelShader = compile ps_2_0 Shake();
+    }
+
+    pass GaussBlur
+    {
+        PixelShader = compile ps_2_0 GaussBlur();
     }
 }
