@@ -90,6 +90,13 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
         public override bool PreDraw(ref Color lightColor)
         {
+            specialDraw();
+            return false;
+        }
+
+        public void specialDraw()
+        {
+            // pre
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
                 BlendState.Additive,
@@ -98,7 +105,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
-            Main.graphics.GraphicsDevice.Textures[0] = 
+            Main.graphics.GraphicsDevice.Textures[0] =
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/LuminanceGradientRepeat").Value;
 
             PhysicsBoss.shineEffect.Parameters["timer"].SetValue((float)Main.time * 0.01f);
@@ -107,23 +114,9 @@ namespace PhysicsBoss.Projectiles.ConwayGame
             PhysicsBoss.shineEffect.CurrentTechnique.Passes["DynamicColorTail"].Apply();
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.White * (1 - progress),
-                progress => Projectile.width/2,
+                progress => Projectile.width / 2,
                 Projectile.Size / 2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
-
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
-            return false;
-        }
-
-        public override void PostDraw(Color lihgtColor)
-        {
-            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
@@ -133,24 +126,29 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
-            PhysicsBoss.shineEffect.Parameters["timer"].SetValue((float)Main.time * 0.01f);
-            PhysicsBoss.shineEffect.Parameters["tex0"].SetValue(
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ColorGradient").Value);
-            PhysicsBoss.shineEffect.Parameters["texSize"].SetValue(tex.Size());
-            PhysicsBoss.shineEffect.CurrentTechnique.Passes["DynamicContour"].Apply();
+            // post
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-            Main.spriteBatch.Draw(tex,Projectile.Center - Main.screenPosition, 
-                new Rectangle(0, Projectile.frameCounter * (tex.Height / Projectile.frame), tex.Width, (tex.Height / Projectile.frame)),
-                Color.White, Projectile.rotation, Projectile.Size/2, 1f, SpriteEffects.None, 1);
             /*
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
                 BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
             */
+
+            PhysicsBoss.shineEffect.Parameters["timer"].SetValue((float)Main.time * 0.01f);
+            PhysicsBoss.shineEffect.Parameters["tex0"].SetValue(
+                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ColorGradient").Value);
+            PhysicsBoss.shineEffect.Parameters["texSize"].SetValue(tex.Size());
+            PhysicsBoss.shineEffect.CurrentTechnique.Passes["DynamicContour"].Apply();
+
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition,
+                new Rectangle(0, Projectile.frameCounter * (tex.Height / Projectile.frame), tex.Width, (tex.Height / Projectile.frame)),
+                Color.White, Projectile.rotation, Projectile.Size / 2, 1f, SpriteEffects.None, 1);
         }
+
     }
 }

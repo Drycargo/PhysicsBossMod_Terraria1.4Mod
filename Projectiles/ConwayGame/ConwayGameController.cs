@@ -223,6 +223,14 @@ namespace PhysicsBoss.Projectiles.ConwayGame
                 }
             }
 
+            int requiredType = ModContent.ProjectileType<ConwayGlider>();
+
+            foreach (Projectile p in Main.projectile) {
+                if (p.type == requiredType && p.active) {
+                    ((ConwayGlider)p.ModProjectile).specialDraw();
+                }
+            }
+
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.NonPremultiplied,

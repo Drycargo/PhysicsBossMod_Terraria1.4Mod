@@ -27,6 +27,7 @@ namespace PhysicsBoss.Projectiles
         private ElectricCharge[] charges;
         private bool initialized;
         private float currSpeed;
+        private bool dead;
 
         public float Timer
         {
@@ -59,12 +60,16 @@ namespace PhysicsBoss.Projectiles
             initialized = false;
             Timer = 0;
             currSpeed = 0;
+            dead = false;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
-            if (initialized)
+            if (dead)
             {
+                GlobalEffectController.bloom((float)(Projectile.timeLeft - 1)/ 30 * 2f, 0.05f);
+                GlobalEffectController.shake((float)(Projectile.timeLeft - 1) / 30 * 2.5f);
+            } else if (initialized) {
                 for (int i = 0; i < CAPACITY; i++)
                 {
                     for (int j = 0; j < i; j++)
@@ -79,7 +84,8 @@ namespace PhysicsBoss.Projectiles
                                 source = charges[i].Projectile.Center;
                                 dest = charges[j].Projectile.Center;
                             }
-                            else {
+                            else
+                            {
                                 source = charges[j].Projectile.Center;
                                 dest = charges[i].Projectile.Center;
                             }
@@ -97,6 +103,16 @@ namespace PhysicsBoss.Projectiles
         public override void AI()
         {
             Projectile.velocity *= 0;
+            if (! dead && Projectile.timeLeft == 1)
+            {
+                dead = true;
+                Projectile.timeLeft = 30;
+                lastWords();
+            }
+
+            if (dead) {
+                return;
+            }
 
             if (currSpeed + 0.75f <= SPEED_LIMIT)
                 currSpeed += 0.75f;
@@ -143,7 +159,7 @@ namespace PhysicsBoss.Projectiles
             Timer++;
         }
 
-        public override void Kill(int timeLeft)
+        private void lastWords()
         {
             for (int i = 0; i < CAPACITY; i++)
             {
@@ -151,11 +167,12 @@ namespace PhysicsBoss.Projectiles
                 {
                     for (int j = 0; j < CAPACITY; j++)
                     {
-                        if (charges[j].getCharge() < 0) {
+                        if (charges[j].getCharge() < 0)
+                        {
                             Vector2 displacement = charges[j].Projectile.Center - charges[i].Projectile.Center;
 
                             Projectile.NewProjectileDirect(charges[i].Projectile.GetSource_FromThis(),
-                                charges[i].Projectile.Center, 
+                                charges[i].Projectile.Center,
                                 30f * displacement.SafeNormalize(Vector2.UnitX),
                                 ModContent.ProjectileType<LightningBoltAdvance>(), 50, 0);
                         }
@@ -170,6 +187,13 @@ namespace PhysicsBoss.Projectiles
 
             SoundEngine.PlaySound(SoundID.DD2_LightningBugZap);
         }
+
+        /*
+        public override void Kill(int timeLeft)
+        {
+            lastWords();
+        }*/
+
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {

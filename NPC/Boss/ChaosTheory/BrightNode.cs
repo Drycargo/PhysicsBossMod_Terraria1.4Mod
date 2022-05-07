@@ -124,7 +124,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private void chuaCircuit()
         {
             Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
-                (MathHelper.Pi*5/6 + (float)Math.Sin(Timer / 60f) /36f).ToRotationVector2();
+                (MathHelper.Pi*5.5f/6 + (float)Math.Sin(Timer / 60f) /36f).ToRotationVector2();
             float angle = (float)(MathHelper.Pi / 5.5f + Math.Sin(Timer / 60f) / 24f);
 
             Vector2 dir1 = dist.RotatedBy(angle);
@@ -132,9 +132,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Vector2 dir2 = dist.RotatedBy(-angle);
 
             if ((int)Timer == 0) {
-                sinlasers[0] = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(),
+                sinlasers[0] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
                     NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
-                sinlasers[1] = Projectile.NewProjectileDirect(NPC.GetSource_FromThis(),
+                sinlasers[1] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
                     NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
                 ((SinLaser)sinlasers[1].ModProjectile).reverseAmp();
             }
@@ -193,7 +193,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     d.noGravity = true;
                 }
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center, 
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, 
                     (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX)*vel,
                     ModContent.ProjectileType<LightningBolt>(), 50, 0);
             }
@@ -210,7 +210,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     d.noGravity = true;
                 }
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
-                Projectile.NewProjectile(NPC.GetSource_FromThis(), NPC.Center,
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center,
                     velocity, ModContent.ProjectileType<LightningBolt>(), 50, 0);
             }
         }

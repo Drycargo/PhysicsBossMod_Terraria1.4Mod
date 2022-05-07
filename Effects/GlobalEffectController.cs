@@ -100,5 +100,74 @@ namespace PhysicsBoss.Effects
 
             PhysicsBoss.worldEffect.Parameters["blurInten"].SetValue(intensity);
         }
+
+        public static void bloom(float intensity, float threashold) {
+            /*
+            if (intensity < 0 && Filters.Scene["PhysicsBoss:Bloom"].IsActive())
+            {
+                Filters.Scene.Deactivate("PhysicsBoss:Bloom");
+                return;
+            }
+
+            if (!Filters.Scene["PhysicsBoss:Bloom"].IsActive())
+            {
+                Filters.Scene.Activate("PhysicsBoss:Bloom");
+            }
+
+            PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity);
+            PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
+            */
+
+            GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
+            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width/2, Main.screenTarget.Height/2);
+            SpriteBatch spriteBatch = Main.spriteBatch;
+            spriteBatch.End();
+
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            /*
+            #region glow
+
+            graphicsDevice.SetRenderTarget(screenTemp);
+            graphicsDevice.Clear(Color.Transparent);
+
+            spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.AlphaBlend,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+
+            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+
+            spriteBatch.End();
+
+            #endregion
+            */
+
+            graphicsDevice.SetRenderTarget(Main.screenTarget);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+
+            PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity);
+            PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
+
+            PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurOnThreshold"].Apply();
+
+            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+        }
     }
 }
