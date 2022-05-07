@@ -19,7 +19,7 @@ namespace PhysicsBoss.Projectiles
 {
     public class BlockFractalLaser: ModProjectile
     {
-        public const float LENGTH = 2000;
+        public const float LENGTH = 2500;
         public const float TRANSIT = 10;
         public const float WIDTH = 40;
 
@@ -49,7 +49,7 @@ namespace PhysicsBoss.Projectiles
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(2 * 60);
+            Projectile.timeLeft = (int)(0.8 * 60);
             Projectile.damage = 100;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;

@@ -38,7 +38,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ConwayGame4 = 4,
             ChuaCircuit5 = 5,
             ChuaCircuitFinale6 = 6,
-            Rosller7 = 7,
+            Halvorsen7 = 7,
         }
 
         
@@ -220,9 +220,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             chuaCircuitFinale6();
                             break;
                         }
-                    case phase.Rosller7: 
+                    case phase.Halvorsen7: 
                         {
-                            rosller7();
+                            halvorsen7();
                             break;
                         }
                     default: break;
@@ -423,12 +423,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Timer++;
         }
 
-        private void rosller7()
+        private void halvorsen7()
         {
             if ((int)Timer == 0)
             {
                 //brightNode.setPhase((int)BrightNode.phase.CHUA_CIRCUIT_FINALE);
-                dimNode.setPhase((int)DimNode.phase.ROSLLER);
+                dimNode.setPhase((int)DimNode.phase.HALVORSEN);
                 dimNode.Timer = 0;
             }
 

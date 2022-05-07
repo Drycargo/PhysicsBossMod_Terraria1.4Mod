@@ -125,7 +125,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
                 (MathHelper.Pi*5.5f/6 + (float)Math.Sin(Timer / 60f) /36f).ToRotationVector2();
-            float angle = (float)(MathHelper.Pi / 5.5f + Math.Sin(Timer / 60f) / 24f);
+            float angle = (float)(MathHelper.Pi / 4.5f + Math.Sin(Timer / 60f) / 24f);
 
             Vector2 dir1 = dist.RotatedBy(angle);
 

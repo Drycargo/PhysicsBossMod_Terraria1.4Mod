@@ -31,7 +31,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ORBIT = 2,
             CHUA_CIRCUIT = 3,
             CHUA_CIRCUIT_FINALE = 4,
-            ROSLLER = 5,
+            HALVORSEN = 5,
         }
         public override void SetStaticDefaults()
         {
@@ -101,12 +101,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             chuaCircuitFinale();
                             break;
                         }
-                    case (int)phase.ROSLLER:
+                    case (int)phase.HALVORSEN:
                         {
                             if (drawTrail != trail.SHADOW)
                                 drawTrail = trail.SHADOW;
                             orbit(owner.GeneralTimer / ORBIT_PERIOD * MathHelper.TwoPi);
-                            rosller();
+                            halvorsen();
                             break;
                         }
                     default: break;
@@ -115,17 +115,17 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             base.AI();
         }
 
-        private void rosller()
+        private void halvorsen()
         {
             if (Timer % 12 == 0) {
                 Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
                 for (int i = 0; i < 2; i++) {
                     int reverse = (i == 0) ? 1 : -1;
                     Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                        NPC.Center, 45f * dir.RotatedBy((float)reverse * MathHelper.Pi / 4),
+                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 3.75),
                         ModContent.ProjectileType<TrailingStarCircular>(), 75, 0);
                     TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
-                    tsc.setRadius(1200f);
+                    tsc.setRadius(1300f);
                     if (reverse > 0) {
                         tsc.changeClockWise();
                     }

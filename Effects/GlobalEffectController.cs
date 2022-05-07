@@ -54,7 +54,7 @@ namespace PhysicsBoss.Effects
 
             if (targetPos.Distance(center) != 0)
             {
-                targetPos += 1500f * (targetPos - center).SafeNormalize(Vector2.UnitX);
+                targetPos += 2000f * (targetPos - center).SafeNormalize(Vector2.UnitX);
             }
 
             spriteBatch.Draw(beamTex, (center + targetPos) / 2 - Main.screenPosition,
@@ -128,26 +128,6 @@ namespace PhysicsBoss.Effects
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
-
-            /*
-            #region glow
-
-            graphicsDevice.SetRenderTarget(screenTemp);
-            graphicsDevice.Clear(Color.Transparent);
-
-            spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.AlphaBlend,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
-
-            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-
-            spriteBatch.End();
-
-            #endregion
-            */
 
             graphicsDevice.SetRenderTarget(Main.screenTarget);
             graphicsDevice.Clear(Color.Transparent);

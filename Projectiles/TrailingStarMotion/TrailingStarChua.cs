@@ -73,7 +73,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 return;
             }
 
-            if (target == null)
+            if (target == null || !target.active)
             {
                 float minDist = 2000f;
                 foreach (var player in Main.player)
@@ -86,7 +86,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 }
             }
 
-            if (target == null)
+            if (target == null || !target.active)
                 return;
 
             Vector2 disp = target.Center - Projectile.Center;
