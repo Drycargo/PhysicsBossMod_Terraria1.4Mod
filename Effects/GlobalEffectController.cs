@@ -21,7 +21,7 @@ namespace PhysicsBoss.Effects
         public static void drawAimLine(SpriteBatch spriteBatch, Vector2 center, Vector2 targetPos, Color color, float width)
         {
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Immediate,
+            spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
@@ -35,7 +35,7 @@ namespace PhysicsBoss.Effects
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -45,7 +45,7 @@ namespace PhysicsBoss.Effects
         public static void drawRayLine(SpriteBatch spriteBatch, Vector2 center, Vector2 targetPos, Color color, float width)
         {
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Immediate,
+            spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
@@ -63,7 +63,7 @@ namespace PhysicsBoss.Effects
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.AlphaBlend,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -117,6 +117,9 @@ namespace PhysicsBoss.Effects
             PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity);
             PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
             */
+
+            if (intensity < 0)
+                return;
 
             GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
             RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width/2, Main.screenTarget.Height/2);

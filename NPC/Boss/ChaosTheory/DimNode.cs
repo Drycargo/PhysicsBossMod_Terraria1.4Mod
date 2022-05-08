@@ -21,10 +21,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
     {
         public const int SINGLE_PENDULUM_DIST = 750;
         public const double SINGLE_PENDULUM_PERIOD = 21/4;
+        public const float CHUA_STAR_POINT = 9;
 
-        public const float CHUA_ORBIT_PERIOD = 1f * 60 / 3f;
+        public const float CHUA_ORBIT_PERIOD = 1.75f * 60 / CHUA_STAR_POINT;
 
-        private TrailingStarController trailingStarController;
+        private float bloomIntensity;
+
         public enum phase {
             SIGNLE_PENDULUM = 0,
             SIGNLE_PENDULUM_TWO = 1,
@@ -66,6 +68,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPCID.Sets.TrailCacheLength[NPC.type] = 15;
 
             trailingStarController = null;
+
+            bloomIntensity = -1;
         }
 
         public override void AI()
@@ -74,11 +78,15 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 switch (currentPhase) {
                     case (int)phase.SIGNLE_PENDULUM: 
                         {
+                            if (drawTrail != trail.SHADOW)
+                                drawTrail = trail.SHADOW;
                             singlePendulum(true);
                             break;
                         }
                     case (int)phase.SIGNLE_PENDULUM_TWO:
                         {
+                            if (drawTrail != trail.DEFAULT)
+                                drawTrail = trail.DEFAULT;
                             singlePendulum(false);
                             break;
                         }
@@ -115,25 +123,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             base.AI();
         }
 
-        private void halvorsen()
-        {
-            if (Timer % 12 == 0) {
-                Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
-                for (int i = 0; i < 2; i++) {
-                    int reverse = (i == 0) ? 1 : -1;
-                    Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 3.75),
-                        ModContent.ProjectileType<TrailingStarCircular>(), 75, 0);
-                    TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
-                    tsc.setRadius(1300f);
-                    if (reverse > 0) {
-                        tsc.changeClockWise();
-                    }
-                }
-            }
-
-            Timer++;
-        }
 
         public override void FindFrame(int frameHeight)
         {
@@ -150,7 +139,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (drawTrail == trail.SHADOW)
                 drawShadow(spriteBatch, Color.Blue * 3.5f);
             else if (drawTrail == trail.TAIL)
-                drawTail(spriteBatch, Color.LightBlue);
+                drawTail(spriteBatch, Color.Cyan * 0.5f);
+
+            if (bloomIntensity > 0)
+                GlobalEffectController.bloom(bloomIntensity, 0.01f);
+
             spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White);
         }
 
@@ -230,8 +223,40 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             if (trailingStarController != null)
             {
+                int factor = ((int)Timer / (int)(CHUA_ORBIT_PERIOD/2));
+                NPC.Center = (-MathHelper.PiOver2 + (float)factor * (CHUA_STAR_POINT - 1)/2 * 
+                    MathHelper.TwoPi/CHUA_STAR_POINT).ToRotationVector2() * 700 
+                    + target.Center;
+
                 trailingStarController.Projectile.Center = NPC.Center;
-                hover(target.Center, 400f + Timer * 6, 0f, CHUA_ORBIT_PERIOD, 50f, 1000f, 0.2f);
+
+
+                if ((int)Timer >= (int)(CHUA_STAR_POINT * CHUA_ORBIT_PERIOD))
+                {
+                    trailingStarController.Projectile.Kill();
+                    trailingStarController = null;
+                    bloomIntensity = -1;
+                    setPhase((int)phase.ORBIT);
+
+                } else if ((int)Timer % (int)CHUA_ORBIT_PERIOD == 0) {
+                    trailingStarController.summonStarBundle<TrailingStarChua>();
+                    if (bloomIntensity < 0)
+                        bloomIntensity = 0;
+                    bloomIntensity += 0.08f;
+                } else if ((int)Timer % (int)CHUA_ORBIT_PERIOD == (int)(CHUA_ORBIT_PERIOD/2))
+                {
+                    trailingStarController.releaseStarBundle(target);
+                }
+            }
+            Timer++;
+
+            /*
+            if (trailingStarController != null)
+            {
+                trailingStarController.Projectile.Center = NPC.Center;
+                hover(target.Center +
+                750f * (MathHelper.Pi * (1f - 1 / 7f)).ToRotationVector2(), 
+                Math.Max(0, 450 - Timer * 8), 0f, CHUA_ORBIT_PERIOD, 50f, 1000f, 0.5f);
             }
 
             if (Timer >= CHUA_ORBIT_PERIOD * 3)
@@ -242,29 +267,52 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     trailingStarController = null;
                     setPhase((int)phase.ORBIT);
                 }
-                else {
+                else
+                {
                     if ((int)Timer % (int)(CHUA_ORBIT_PERIOD / 6) == 0)
                         trailingStarController.releaseStarBundle(target);
+                    bloomIntensity = (CHUA_ORBIT_PERIOD * 4 - Timer) / CHUA_ORBIT_PERIOD * 15f;
                 }
-                
             }
             else
             {
-                if ((int)Timer % (int)(CHUA_ORBIT_PERIOD/2) == 0)
+                bloomIntensity = (Timer - 3 * CHUA_ORBIT_PERIOD) / (3 * CHUA_ORBIT_PERIOD) * 8f;
+                if ((int)Timer % (int)(CHUA_ORBIT_PERIOD / 2) == 0)
                 {
                     trailingStarController.summonStarBundle<TrailingStarChua>();
+                }
+            }*/
+
+
+        }
+
+        private void halvorsen()
+        {
+            if (Timer % 12 == 0)
+            {
+                Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
+                for (int i = 0; i < 2; i++)
+                {
+                    int reverse = (i == 0) ? 1 : -1;
+                    Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 3.5),
+                        ModContent.ProjectileType<TrailingStarCircular>(), 75, 0);
+                    TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
+                    tsc.setRadius(1300f);
+                    if (reverse > 0)
+                    {
+                        tsc.changeClockWise();
+                    }
                 }
             }
 
             Timer++;
         }
 
+
         public override void OnKill()
         {
-            if (trailingStarController != null) {
-                trailingStarController.Projectile.Kill();
-                trailingStarController = null;
-            }
+            
             base.OnKill();
         }
     }

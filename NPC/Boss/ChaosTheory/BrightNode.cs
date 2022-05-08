@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
 using PhysicsBoss.Projectiles;
+using PhysicsBoss.Projectiles.TrailingStarMotion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
     public class BrightNode:NodeMinion
     {
-        public static readonly int SINGLE_PENDULUM_DIST = 200;
-        public static readonly double SINGLE_PENDULUM_PERIOD = 0.8;
+        public const int SINGLE_PENDULUM_DIST = 200;
+        public const double SINGLE_PENDULUM_PERIOD = 0.8;
+        public const float HALVORSEN_PERIOD = 5.35f * 60/2;
+
 
         public static readonly int TRAILING_CONST = 15;
         private VertexStrip tail = new VertexStrip();
@@ -34,6 +37,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ORBIT = 1,
             CHUA_CIRCUIT = 2,
             CHUA_CIRCUIT_FINALE = 3,
+            HALVORSEN = 4,
+            HALVORSEN_FINALE = 5,
+            DOUBLE_PENDULUM6 = 6,
         }
         public override void SetStaticDefaults()
         {
@@ -94,6 +100,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         {
                             if (Timer != 0)
                                 Timer = 0;
+                            if (drawTrail != trail.DEFAULT)
+                                drawTrail = trail.DEFAULT;
                             orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
                             break;
                         }
@@ -107,45 +115,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             chuaCircuitFinale();
                             break;
                         }
+                    case (int)phase.HALVORSEN: {
+                            halvorsen();
+                            break;
+                        }
+                    case (int)phase.HALVORSEN_FINALE: {
+                            if (drawTrail != trail.TAIL)
+                                drawTrail = trail.TAIL;
+                            halvorsenFinale();
+                            break;
+                        }
                     default: break;
                 }
             }
             base.AI();
-        }
-
-        private void chuaCircuitFinale()
-        {
-            for (int i = 0; i < 2; i++) {
-                if (sinlasers[i] != null && sinlasers[i].timeLeft > (int)SinLaser.TRANSIT)
-                    sinlasers[i].timeLeft = (int)SinLaser.TRANSIT;
-            }
-        }
-
-        private void chuaCircuit()
-        {
-            Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
-                (MathHelper.Pi*5.5f/6 + (float)Math.Sin(Timer / 60f) /36f).ToRotationVector2();
-            float angle = (float)(MathHelper.Pi / 4.5f + Math.Sin(Timer / 60f) / 24f);
-
-            Vector2 dir1 = dist.RotatedBy(angle);
-
-            Vector2 dir2 = dist.RotatedBy(-angle);
-
-            if ((int)Timer == 0) {
-                sinlasers[0] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
-                sinlasers[1] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
-                ((SinLaser)sinlasers[1].ModProjectile).reverseAmp();
-            }
-
-            sinlasers[0].rotation = dir1.ToRotation();
-            sinlasers[1].rotation = dir2.ToRotation();
-
-            sinlasers[0].Center = NPC.Center;
-            sinlasers[1].Center = NPC.Center;
-
-            Timer++;
         }
 
         public override void FindFrame(int frameHeight)
@@ -165,7 +148,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            drawShadow(spriteBatch, Color.Red);
+            if (drawTrail == trail.SHADOW)
+                drawShadow(spriteBatch, Color.Red);
+            else if (drawTrail == trail.TAIL)
+                drawTail(spriteBatch, Color.Crimson * 1.5f);
+
             if (currentPhase == (int)phase.SIGNLE_PENDULUM_TWO) {
                 drawDisplacement();
             }
@@ -309,6 +296,148 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 }
             }
             base.OnKill();
+        }
+
+        
+
+        private void chuaCircuit()
+        {
+            Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
+                (MathHelper.Pi * 5.5f / 6 + (float)Math.Sin(Timer / 60f) / 36f).ToRotationVector2();
+            float angle = (float)(MathHelper.Pi / 4.5f + Math.Sin(Timer / 60f) / 24f);
+
+            Vector2 dir1 = dist.RotatedBy(angle);
+
+            Vector2 dir2 = dist.RotatedBy(-angle);
+
+            if ((int)Timer == 0)
+            {
+                sinlasers[0] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
+                sinlasers[1] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
+                ((SinLaser)sinlasers[1].ModProjectile).reverseAmp();
+            }
+
+            sinlasers[0].rotation = dir1.ToRotation();
+            sinlasers[1].rotation = dir2.ToRotation();
+
+            sinlasers[0].Center = NPC.Center;
+            sinlasers[1].Center = NPC.Center;
+
+            Timer++;
+        }
+
+        private void chuaCircuitFinale()
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                if (sinlasers[i] != null && sinlasers[i].timeLeft > (int)SinLaser.TRANSIT)
+                    sinlasers[i].timeLeft = (int)SinLaser.TRANSIT;
+            }
+        }
+        
+        private void halvorsen()
+        {
+            if (trailingStarController == null)
+            {
+                Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarController>(), 0, 0);
+                trailingStarController = (TrailingStarController)p.ModProjectile;
+
+                for (int i = 0; i < 3; i ++)
+                    trailingStarController.summonStarBundle<TrailingStarHalvorsen>();
+                Timer = 0;
+            }
+
+            hover(target.Center +
+                650f * ((float)(MathHelper.Pi / 3 * Math.Cos(Timer / (ChaosTheory.CHAOTIC_DURATION / MathHelper.TwoPi))
+                - MathHelper.Pi/ 7f)).ToRotationVector2(),
+                30, 0.3f, 1200);
+
+            trailingStarController.Projectile.Center = NPC.Center;
+
+            int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
+
+            if (factor == 0 || factor == 10)
+                trailingStarController.releaseStarBundle(target);
+            else if (factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2)
+                || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) + 10)
+                trailingStarController.summonStarBundle<TrailingStarHalvorsen>();
+
+
+            trailingStarController.Projectile.timeLeft++;
+
+            Timer++;
+        }
+
+        private void halvorsenFinale()
+        {
+            NPC.velocity *= 0;
+            hyperbolicMotion();
+            if ((int)Timer == 0) {
+                trailingStarController.Projectile.Kill();
+                Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarController>(), 0, 0);
+                trailingStarController = (TrailingStarController)p.ModProjectile;
+                trailingStarController.summonStarBundle<TrailingStarHalvorsenRaise>();
+            }
+
+            if (trailingStarController!=null)
+                trailingStarController.Projectile.Center = NPC.Center;
+
+            if ((int)Timer == (int)(HALVORSEN_PERIOD) + 29) {
+                foreach (Projectile p in Main.projectile)
+                {
+                    if (p.type == ModContent.ProjectileType<TrailingStarHalvorsenRaise>())
+                    {
+                        if (p.Center.X < target.Center.X)
+                        {
+                            ((TrailingStarHalvorsenRaise)p.ModProjectile).changeClockWise();
+                        }
+                    }
+                }
+                setPhase((int)phase.ORBIT);
+            } else if ((int)Timer == (int)(HALVORSEN_PERIOD)) {
+                trailingStarController.Projectile.Kill();
+                trailingStarController = null;
+                foreach (Projectile p in Main.projectile){
+                    if (p.type == ModContent.ProjectileType<TrailingStarHalvorsenRaise>()) {
+                        p.timeLeft = 30 + TrailingStarHalvorsenRaise.LASER_PERIOD;
+                    }
+                }
+            } else if ((int)Timer < (int)(HALVORSEN_PERIOD) &&
+                (int)Timer % (int)(0.3 * HALVORSEN_PERIOD) == 0)
+            {
+                trailingStarController.summonStarBundle<TrailingStarHalvorsenRaise>();
+                trailingStarController.releaseStarBundle(target);
+            }
+
+            Timer++;
+        }
+
+        private void hyperbolicMotion()
+        {
+            float progress;
+            if (Timer % (2 * HALVORSEN_PERIOD) > HALVORSEN_PERIOD)
+                progress = 2 * (HALVORSEN_PERIOD - (Timer % HALVORSEN_PERIOD)) / HALVORSEN_PERIOD - 1;
+            else
+                progress = 2 * (Timer % HALVORSEN_PERIOD) / HALVORSEN_PERIOD - 1;
+
+            float altitude = 500 * progress;
+            float radius = (float)Math.Sqrt(1f - progress * progress) * 500;
+            float innerAngle = (float)(MathHelper.TwoPi * ((Timer / (0.2 * HALVORSEN_PERIOD)) % 1f));
+
+            Vector3 realPos = new Vector3(
+                radius * (float)Math.Cos(innerAngle),
+                altitude,
+                radius * (float)Math.Sin(innerAngle));
+
+            float adjustment =  (float)Math.Atan(realPos.Z) / (MathHelper.PiOver2) / 400;
+
+            NPC.Center = new Vector2(
+                target.Center.X + realPos.X * (1f + adjustment),
+                target.Center.Y + realPos.Y * (1f + adjustment));
         }
     }
 }

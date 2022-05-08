@@ -39,6 +39,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ChuaCircuit5 = 5,
             ChuaCircuitFinale6 = 6,
             Halvorsen7 = 7,
+            HalvorsenFinale8 = 8,
         }
 
         
@@ -51,6 +52,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             42.3f,
             49.65f,
             52f,
+            56.8f,
+            60 + 1.15f, // 1.65
         };
         
         
@@ -63,10 +66,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             0,
             0,
             0,
-            0,
             0.1f,
-        };*/
-        
+            2.45f,
+            30f
+        };
+        */
         
 
         private Texture2D tex;
@@ -122,6 +126,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.HitSound = SoundID.NPCHit4;
             NPC.DeathSound = SoundID.NPCDeath6;
             NPC.value = Item.buyPrice(0, 0, 15, 0);
+            NPC.dontCountMe = true;
 
             NPC.buffImmune[BuffID.Burning] = true;
             NPC.buffImmune[BuffID.OnFire] = true;
@@ -131,6 +136,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.buffImmune[BuffID.OnFire3] = true;
             NPC.buffImmune[BuffID.Poisoned] = true;
             NPC.buffImmune[BuffID.Venom] = true;
+            
 
             Banner = NPC.type;
             BannerItem = ItemID.Gel; //stub
@@ -223,6 +229,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     case phase.Halvorsen7: 
                         {
                             halvorsen7();
+                            break;
+                        }
+                    case phase.HalvorsenFinale8: 
+                        {
+                            halvorsenFinale8();
                             break;
                         }
                     default: break;
@@ -419,7 +430,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.CHUA_CIRCUIT_FINALE);
                 dimNode.Timer = 0;
             }
-            hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.9f);
+
+            //hover(target.Center + (-MathHelper.Pi / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.9f);
+            hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.95f);
             Timer++;
         }
 
@@ -427,7 +440,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             if ((int)Timer == 0)
             {
-                //brightNode.setPhase((int)BrightNode.phase.CHUA_CIRCUIT_FINALE);
+                brightNode.setPhase((int)BrightNode.phase.HALVORSEN);
+                brightNode.Timer = 0;
                 dimNode.setPhase((int)DimNode.phase.HALVORSEN);
                 dimNode.Timer = 0;
             }
@@ -436,6 +450,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             Timer++;
         }
+
+        private void halvorsenFinale8()
+        {
+            if ((int)Timer == 0)
+            {
+                brightNode.setPhase((int)BrightNode.phase.HALVORSEN_FINALE);
+                brightNode.Timer = 0;
+                dimNode.setPhase((int)DimNode.phase.ORBIT);
+                dimNode.Timer = 0;
+            }
+            hover(target.Center - 300 * Vector2.UnitY, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            Timer++;
+        }
+
 
         #endregion
 

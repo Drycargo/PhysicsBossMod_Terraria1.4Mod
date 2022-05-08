@@ -34,6 +34,7 @@ namespace PhysicsBoss.NPC
             hover(hoverCenter, hoverRadius, noise, period, 10f,-1f, 0.7f);
         }
 
+        // If period is negative, rotate counter-clockwise
         protected void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period, float safetyDistance, float traceDistance,float inertia)
         {
             float degree = (NPC.Center - hoverCenter).ToRotation() + MathHelper.TwoPi / period;

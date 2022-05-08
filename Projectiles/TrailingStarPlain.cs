@@ -100,7 +100,7 @@ namespace PhysicsBoss.Projectiles
         public override void PostDraw(Color lightColor)
         {
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
@@ -143,7 +143,7 @@ namespace PhysicsBoss.Projectiles
         {
             for (int i = 0; i < 30; i++) {
                 Vector2 dir = 15 * Main.rand.NextVector2Unit();
-                Dust d = Dust.NewDustDirect(Projectile.Center, 0,0,DustID.RainbowTorch, dir.X,dir.Y,0,drawColor, 2f);
+                Dust d = Dust.NewDustDirect(Projectile.Center, 0,0,DustID.RainbowTorch, dir.X,dir.Y,0,drawColor * 0.5f, 2f);
                 d.noGravity = true;
                 d.noLight = false;
             }

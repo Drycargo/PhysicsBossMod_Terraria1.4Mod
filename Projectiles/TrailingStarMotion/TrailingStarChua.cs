@@ -16,7 +16,15 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
     public class TrailingStarChua: TrailingStarChaotic
     {
         protected bool stopAcc;
+        protected bool stopDec;
+
         public static Color[] colors = { Color.Green, Color.Cyan, Color.Blue, Color.DarkViolet};
+
+        public float AccTimer
+        {
+            get { return Projectile.ai[1]; }
+            set { Projectile.ai[1] = value; }
+        }
 
         public override Matrix Transform =>
             Matrix.CreateScale(0.75f) 
@@ -30,12 +38,13 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "拖尾星-蔡氏电路");
             base.SetStaticDefaults();
         }
-
         protected override void setBasicDefaults()
         {
             base.setBasicDefaults();
             Projectile.timeLeft = 8 * 60;
             stopAcc = false;
+            stopDec = false;
+            AccTimer = 0;
         }
 
         protected override void motionUpdate()
@@ -60,10 +69,20 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         protected override void releaseAction()
         {
-            if (Projectile.velocity == Vector2.Zero)
+            // initialize
+            if (AccTimer == 0)
+            {
                 Projectile.velocity = 0.6f * SPEED_LIMIT *
                     (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
-            chase();
+            }
+            else if (!stopDec) {
+                Projectile.velocity *= 0.92f;
+                if (Projectile.velocity.Length() <= 10f)
+                    stopDec = true;
+            } else
+                chase();
+
+            AccTimer++;
         }
 
         private void chase()

@@ -129,16 +129,6 @@ namespace PhysicsBoss.Projectiles.ConwayGame
             // post
             Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
 
-            /*
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
-            */
-
             PhysicsBoss.shineEffect.Parameters["timer"].SetValue((float)Main.time * 0.01f);
             PhysicsBoss.shineEffect.Parameters["tex0"].SetValue(
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ColorGradient").Value);
@@ -148,6 +138,14 @@ namespace PhysicsBoss.Projectiles.ConwayGame
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition,
                 new Rectangle(0, Projectile.frameCounter * (tex.Height / Projectile.frame), tex.Width, (tex.Height / Projectile.frame)),
                 Color.White, Projectile.rotation, Projectile.Size / 2, 1f, SpriteEffects.None, 1);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
         }
 
     }

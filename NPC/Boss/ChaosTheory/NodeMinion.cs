@@ -15,6 +15,7 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.DataStructures;
 using Terraria.Graphics;
+using PhysicsBoss.Projectiles.TrailingStarMotion;
 
 namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
@@ -30,6 +31,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         protected Texture2D beamTex;
 
         protected bool onSummon;
+
+        protected TrailingStarController trailingStarController;
 
         protected enum trail {
             DEFAULT = 0,
@@ -194,6 +197,16 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public override void OnKill()
+        {
+            if (trailingStarController != null)
+            {
+                trailingStarController.Projectile.Kill();
+                trailingStarController = null;
+            }
+            base.OnKill();
         }
     }
 }

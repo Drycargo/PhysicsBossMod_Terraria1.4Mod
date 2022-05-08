@@ -99,9 +99,9 @@ namespace PhysicsBoss.Projectiles
                 Projectile.Center = render(realCenter);
 
                 Projectile.velocity *= 0;
+                motionUpdate();
             }
-
-            motionUpdate();
+    
             Timer++;
         }
 

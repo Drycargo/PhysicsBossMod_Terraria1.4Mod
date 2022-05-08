@@ -22,12 +22,13 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public override float SHRINK_CONST => 100f;
 
+        public virtual float DECCELERATE => 0.675f;
+
         public const float AIM_TIME = 100;
         public const float PREPARE_TIME = 40;
 
-
         private bool stopDec;
-        private bool drawRayLine;
+        protected bool drawRayLine;
         private float lastDir;
 
         public override Matrix Transform =>
@@ -48,6 +49,16 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             stopDec = false;
             drawRayLine = false;
             lastDir = -100;
+            Projectile.rotation = 0;
+        }
+
+        public override void AI()
+        {
+            base.AI();
+
+            if (Projectile.timeLeft < 30)
+                drawColor *= 0.9f;
+            Projectile.rotation += 0.05f;
         }
 
         protected override void motionUpdate()
@@ -74,43 +85,86 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 d.velocity = 5 * Main.rand.NextVector2Unit();
             }
 
-            base.motionUpdate();
         }
 
         protected override void releaseAction()
         {
-            if (!stopDec && Projectile.velocity == Vector2.Zero) {
-                Projectile.velocity = 0.5f * SPEED_LIMIT *
-                    (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
-                Timer = 0;
-            } else if (!stopDec) {
-                if (Projectile.velocity.Length() <= 1f)
-                {
-                    Projectile.velocity *= 0;
-                    stopDec = true;
-                }
-                else {
-                    //Vector2 dec = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-                    Projectile.velocity *= 0.8f;
-                }
-            }
+            decelerate();
 
             aimLaser();
             Timer++;
         }
 
-        public override void PostDraw(Color lightColor)
+        protected void decelerate()
         {
-            base.PostDraw(lightColor);
-            if (drawRayLine && target != null && target.active && lastDir > -99) {
-                GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
-                    Projectile.Center + lastDir.ToRotationVector2(), 
-                    Color.Red * 0.8f * Math.Min((PREPARE_TIME + AIM_TIME - Timer)/PREPARE_TIME,Math.Min(1,Timer/(AIM_TIME / 2))), 10);
+            if (!stopDec && Projectile.velocity == Vector2.Zero)
+            {
+                Projectile.velocity = 0.5f * SPEED_LIMIT *
+                    (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
+                Timer = 0;
             }
-                
+            else if (!stopDec)
+            {
+                if (Projectile.velocity.Length() <= 1.5f)
+                {
+                    Projectile.velocity *= 0;
+                    stopDec = true;
+                }
+                else
+                {
+                    //Vector2 dec = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+                    Projectile.velocity *= DECCELERATE;
+                }
+            }
         }
 
-        private void aimLaser()
+        public override void PostDraw(Color lightColor)
+        {
+            if (drawRayLine && target != null && target.active && lastDir > -99)
+            {
+                GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
+                    Projectile.Center + lastDir.ToRotationVector2(),
+                    drawColor * 0.8f * Math.Min((PREPARE_TIME + AIM_TIME - Timer) / PREPARE_TIME, Math.Min(1, Timer / (AIM_TIME / 2))), 10);
+            }
+
+            specialDraw(lightColor);
+
+        }
+
+        protected void specialDraw(Color lightColor)
+        {
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+
+            Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
+
+            PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(drawColor.ToVector4());
+            PhysicsBoss.shineEffect.Parameters["texSize"].SetValue(tex.Size());
+            PhysicsBoss.shineEffect.CurrentTechnique.Passes["Contour"].Apply();
+
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition,
+                null, lightColor, Projectile.rotation, tex.Size() / 2, 1f, SpriteEffects.None, 0);
+
+            lightColor.A = drawColor.A;
+
+            Main.spriteBatch.Draw(ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/TrailingStarMotion/TrailingStarHalvorsenMask").Value,
+                Projectile.Center - Main.screenPosition, null, drawColor * 3.5f, Projectile.rotation, tex.Size() / 2, 0.6f, SpriteEffects.None, 0);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        protected virtual void aimLaser()
         {
             if (target == null || !target.active)
             {
@@ -131,6 +185,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             if (Timer < AIM_TIME)
             {
                 drawRayLine = true;
+                if (Timer < 0.5 * AIM_TIME)
                 lastDir = (target.Center - Projectile.Center).ToRotation();
             }
             else if ((int)Timer == (int)(AIM_TIME + PREPARE_TIME))
@@ -144,6 +199,11 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                         100, 0).ModProjectile;
                     p.Projectile.rotation = lastDir;
                     p.setColor(drawColor);
+
+                    Projectile.timeLeft = p.Projectile.timeLeft;
+                }
+                else {
+                    Projectile.Kill();
                 }
             }
 
@@ -157,6 +217,11 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             return false;
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            //base.Kill(timeLeft);
         }
     }
 }

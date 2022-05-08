@@ -58,7 +58,7 @@ float4 BlurOnThreshold(float2 coords : TEXCOORD0) : COLOR0
             if (i!=0 && j != 0)
                 continue;
             float4 addColor = tex2D(uImage0, float2(coords.x + dx * i, coords.y + dy * j));
-            if (addColor.r * 0.34 + addColor.g * 0.33 + addColor.b * 0.33 >= blurThreshold)
+            if (addColor.r * 0.4 + addColor.g * 0.4 + addColor.b * 0.2 >= blurThreshold)
                 color += gauss[i + 1][j + 1] * addColor;
         }
     }
