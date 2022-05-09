@@ -14,6 +14,7 @@ namespace PhysicsBoss
 
         public static Effect trailingEffect;
         public static Effect shineEffect;
+        public static Effect maskEffect;
         public static Effect worldEffect;
 
         private static PhysicsBoss instance;
@@ -46,6 +47,7 @@ namespace PhysicsBoss
             // instance effects
             trailingEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/Trailing").Value;
             shineEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/Shine").Value;
+            maskEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/Mask").Value;
 
             // world effects
             worldEffect = ModContent.Request<Effect>("PhysicsBoss/Effects/Content/WorldM").Value;

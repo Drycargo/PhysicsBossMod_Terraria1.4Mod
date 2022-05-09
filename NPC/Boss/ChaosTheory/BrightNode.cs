@@ -323,8 +323,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private void chuaCircuit()
         {
             Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
-                (MathHelper.Pi * 5.25f / 6 + (float)Math.Sin(Timer / 60f) / 36f).ToRotationVector2();
-            float angle = (float)(MathHelper.Pi / 3.75f + Math.Sin(Timer / 60f) / 24f);
+                (MathHelper.Pi * 5f / 6 + (float)Math.Sin(Timer / 60f) / 36f).ToRotationVector2();
+            float angle = (float)(MathHelper.Pi / (3.75f + 1.5f * Math.Min(1, Timer / 60))
+                + Math.Sin(Timer / 60f) / 24f);
 
             Vector2 dir1 = dist.RotatedBy(angle);
 
@@ -431,7 +432,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 (int)Timer % (int)(0.3 * HALVORSEN_PERIOD) == 0)
             {
                 trailingStarController.summonStarBundle<TrailingStarHalvorsenRaise>();
-                trailingStarController.releaseStarBundle(target);
+                trailingStarController.releaseStarBundle(); // CHANGED
             }
 
             Timer++;

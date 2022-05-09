@@ -26,8 +26,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Trailing Star Halvorsen");
-            DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "拖尾星-Halvorsen吸引子");
+            DisplayName.SetDefault("Trailing Star Halvorsen Raise");
+            DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "拖尾星-Halvorsen吸引子-上升激光");
             base.SetStaticDefaults();
         }
 

@@ -58,8 +58,6 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             Projectile.velocity *= 0;
 
-            Dust.NewDust(Projectile.Center, 0,0,DustID.Adamantite);
-
             Timer++;
         }
 
@@ -72,9 +70,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         private void summonStar<TSC>(int colorIndex) where TSC : TrailingStarChaotic
         {
-            int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                    Projectile.Center + 50 * Main.rand.NextFloat() * Main.rand.NextVector2Unit(), Vector2.Zero, 
-                    ModContent.ProjectileType<TSC>(), 50, 0);
+            int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),Projectile.Center, 
+                Vector2.Zero, ModContent.ProjectileType<TSC>(), 50, 0);
             TrailingStarChaotic tsc = (TrailingStarChaotic)Main.projectile[id].ModProjectile;
             tsc.setOwner(this);
             tsc.setColor(colorIndex);
@@ -82,7 +79,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             stars.Enqueue(tsc);
         }
 
-        public void releaseStarBundle(Player target)
+        public void releaseStarBundle(Player target = null)
         {
             for (int i = 0; i < 4; i++)
                 releaseStar(target);

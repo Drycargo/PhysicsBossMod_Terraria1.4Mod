@@ -27,7 +27,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
-        public const float DOUBLE_PENDULUM_TOTAL = 1500f;
+        public const float DOUBLE_PENDULUM_TOTAL = 1300f;
         public const float G = 7f;
 
         public enum phase
@@ -149,7 +149,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Banner = NPC.type;
             BannerItem = ItemID.Gel; //stub
 
-
+            NPC.dontTakeDamage = true;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
             AIType = -3;
@@ -355,11 +355,15 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             if ((int)Timer == 0)
             {
+                NPC.dontTakeDamage = false;
+
                 dimNode.setPhase((int)DimNode.phase.ORBIT);
                 dimNode.setDrawConnection(false);
+                dimNode.NPC.dontTakeDamage = false;
 
                 brightNode.setPhase((int)BrightNode.phase.ORBIT);
                 brightNode.setDrawConnection(false);
+                brightNode.NPC.dontTakeDamage = false;
             }
 
             // chase or hover
@@ -480,7 +484,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_PREPARATION);
                 dimNode.Timer = 0;
             }
-            hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            hover(target.Center + Vector2.UnitY * 0.25f * DOUBLE_PENDULUM_TOTAL, 20f, 0.3f, 1200, 10, 500f, 0.85f);
             Timer++;
         }
 
@@ -594,6 +598,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());
             dimNode = (DimNode)Main.npc[id].ModNPC;
+            dimNode.NPC.dontTakeDamage = true;
             dimNode.setOwner(this);
             dimNode.setTarget(target);
             SoundEngine.PlaySound(SoundID.DrumTomHigh);
@@ -604,6 +609,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<BrightNode>());
             brightNode = (BrightNode)Main.npc[id].ModNPC;
+            brightNode.NPC.dontTakeDamage = true;
             brightNode.setOwner(this);
             brightNode.setTarget(target);
             SoundEngine.PlaySound(SoundID.DrumTomHigh);

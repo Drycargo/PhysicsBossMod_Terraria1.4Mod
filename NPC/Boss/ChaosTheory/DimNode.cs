@@ -153,7 +153,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (drawTrail == trail.SHADOW)
                 drawShadow(spriteBatch, Color.Blue * 3.5f);
             else if (drawTrail == trail.TAIL)
-                drawTail(spriteBatch, Color.Cyan * 0.5f);
+                drawTail(spriteBatch, Color.Cyan * 0.7f);
 
             if (bloomIntensity > 0)
                 GlobalEffectController.bloom(bloomIntensity, 0.01f);
@@ -222,11 +222,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
 
-            if (factor == 0 || factor == 10 || factor == 20)
+            if (factor == 0 || factor == 10)
                 trailingStarController.summonStarBundle<TrailingStarChua>();
             else if (factor == (int)(ChaosTheory.CHAOTIC_DURATION/2) 
-                || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) +10
-                || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) +20)
+                || factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2) +10)
                 trailingStarController.releaseStarBundle(target);
 
             trailingStarController.Projectile.timeLeft++;

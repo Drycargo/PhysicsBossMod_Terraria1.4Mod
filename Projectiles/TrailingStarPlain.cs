@@ -78,7 +78,7 @@ namespace PhysicsBoss.Projectiles
                 Main.GameViewMatrix.TransformationMatrix);
 
             Main.graphics.GraphicsDevice.Textures[0] = 
-                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvance").Value;
+                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvanceTexture").Value;
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
                 colorFun, widthFun,

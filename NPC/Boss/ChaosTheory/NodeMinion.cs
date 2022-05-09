@@ -53,9 +53,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
            // GlobalNPC
             base.SetDefaults();
             NPC.friendly = false;
-            NPC.dontTakeDamage = true;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
+            NPC.dontTakeDamage = true;
             NPC.HitSound = SoundID.NPCHit4;
 
             drawTrail = trail.DEFAULT;
@@ -69,8 +69,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public void setOwner(ChaosTheory o) { 
             owner = o;
             NPC.realLife = o.NPC.whoAmI;
-            NPC.dontTakeDamage = false;
             NPC.lifeMax = o.NPC.lifeMax;
+            NPC.life = o.NPC.life;
         }
 
         public override void HitEffect(int hitDirection, double damage)

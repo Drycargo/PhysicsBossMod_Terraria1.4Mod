@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using PhysicsBoss.Projectiles;
 using PhysicsBoss.Projectiles.ConwayGame;
+using PhysicsBoss.Projectiles.DoublePendulum;
 using PhysicsBoss.Projectiles.TrailingStarMotion;
 using System;
 using System.Collections.Generic;
@@ -41,21 +42,22 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<TrailingStarController>();
+            Item.shoot = ModContent.ProjectileType<FractalRing>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
             
-            /*
+            
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-            */
+            
+            /*
             TrailingStarController t = (TrailingStarController) 
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed*(Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX), 
                 type, damage, knockback, player.whoAmI).ModProjectile;
             
-            t.summonStarBundle<TrailingStarHalvorsen>();
+            t.summonStarBundle<TrailingStarChua>();*/
             //t.releaseStarBundle(player);
             
             return false;

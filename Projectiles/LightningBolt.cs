@@ -54,7 +54,7 @@ namespace PhysicsBoss.Projectiles
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             Timer = PERIOD/2;
 
-            Projectile.width = 7;//tex.Width;
+            Projectile.width = 15;//tex.Width;
             Projectile.height = 10;//tex.Height;
 
             dir = Vector2.Zero;
@@ -84,7 +84,7 @@ namespace PhysicsBoss.Projectiles
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.AlphaBlend,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -92,7 +92,7 @@ namespace PhysicsBoss.Projectiles
 
             Main.graphics.GraphicsDevice.Textures[0] = tex;
 
-            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Red,
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Red * 2f,
                 progress => {
                     double scaleFactor = 1;
                     if (progress < 0.25)

@@ -111,7 +111,7 @@ namespace PhysicsBoss.Projectiles
             PhysicsBoss.shineEffect.Parameters["timer"].SetValue(-(float)Timer * 250);
             PhysicsBoss.shineEffect.Parameters["texSize"].SetValue(tex.Size());
             PhysicsBoss.shineEffect.Parameters["tex0"].SetValue(
-                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvance").Value);
+                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvanceTexture").Value);
             PhysicsBoss.shineEffect.CurrentTechnique.Passes["DynamicBeam"].Apply();
 
             Main.graphics.GraphicsDevice.Textures[0] = tex;

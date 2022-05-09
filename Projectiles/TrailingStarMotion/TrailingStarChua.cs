@@ -30,8 +30,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public override Matrix Transform =>
             Matrix.CreateScale(0.75f)
-            * Matrix.CreateTranslation(-30f, 0, 0)
-            * Matrix.CreateRotationY(MathHelper.PiOver4);
+            * Matrix.CreateTranslation(-40f, 5f, 0)
+            * Matrix.CreateRotationY(MathHelper.Pi/3);
 
         public override void SetStaticDefaults()
         {
@@ -77,7 +77,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
             }
             else if (!stopDec) {
-                Projectile.velocity *= 0.92f;
+                Projectile.velocity *= 0.935f;
                 if (Projectile.velocity.Length() <= 10f)
                     stopDec = true;
             } else
@@ -110,7 +110,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 return;
 
             Vector2 disp = target.Center - Projectile.Center;
-            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.8 || disp.Length() < 180f)
+            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.6 || disp.Length() < 180f)
                 stopAcc = true;
             else if (target.active)
             {

@@ -140,7 +140,8 @@ namespace PhysicsBoss.Projectiles.ConwayGame
             if (toSet == phase.LIVE)
             {
                 bool factor = timer % 7 < 3.5;
-                Main.spriteBatch.Draw(tex, origin + drawPos, Color.DarkRed * (factor ? 1.2f : 0.2f));
+                Main.spriteBatch.Draw(tex, origin + drawPos, 
+                    Color.DarkRed * (factor ? 1.2f : 0.2f) * (mid ? 0.5f : 1f));
             } else
             {
                 drawBlock1(origin);
