@@ -22,6 +22,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         private Projectile laser;
         private int clockwise;
+        private float angle;
 
         public override void SetStaticDefaults()
         {
@@ -35,29 +36,34 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             base.setBasicDefaults();
             laser = null;
             clockwise = 1;
-            Projectile.timeLeft = 10 * (LASER_PERIOD + 60);
+            Projectile.timeLeft = 3 * (LASER_PERIOD + 60);
+            angle = -MathHelper.PiOver2;
+            drawRayLine = true;
         }
 
         protected override void aimLaser()
         {
             if (Projectile.timeLeft <= LASER_PERIOD)
             {
-                drawRayLine = false;
-                if (Projectile.timeLeft == LASER_PERIOD)
+                if (Projectile.timeLeft == (int)(LASER_PERIOD * 0.5))
+                {
+                    drawRayLine = false;
                     laser = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(),
                         Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BlockFractalLaser>(),
                         70, 0);
+                    ((BlockFractalLaser)laser.ModProjectile).setColor(drawColor);
+                }
+                
+                float progress = ((float)LASER_PERIOD - (float)Projectile.timeLeft) / (float)LASER_PERIOD;
+                angle = -MathHelper.PiOver2 +
+                    clockwise * 5 * MathHelper.PiOver4
+                    * (float)Math.Pow(progress, 3);
+
                 if (laser != null)
                 {
-                    float progress = ((float)LASER_PERIOD - (float)Projectile.timeLeft) / (float)LASER_PERIOD;
                     laser.timeLeft = Projectile.timeLeft;
-                    laser.rotation = -MathHelper.PiOver2 + 
-                        clockwise * 5 * MathHelper.PiOver4 
-                        *(float)Math.Pow(0.5f*(1f - Math.Cos(progress* MathHelper.Pi)), 3);
+                    laser.rotation = angle;
                 }
-            }
-            else {
-                drawRayLine = true;
             }
         }
 
@@ -66,9 +72,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             if (drawRayLine)
             {
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
-                    Projectile.Center - Vector2.UnitY,
-                    drawColor * 0.8f * Math.Min(Math.Min(1, (Projectile.timeLeft - LASER_PERIOD)/15f), 
-                    Timer/ 30f), 10);
+                    Projectile.Center + angle.ToRotationVector2(),
+                    drawColor * 0.8f * Math.Min(1,Timer/ 30f), 10);
             }
             specialDraw(lightColor);
         }

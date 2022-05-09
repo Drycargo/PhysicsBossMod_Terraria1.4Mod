@@ -28,6 +28,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         protected ChaosTheory owner;
         protected int currentPhase;
         protected bool drawConnection;
+        protected ModNPC connectionTarget;
         protected Texture2D beamTex;
 
         protected bool onSummon;
@@ -59,6 +60,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             drawTrail = trail.DEFAULT;
             drawConnection = false;
+            connectionTarget = null;
             onSummon = false;
 
             beamTex = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
@@ -117,7 +119,17 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             drawConnection = b;
         }
 
-        protected void drawConnectionLine(SpriteBatch spriteBatch,Vector2 targetPos, Color color, float width) {
+        public void setConnectionTarget(ModNPC t)
+        {
+            connectionTarget = t;
+        }
+
+        protected void drawConnectionLine(SpriteBatch spriteBatch, Color color, float width) {
+            if (connectionTarget == null || !drawConnection)
+                return;
+
+            Vector2 targetPos = connectionTarget.NPC.Center;
+
             spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
                 BlendState.Additive,
@@ -208,5 +220,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
             base.OnKill();
         }
+
+
     }
 }

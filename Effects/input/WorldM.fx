@@ -28,6 +28,9 @@ float gauss[3][3] =
     0.075, 0.124, 0.075
 };
 
+float gaussOneD[5] =
+    { 0.054, 0.244, 0.403, 0.244, 0.054};
+
 
 float4 GaussBlur(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -67,6 +70,38 @@ float4 BlurOnThreshold(float2 coords : TEXCOORD0) : COLOR0
     return bloomInten * color;
 }
 
+float4 BlurThresholdH(float2 coords : TEXCOORD0) : COLOR0
+{
+    float dx = 1 / uScreenResolution.x;
+    float4 color = float4(0, 0, 0, 0);
+    
+    for (int i = -2; i <= 2; i++)
+    {
+            float4 addColor = tex2D(uImage0, float2(coords.x + dx * i, coords.y));
+            if (addColor.r * 0.4 + addColor.g * 0.4 + addColor.b * 0.2 >= blurThreshold)
+                color += gaussOneD[i + 2] * addColor;
+    }
+    
+    
+    return bloomInten * color;
+}
+
+float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
+{
+    float dy = 1 / uScreenResolution.y;
+    float4 color = float4(0, 0, 0, 0);
+    
+    for (int i = -2; i <= 2; i++)
+    {
+        float4 addColor = tex2D(uImage0, float2(coords.x, coords.y + dy * i));
+        if (addColor.r * 0.4 + addColor.g * 0.4 + addColor.b * 0.2 >= blurThreshold)
+            color += gaussOneD[i + 2] * addColor;
+    }
+    
+    
+    return bloomInten * color;
+}
+
 float4 Inverse(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
@@ -100,5 +135,15 @@ technique Technique1
     pass BlurOnThreshold
     {
         PixelShader = compile ps_2_0 BlurOnThreshold();
+    }
+
+    pass BlurThresholdH
+    {
+        PixelShader = compile ps_2_0 BlurThresholdH();
+    }
+
+    pass BlurThresholdV
+    {
+        PixelShader = compile ps_2_0 BlurThresholdV();
     }
 }

@@ -137,10 +137,20 @@ namespace PhysicsBoss.Effects
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
             spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
 
-            PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity);
+            PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity * 0.5f);
             PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
 
-            PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurOnThreshold"].Apply();
+            //PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurOnThreshold"].Apply();
+            PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurThresholdH"].Apply();
+
+            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity * 0.5f);
+            PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
+
+            PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurThresholdV"].Apply();
 
             spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             spriteBatch.End();

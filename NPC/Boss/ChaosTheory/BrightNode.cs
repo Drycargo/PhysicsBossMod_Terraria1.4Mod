@@ -21,7 +21,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
     {
         public const int SINGLE_PENDULUM_DIST = 200;
         public const double SINGLE_PENDULUM_PERIOD = 0.8;
-        public const float HALVORSEN_PERIOD = 5.35f * 60/2;
+        public const float HALVORSEN_PERIOD = 5.35f * 60/2.5f;
 
 
         public static readonly int TRAILING_CONST = 15;
@@ -39,7 +39,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             CHUA_CIRCUIT_FINALE = 3,
             HALVORSEN = 4,
             HALVORSEN_FINALE = 5,
-            DOUBLE_PENDULUM6 = 6,
+            DOUBLE_PENDULUM_PREPARATION = 6,
+            DOUBLE_PENDULUM_ONE = 7,
         }
         public override void SetStaticDefaults()
         {
@@ -100,8 +101,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         {
                             if (Timer != 0)
                                 Timer = 0;
-                            if (drawTrail != trail.DEFAULT)
-                                drawTrail = trail.DEFAULT;
+                            if (drawTrail != trail.SHADOW)
+                                drawTrail = trail.SHADOW;
                             orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
                             break;
                         }
@@ -125,6 +126,26 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             halvorsenFinale();
                             break;
                         }
+                    case (int)phase.DOUBLE_PENDULUM_PREPARATION: {
+                            if (drawTrail != trail.SHADOW) {
+                                drawTrail = trail.SHADOW;
+                            }
+
+                            if (Timer < 30)
+                                orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            else
+                            {
+                                hover(owner.NPC.Center - ChaosTheory.DOUBLE_PENDULUM_TOTAL * Vector2.UnitY, 20, 0.3f, 60); 
+                            }
+
+                            Timer++;
+                            break;
+                        }
+                    case (int)phase.DOUBLE_PENDULUM_ONE: {
+                            if (!drawConnection)
+                                drawConnection = true;
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -139,8 +160,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            if (drawConnection && owner.dimNode != null)
-                drawConnectionLine(spriteBatch, owner.dimNode.NPC.Center, Color.Red * 1.5f, 10f);
+            drawConnectionLine(spriteBatch, Color.Red * 1.5f, 10f);
 
             spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White,
                 NPC.rotation, tex.Size()/2, 1f, SpriteEffects.None, 0);
@@ -397,7 +417,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         }
                     }
                 }
-                setPhase((int)phase.ORBIT);
+                Timer = 0;
+                setPhase((int)phase.DOUBLE_PENDULUM_PREPARATION);
             } else if ((int)Timer == (int)(HALVORSEN_PERIOD)) {
                 trailingStarController.Projectile.Kill();
                 trailingStarController = null;

@@ -34,6 +34,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             CHUA_CIRCUIT = 3,
             CHUA_CIRCUIT_FINALE = 4,
             HALVORSEN = 5,
+            DOUBLE_PENDULUM_PREPARATION = 6,
+            DOUBLE_PENDULUM_ONE = 7,
         }
         public override void SetStaticDefaults()
         {
@@ -117,6 +119,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             halvorsen();
                             break;
                         }
+                    case (int)phase.DOUBLE_PENDULUM_PREPARATION:
+                        {
+                            if (drawTrail != trail.SHADOW)
+                                drawTrail = trail.SHADOW;
+
+                            hover(owner.NPC.Center - 0.5f * ChaosTheory.DOUBLE_PENDULUM_TOTAL * Vector2.UnitY, 20, 0.3f, 60);
+                            break;
+                        }
+                    case (int)phase.DOUBLE_PENDULUM_ONE:
+                        {
+                            if (!drawConnection)
+                                drawConnection = true;
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -132,9 +148,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            
-            if (drawConnection)
-                drawConnectionLine(spriteBatch, owner.NPC.Center, Color.Blue*1.5f, 10f);
+            drawConnectionLine(spriteBatch, Color.Blue*1.5f, 10f);
 
             if (drawTrail == trail.SHADOW)
                 drawShadow(spriteBatch, Color.Blue * 3.5f);
@@ -250,7 +264,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
             Timer++;
 
-            /*
+            
+            /* THE FOLLOWING IS AN ABANDONED IMPLEMENTATION, IN WHICH DIMNODE ROTATES A SPIRAL AROUND A FIXE POINT
             if (trailingStarController != null)
             {
                 trailingStarController.Projectile.Center = NPC.Center;

@@ -54,10 +54,10 @@ namespace PhysicsBoss.Items
             TrailingStarController t = (TrailingStarController) 
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed*(Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX), 
                 type, damage, knockback, player.whoAmI).ModProjectile;
-
+            
             t.summonStarBundle<TrailingStarHalvorsenRaise>();
             t.releaseStarBundle(player);
-
+            
             return false;
         }
     }

@@ -57,11 +57,17 @@ namespace PhysicsBoss
                 new ScreenShaderApplier(new Ref<Effect>(worldEffect), "GaussBlur"), EffectPriority.Medium);
             Filters.Scene["PhysicsBoss:Bloom"] = new Filter(
                 new ScreenShaderApplier(new Ref<Effect>(worldEffect), "BlurOnThreshold"), EffectPriority.Medium);
+            Filters.Scene["PhysicsBoss:BlurH"] = new Filter(
+                new ScreenShaderApplier(new Ref<Effect>(worldEffect), "BlurThresholdH"), EffectPriority.Medium);
+            Filters.Scene["PhysicsBoss:BlurV"] = new Filter(
+                 new ScreenShaderApplier(new Ref<Effect>(worldEffect), "BlurThresholdV"), EffectPriority.Medium);
 
             Filters.Scene["PhysicsBoss:Inverse"].Load();
             Filters.Scene["PhysicsBoss:Shake"].Load();
             Filters.Scene["PhysicsBoss:Blur"].Load();
             Filters.Scene["PhysicsBoss:Bloom"].Load();
+            Filters.Scene["PhysicsBoss:BlurH"].Load();
+            Filters.Scene["PhysicsBoss:BlurV"].Load();
 
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;

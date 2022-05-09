@@ -27,7 +27,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
-
+        public const float DOUBLE_PENDULUM_TOTAL = 900f;
 
         public enum phase
         {
@@ -40,9 +40,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ChuaCircuitFinale6 = 6,
             Halvorsen7 = 7,
             HalvorsenFinale8 = 8,
+            DoublePendulumOne9 = 9,
         }
 
-        
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -55,9 +56,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             56.8f,
             60 + 1.15f, // 1.65
         };
+        */
         
         
-        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
@@ -67,10 +68,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             0,
             0,
             0.1f,
-            2.45f,
-            30f
+            4.9f,
+            9.25f
         };
-        */
+        
         
 
         private Texture2D tex;
@@ -92,6 +93,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public BrightNode brightNode;
 
         private Projectile conwayGameController = null;
+
+        private float len0,len1;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -159,6 +162,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             summoned = false;
 
             lastLife = NPC.lifeMax;
+
+            len0 = len1 = DOUBLE_PENDULUM_TOTAL * 0.5f;
         }
 
         public override void AI()
@@ -236,6 +241,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             halvorsenFinale8();
                             break;
                         }
+                    case phase.DoublePendulumOne9:
+                        {
+                            doublePendulumOne9();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -264,7 +274,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 }
             }
         }
-
 
         public override void FindFrame(int frameHeight)
         {
@@ -318,6 +327,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (dimNode == null) {
                 createDimNode();
                 dimNode.setPhase((int)DimNode.phase.SIGNLE_PENDULUM);
+                dimNode.setConnectionTarget(this);
             }
         }
         private void pendulumeOne2()
@@ -328,6 +338,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             {
                 createBrightNode();
                 brightNode.setPhase((int)BrightNode.phase.SIGNLE_PENDULUM_TWO);
+                brightNode.setConnectionTarget(dimNode);
             }
         }
 
@@ -457,12 +468,33 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             {
                 brightNode.setPhase((int)BrightNode.phase.HALVORSEN_FINALE);
                 brightNode.Timer = 0;
-                dimNode.setPhase((int)DimNode.phase.ORBIT);
+                dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_PREPARATION);
                 dimNode.Timer = 0;
             }
-            hover(target.Center - 300 * Vector2.UnitY, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
             Timer++;
         }
+
+        private void doublePendulumOne9()
+        {
+            if ((int)Timer == 0)
+            {
+                dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_ONE);
+                brightNode.setPhase((int)BrightNode.phase.DOUBLE_PENDULUM_ONE);
+                for (int i = 0; i < 100; i++)
+                {
+                    Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RainbowRod);
+                    d.velocity = Main.rand.NextVector2Unit() * 30f;
+                }
+                SoundEngine.PlaySound(SoundID.Item4);
+                minionPendulumFirework();
+            }
+
+            //Vector2 
+
+            Timer++;
+        }
+
 
 
         #endregion
@@ -477,7 +509,24 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             SoundEngine.PlaySound(SoundID.DrumTomHigh);
         }
 
+        private void minionPendulumFirework()
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Dust d = Dust.NewDustDirect(brightNode.NPC.Center, 0, 0, DustID.RainbowRod);
+                d.velocity = Main.rand.NextVector2Unit() * 15f;
+                d.color = Color.Pink;
+                d.noGravity = true;
+            }
 
+            for (int i = 0; i < 30; i++)
+            {
+                Dust d = Dust.NewDustDirect(dimNode.NPC.Center, 0, 0, DustID.RainbowRod);
+                d.velocity = Main.rand.NextVector2Unit() * 15f;
+                d.color = Color.LightBlue;
+                d.noGravity = true;
+            }
+        }
         private void createBrightNode()
         {
             int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),
