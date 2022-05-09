@@ -323,8 +323,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private void chuaCircuit()
         {
             Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
-                (MathHelper.Pi * 5.5f / 6 + (float)Math.Sin(Timer / 60f) / 36f).ToRotationVector2();
-            float angle = (float)(MathHelper.Pi / 4.5f + Math.Sin(Timer / 60f) / 24f);
+                (MathHelper.Pi * 5.25f / 6 + (float)Math.Sin(Timer / 60f) / 36f).ToRotationVector2();
+            float angle = (float)(MathHelper.Pi / 3.75f + Math.Sin(Timer / 60f) / 24f);
 
             Vector2 dir1 = dist.RotatedBy(angle);
 
@@ -371,7 +371,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             hover(target.Center +
-                650f * ((float)(MathHelper.Pi / 3 * Math.Cos(Timer / (ChaosTheory.CHAOTIC_DURATION / MathHelper.TwoPi))
+                500f * ((float)(MathHelper.Pi / 3 * Math.Cos(Timer / (ChaosTheory.CHAOTIC_DURATION / MathHelper.TwoPi))
                 - MathHelper.Pi/ 7f)).ToRotationVector2(),
                 30, 0.3f, 1200);
 

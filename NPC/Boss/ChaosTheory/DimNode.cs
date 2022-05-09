@@ -124,7 +124,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             if (drawTrail != trail.SHADOW)
                                 drawTrail = trail.SHADOW;
 
-                            hover(owner.NPC.Center - 0.5f * ChaosTheory.DOUBLE_PENDULUM_TOTAL * Vector2.UnitY, 20, 0.3f, 60);
+                            hover(owner.NPC.Center - 0.45f * ChaosTheory.DOUBLE_PENDULUM_TOTAL * Vector2.UnitY, 20, 0.3f, 60);
                             break;
                         }
                     case (int)phase.DOUBLE_PENDULUM_ONE:
@@ -208,13 +208,14 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
                     NPC.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarController>(),0,0);
                 trailingStarController = (TrailingStarController)p.ModProjectile;
-                trailingStarController.summonStarBundle<TrailingStarChua>();
+                for (int i = 0; i < 3; i++)
+                    trailingStarController.summonStarBundle<TrailingStarChua>();
                 Timer = 0;
             }
 
             hover(target.Center + 
                 650f * ((float)( MathHelper.Pi/5.5 * Math.Pow(Math.Sin(Timer/(180f/MathHelper.TwoPi)), 3) 
-                + MathHelper.Pi * (1f -  1 / 7f))).ToRotationVector2(),
+                + MathHelper.Pi * (1f -  1 / 8f))).ToRotationVector2(),
                 30, 0.3f, 1200);
 
             trailingStarController.Projectile.Center = NPC.Center;

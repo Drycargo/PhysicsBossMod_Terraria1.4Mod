@@ -26,11 +26,12 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             set { Projectile.ai[1] = value; }
         }
 
+        public override float STEP => 2;
+
         public override Matrix Transform =>
-            Matrix.CreateScale(0.75f) 
+            Matrix.CreateScale(0.75f)
             * Matrix.CreateTranslation(-30f, 0, 0)
-            * Matrix.CreateRotationY(MathHelper.PiOver4)
-            * Matrix.CreateRotationZ(Timer * 0.01f);
+            * Matrix.CreateRotationY(MathHelper.PiOver4);
 
         public override void SetStaticDefaults()
         {
@@ -54,7 +55,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Vector3 realVel = new Vector3(
                 a*(y - x),
                 (1 - z) * x + c * y + u,
-                x*y - b*z);
+                x*y - b*z)/60;
 
             float speed = realVel.Length() * SHRINK_CONST;
 
@@ -72,7 +73,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             // initialize
             if (AccTimer == 0)
             {
-                Projectile.velocity = 0.6f * SPEED_LIMIT *
+                Projectile.velocity = 0.35f * SPEED_LIMIT *
                     (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
             }
             else if (!stopDec) {

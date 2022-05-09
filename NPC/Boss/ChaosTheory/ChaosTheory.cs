@@ -27,7 +27,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
-        public const float DOUBLE_PENDULUM_TOTAL = 900f;
+        public const float DOUBLE_PENDULUM_TOTAL = 1500f;
+        public const float G = 7f;
 
         public enum phase
         {
@@ -43,7 +44,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             DoublePendulumOne9 = 9,
         }
 
-        /*
+        
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -56,9 +57,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             56.8f,
             60 + 1.15f, // 1.65
         };
-        */
         
         
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
@@ -71,7 +72,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             4.9f,
             9.25f
         };
-        
+        */
         
 
         private Texture2D tex;
@@ -94,7 +95,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private Projectile conwayGameController = null;
 
+        // for double pendulum
         private float len0,len1;
+        private float angle0, angle1;
+        private float angVel0, angVel1;
+        private float m0, m1;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -163,7 +168,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             lastLife = NPC.lifeMax;
 
-            len0 = len1 = DOUBLE_PENDULUM_TOTAL * 0.5f;
+            len0 = DOUBLE_PENDULUM_TOTAL * 0.45f;
+            len1 = DOUBLE_PENDULUM_TOTAL * 0.55f;
+            angle0 = angle1 = MathHelper.Pi;
+            angVel0 = angVel1 = 0;
+            m0 = m1 = 1.0f;
         }
 
         public override void AI()
@@ -479,20 +488,68 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             if ((int)Timer == 0)
             {
+                NPC.velocity *= 0;
                 dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_ONE);
                 brightNode.setPhase((int)BrightNode.phase.DOUBLE_PENDULUM_ONE);
-                for (int i = 0; i < 100; i++)
-                {
-                    Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RainbowRod);
-                    d.velocity = Main.rand.NextVector2Unit() * 30f;
-                }
-                SoundEngine.PlaySound(SoundID.Item4);
+                selfFirework();
                 minionPendulumFirework();
+
+                m0 = 0.8f + 0.2f * Main.rand.NextFloat();
+                m1 = 0.8f + 0.2f * Main.rand.NextFloat();
+
+                len0 = (NPC.Center - dimNode.NPC.Center).Length();
+                len1 = (brightNode.NPC.Center - dimNode.NPC.Center).Length();
+
+                angle0 = MathHelper.PiOver2 - (dimNode.NPC.Center - NPC.Center).ToRotation();
+                angle1 = MathHelper.PiOver2 - (brightNode.NPC.Center - dimNode.NPC.Center).ToRotation();
             }
 
-            //Vector2 
+            doublePendulumMotion();
+
+            // render
+            dimNode.NPC.Center = NPC.Center + len0 * (MathHelper.PiOver2 - angle0).ToRotationVector2();
+            brightNode.NPC.Center = dimNode.NPC.Center + len1 * (MathHelper.PiOver2 - angle1).ToRotationVector2();
 
             Timer++;
+        }
+
+        private void doublePendulumMotion()
+        {
+            float l0 = 1;
+            float l1 = 1 * len1/len0;
+            float wSquare0 = angVel0 * angVel0;
+            float wSquare1 = angVel1 * angVel1;
+
+            float denomCommonFactor =
+                (float)(2 * m0 + m1 - m1 * Math.Cos(2 * (angle0 - angle1)));
+
+            // for angle 0
+            float numerator0 = (float)(
+                -G * (2 * m0 + m1) * Math.Sin(angle0)
+                - m1 * G * Math.Sin(angle0 - 2 * angle1)
+                - 2 * Math.Sin(angle0 - angle1) * m1 
+                * (wSquare1 * l1 + wSquare0 * l0 * Math.Cos(angle0 - angle1)));
+
+            float angAcc0 = numerator0 / (l0 * denomCommonFactor);
+
+            float numerator1 = (float)(
+                2 * Math.Sin(angle0 - angle1) * 
+                (wSquare0 * l0 *(m0 + m1)
+                + G * (m0 + m1) * Math.Cos(angle0)
+                + wSquare1 * l1 * m1 * Math.Cos(angle0 - angle1)));
+
+            float angAcc1 = numerator1 / (l1 * denomCommonFactor);
+
+            angVel0 += angAcc0/60;
+            angVel1 += angAcc1/60;
+
+
+            angle0 += ((angVel0/60) % MathHelper.TwoPi);
+            angle0 %= MathHelper.TwoPi;
+
+            angle1 += ((angVel1/60) % MathHelper.TwoPi);
+            angle1 %= MathHelper.TwoPi;
+
         }
 
 
@@ -500,14 +557,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         #endregion
 
         #region Helpers
-        private void createDimNode() {
-            int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),
-                    (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());
-            dimNode = (DimNode)Main.npc[id].ModNPC;
-            dimNode.setOwner(this);
-            dimNode.setTarget(target);
-            SoundEngine.PlaySound(SoundID.DrumTomHigh);
-        }
 
         private void minionPendulumFirework()
         {
@@ -527,6 +576,29 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 d.noGravity = true;
             }
         }
+
+        private void selfFirework()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RainbowRod);
+                d.velocity = Main.rand.NextVector2Unit() * 30f;
+                d.noGravity = true;
+            }
+            SoundEngine.PlaySound(SoundID.Item4, NPC.Center);
+        }
+
+
+        private void createDimNode()
+        {
+            int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),
+                    (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());
+            dimNode = (DimNode)Main.npc[id].ModNPC;
+            dimNode.setOwner(this);
+            dimNode.setTarget(target);
+            SoundEngine.PlaySound(SoundID.DrumTomHigh);
+        }
+
         private void createBrightNode()
         {
             int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),

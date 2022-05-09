@@ -26,7 +26,7 @@ namespace PhysicsBoss.Projectiles
 
         public virtual float SPEED_LIMIT
         {
-            get { return 45f; }
+            get { return 60f; }
         }
 
         public float Timer
@@ -34,6 +34,8 @@ namespace PhysicsBoss.Projectiles
             get { return Projectile.ai[0]; }
             set { Projectile.ai[0] = value; }
         }
+
+        public virtual float STEP => 1;
 
         public virtual Matrix Transform => Matrix.Identity;
 
@@ -99,7 +101,9 @@ namespace PhysicsBoss.Projectiles
                 Projectile.Center = render(realCenter);
 
                 Projectile.velocity *= 0;
-                motionUpdate();
+
+                for (int i = 0; i < STEP; i++)
+                    motionUpdate();
             }
     
             Timer++;

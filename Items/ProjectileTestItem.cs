@@ -55,8 +55,8 @@ namespace PhysicsBoss.Items
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed*(Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX), 
                 type, damage, knockback, player.whoAmI).ModProjectile;
             
-            t.summonStarBundle<TrailingStarHalvorsenRaise>();
-            t.releaseStarBundle(player);
+            t.summonStarBundle<TrailingStarHalvorsen>();
+            //t.releaseStarBundle(player);
             
             return false;
         }

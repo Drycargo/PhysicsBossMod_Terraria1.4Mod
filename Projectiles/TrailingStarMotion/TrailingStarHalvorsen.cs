@@ -24,6 +24,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public virtual float DECCELERATE => 0.675f;
 
+        public override float STEP => 3;
+
         public const float AIM_TIME = 100;
         public const float PREPARE_TIME = 40;
 
@@ -68,7 +70,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Vector3 realVel = new Vector3(
                 -a*x - 4*y - 4*z - y*y,
                 -a*y - 4*z - 4*x - z*z,
-                -a*z - 4*x - 4*y - x*x);
+                -a*z - 4*x - 4*y - x*x)/60;
 
             float speed = realVel.Length() * SHRINK_CONST;
 
