@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
 using PhysicsBoss.Projectiles;
+using PhysicsBoss.Projectiles.DoublePendulum;
 using PhysicsBoss.Projectiles.TrailingStarMotion;
 using System;
 using System.Collections.Generic;
@@ -131,6 +132,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         {
                             if (!drawConnection)
                                 drawConnection = true;
+                            doublePendulumOne();
                             break;
                         }
                     default: break;
@@ -153,10 +155,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (drawTrail == trail.SHADOW)
                 drawShadow(spriteBatch, Color.Blue * 3.5f);
             else if (drawTrail == trail.TAIL)
-                drawTail(spriteBatch, Color.Cyan * 0.7f);
+                drawTail(spriteBatch, Color.Blue * 3.5f);
 
             if (bloomIntensity > 0)
-                GlobalEffectController.bloom(bloomIntensity, 0.01f);
+                GlobalEffectController.bloom(bloomIntensity, 0.2f);
 
             spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White);
         }
@@ -214,7 +216,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             hover(target.Center + 
-                650f * ((float)( MathHelper.Pi/5.5 * Math.Pow(Math.Sin(Timer/(180f/MathHelper.TwoPi)), 3) 
+                600f * ((float)( MathHelper.Pi/5.5 * Math.Pow(Math.Sin(Timer/(180f/MathHelper.TwoPi)), 3) 
                 + MathHelper.Pi * (1f -  1 / 8f))).ToRotationVector2(),
                 30, 0.3f, 1200);
 
@@ -256,7 +258,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     trailingStarController.summonStarBundle<TrailingStarChua>();
                     if (bloomIntensity < 0)
                         bloomIntensity = 0;
-                    bloomIntensity += 0.12f;
+                    bloomIntensity += 0.2f; // changed
                 } else if ((int)Timer % (int)CHUA_ORBIT_PERIOD == (int)(CHUA_ORBIT_PERIOD/2))
                 {
                     trailingStarController.releaseStarBundle(target);
@@ -324,6 +326,17 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Timer++;
         }
 
+        private void doublePendulumOne()
+        {
+            if ((int)Timer % 10 == 0 && owner!=null) {
+                Vector2 dir = (NPC.Center - owner.NPC.Center).SafeNormalize(Vector2.Zero);
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, dir, 
+                    ModContent.ProjectileType<LaserSword>(), 25, 0);
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, -dir,
+                    ModContent.ProjectileType<LaserSword>(), 25, 0);
+            }
+            Timer ++;
+        }
 
         public override void OnKill()
         {

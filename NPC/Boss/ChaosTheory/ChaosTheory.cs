@@ -16,6 +16,7 @@ using Terraria.ModLoader;
 using PhysicsBoss.Projectiles;
 using PhysicsBoss.Effects;
 using PhysicsBoss.Projectiles.ConwayGame;
+using PhysicsBoss.Projectiles.DoublePendulum;
 
 namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
@@ -27,7 +28,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
-        public const float DOUBLE_PENDULUM_TOTAL = 1300f;
+        public const float DOUBLE_PENDULUM_TOTAL = 1000f;
         public const float G = 7f;
 
         public enum phase
@@ -100,6 +101,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private float angle0, angle1;
         private float angVel0, angVel1;
         private float m0, m1;
+        private Projectile fractalRing = null;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -317,6 +319,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 conwayGameController = null;
             }
 
+            if (fractalRing != null) {
+                fractalRing.timeLeft = FractalRing.TRANSIT - 1;
+            }
+
             base.OnKill();
         }
 
@@ -490,11 +496,29 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void doublePendulumOne9()
         {
+            if (Vector2.Distance(NPC.Center, target.Center) > 0.7 * DOUBLE_PENDULUM_TOTAL) {
+                NPC.Center = 0.99f * NPC.Center + 0.01f * target.Center;
+            }
+
+            if (fractalRing == null)
+                fractalRing = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<FractalRing>(), 100, 0);
+            fractalRing.Center = NPC.Center + 0.2f * DOUBLE_PENDULUM_TOTAL * Vector2.UnitY;
+            fractalRing.timeLeft++;
+
+            foreach (Player p in Main.player) {
+                float dist = Vector2.Distance(p.Center, NPC.Center);
+                if (p.active && dist > FractalRing.RADIUS)
+                    p.velocity += (float)Math.Min(25, 5 * dist) * (NPC.Center - p.Center).SafeNormalize(Vector2.Zero);
+            }
+
             if ((int)Timer == 0)
             {
                 NPC.velocity *= 0;
                 dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_ONE);
+                dimNode.Timer = 0;
                 brightNode.setPhase((int)BrightNode.phase.DOUBLE_PENDULUM_ONE);
+                brightNode.Timer = 0;
                 selfFirework();
                 minionPendulumFirework();
 

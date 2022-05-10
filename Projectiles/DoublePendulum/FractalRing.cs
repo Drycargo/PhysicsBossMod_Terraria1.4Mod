@@ -17,7 +17,9 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
     public class FractalRing:ModProjectile
     {
         public const int TRAILING_CONST = 45;
-        public const int RADIUS = 1200;
+        public const int RADIUS = 1000;
+        public const int TRANSIT = 60;
+
         private Texture2D tex;
         protected VertexStrip tail = new VertexStrip();
         private float prog;
@@ -73,7 +75,13 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             Projectile.velocity *= 0;
             if (prog <= 1)
             {
-                prog += 0.016f;
+                prog += 1f / (float)TRANSIT;
+                updateRing();
+            }
+            else if (Projectile.timeLeft < TRANSIT && prog > 0) {
+                prog -= 1f / (float)TRANSIT;
+                if (prog < 0)
+                    prog = 0;
                 updateRing();
             }
         }

@@ -55,7 +55,7 @@ namespace PhysicsBoss.Projectiles
             Projectile.rotation = MathHelper.PiOver2; // Must be perpendicular to direction of velocity
 
             backTex =
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
+                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/BlockFractalLaser").Value;
             luminanceTex =
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/LuminanceGradient").Value;
             colorTex =
@@ -67,6 +67,10 @@ namespace PhysicsBoss.Projectiles
             Timer++;
             if (Projectile.velocity.Length() < 45) {
                 Projectile.velocity.Y -= (float)(0.5);
+            }
+
+            for (int i = 0; i < 3; i++) {
+                Dust.NewDustDirect(Projectile.Center, 0,0,DustID.RainbowRod).noGravity = true;
             }
         }
 
@@ -108,7 +112,7 @@ namespace PhysicsBoss.Projectiles
                     Color c2 = Color.Cyan*((float)(1.0f - progress));
                     return new Color(c1.R + c2.R, c1.G + c2.G, c1.B + c2.B)*2.5f;
                 }, 
-                progress => (progress<0.1 ? MathHelper.Lerp(0.5f, 18f, progress*10):MathHelper.Lerp(20f, 0f, progress)), 
+                progress => (progress<0.1 ? MathHelper.Lerp(Projectile.width/6f, 18f, progress*10):MathHelper.Lerp(20f, 0f, progress)), 
                 tex.Size()/2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 

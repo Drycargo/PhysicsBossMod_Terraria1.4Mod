@@ -46,7 +46,7 @@ float4 DynamicMask(float2 coords : TEXCOORD0) : COLOR0
     rawC.g = dynamicColor(rawC.g);
     rawC.b = dynamicColor(rawC.b);
 
-    return rawC;
+    return rawC * threshold + tex2D(uImage0, coords) * (1 - threshold);
 }
 
 float4 Mask(float2 coords : TEXCOORD0) : COLOR0
@@ -57,7 +57,7 @@ float4 Mask(float2 coords : TEXCOORD0) : COLOR0
     if (color.r < 0.9 * threshold)
         return color + tex2D(uImage0, coords);
 
-    return tex2D(uContent, coords);
+    return tex2D(uContent, coords) * threshold + tex2D(uImage0, coords) * (1 - threshold);
 }
 
 
