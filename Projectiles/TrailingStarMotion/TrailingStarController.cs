@@ -96,7 +96,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 }
             }
             catch (System.InvalidOperationException e) {
-                Main.NewText("TrailingStarController.stars is empty.", Color.Red);
+                //Main.NewText("TrailingStarController.stars is empty.", Color.Red);
             }
         }
 

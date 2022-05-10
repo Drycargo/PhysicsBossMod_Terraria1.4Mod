@@ -21,7 +21,7 @@ namespace PhysicsBoss.Projectiles
         }
         public virtual float SHRINK_CONST
         {
-            get { return 7f; }
+            get { return 8.5f; }
         }
 
         public virtual float SPEED_LIMIT
@@ -33,6 +33,11 @@ namespace PhysicsBoss.Projectiles
         {
             get { return Projectile.ai[0]; }
             set { Projectile.ai[0] = value; }
+        }
+
+        public virtual float FOCAL
+        {
+            get { return 150f; }
         }
 
         public virtual float STEP => 1;
@@ -82,7 +87,7 @@ namespace PhysicsBoss.Projectiles
             }
             else
             {
-
+                Projectile.timeLeft++;
                 if ((int)Timer == 0)
                 {
                     /*
@@ -155,11 +160,24 @@ namespace PhysicsBoss.Projectiles
             Vector3.Transform(ref pos, ref t, out pos);
 
 
+
+            /*
             float factor = (float)Math.Atan(pos.Z) / (MathHelper.PiOver2);
 
             return new Vector2(
                 origin.X + pos.X * (factor * PERSPECTIVE_CONST + 1f) * SHRINK_CONST,
                 origin.Y + pos.Y * (factor * PERSPECTIVE_CONST + 1f) * SHRINK_CONST);
+            */
+
+            float factor = FOCAL;
+
+            if (pos.Z >= FOCAL)
+                factor /= 0.1f;
+            else
+                factor /= (FOCAL - pos.Z);
+            return new Vector2(
+                origin.X + pos.X * factor * SHRINK_CONST,
+                origin.Y + pos.Y * factor * SHRINK_CONST);
         }
 
         public void setOwner(TrailingStarController owner) {

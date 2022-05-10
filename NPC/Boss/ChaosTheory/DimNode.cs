@@ -208,7 +208,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
                     NPC.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarController>(),0,0);
                 trailingStarController = (TrailingStarController)p.ModProjectile;
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < 5; i++)
                     trailingStarController.summonStarBundle<TrailingStarChua>();
                 Timer = 0;
             }
@@ -256,7 +256,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     trailingStarController.summonStarBundle<TrailingStarChua>();
                     if (bloomIntensity < 0)
                         bloomIntensity = 0;
-                    bloomIntensity += 0.08f;
+                    bloomIntensity += 0.12f;
                 } else if ((int)Timer % (int)CHUA_ORBIT_PERIOD == (int)(CHUA_ORBIT_PERIOD/2))
                 {
                     trailingStarController.releaseStarBundle(target);

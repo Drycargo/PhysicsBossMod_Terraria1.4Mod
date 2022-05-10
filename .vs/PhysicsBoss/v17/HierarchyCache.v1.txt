@@ -1,0 +1,326 @@
+﻿++解决方案“PhysicsBoss”‎(1 个项目/共 1 个)
+i:{00000000-0000-0000-0000-000000000000}:PhysicsBoss.sln
+++PhysicsBoss
+i:{00000000-0000-0000-0000-000000000000}:PhysicsBoss
+++Properties
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\properties\
+++依赖项
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>2629
+++Asset
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\
+++DemoVideo
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\
+++Demo 5.2.mp4
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\demo 5.2.mp4
+++Demo5.8.mp4
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\demo5.8.mp4
+++Effects
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\
+++Content
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\content\
+++Eff.xnb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\content\eff.xnb
+++Effects.xnb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\content\effects.xnb
+++Mask.xnb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\content\mask.xnb
+++Shine.xnb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\content\shine.xnb
+++Trailing.xnb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\content\trailing.xnb
+++WorldM.xnb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\content\worldm.xnb
+++input
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\input\
+++Eff.fx
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\input\eff.fx
+++Mask.fx
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\input\mask.fx
+++Shine.fx
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\input\shine.fx
+++Trailing.fx
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\input\trailing.fx
+++WorldM.fx
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\input\worldm.fx
+++Materials
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\
+++GlobalEffectController.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\globaleffectcontroller.cs
+++logfile.txt
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\logfile.txt
+++Microsoft.Xna.Framework.Content.Pipeline.AudioImporters.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.content.pipeline.audioimporters.dll
+++Microsoft.Xna.Framework.Content.Pipeline.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.content.pipeline.dll
+++Microsoft.Xna.Framework.Content.Pipeline.EffectImporter.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.content.pipeline.effectimporter.dll
+++Microsoft.Xna.Framework.Content.Pipeline.FBXImporter.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.content.pipeline.fbximporter.dll
+++Microsoft.Xna.Framework.Content.Pipeline.TextureImporter.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.content.pipeline.textureimporter.dll
+++Microsoft.Xna.Framework.Content.Pipeline.VideoImporters.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.content.pipeline.videoimporters.dll
+++Microsoft.Xna.Framework.Content.Pipeline.XImporter.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.content.pipeline.ximporter.dll
+++Microsoft.Xna.Framework.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.dll
+++Microsoft.Xna.Framework.Game.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.game.dll
+++Microsoft.Xna.Framework.Graphics.dll
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\microsoft.xna.framework.graphics.dll
+++ScreenShaderApplier.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\screenshaderapplier.cs
+++XNBCompiler.exe
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\xnbcompiler.exe
+++使用说明.txt
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\使用说明.txt
+++Items
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\
+++ProjectileTestItem.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem.cs
+++ProjectileTestItem.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem.png
+++NPC
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\
+++Boss
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\
+++ChaosTheory
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\
+++BrightNode.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\brightnode.cs
+++BrightNode.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\brightnode.png
+++ChaosTheory.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\chaostheory.cs
+++ChaosTheory.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\chaostheory.png
+++ChaosTheory_Head_Boss.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\chaostheory_head_boss.png
+++DimNode.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\dimnode.cs
+++DimNode.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\dimnode.png
+++NodeMinion.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\boss\chaostheory\nodeminion.cs
+++stubNPC.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\stubnpc.cs
+++TargetEnemy.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npc\targetenemy.cs
+++Projectiles
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\
+++ConwayGame
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\
+++DoublePendulum
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\
+++TrailingStarMotion
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\
+++TrailingStarChua.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarchua.cs
+++TrailingStarChua.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarchua.png
+++TrailingStarCircular.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarcircular.cs
+++TrailingStarCircular.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarcircular.png
+++TrailingStarController.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarcontroller.cs
+++TrailingStarController.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarcontroller.png
+++TrailingStarHalvorsen.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsen.cs
+++TrailingStarHalvorsen.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsen.png
+++TrailingStarHalvorsenMask.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsenmask.png
+++TrailingStarHalvorsenRaise.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsenraise.cs
+++TrailingStarHalvorsenRaise.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsenraise.png
+++BlockFractalLaser.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\blockfractallaser.cs
+++BlockFractalLaser.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\blockfractallaser.png
+++ElectricCharge.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\electriccharge.cs
+++ElectricCharge.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\electriccharge.png
+++ElectricChargeController.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\electricchargecontroller.cs
+++ElectricChargeController.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\electricchargecontroller.png
+++ElectricChargeNegative.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\electricchargenegative.png
+++LightningBolt.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\lightningbolt.cs
+++LightningBolt.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\lightningbolt.png
+++LightningBoltAdvance.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\lightningboltadvance.cs
+++LightningBoltAdvance.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\lightningboltadvance.png
+++LightningBoltAdvanceTexture.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\lightningboltadvancetexture.png
+++NewtonBeamLong.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\newtonbeamlong.cs
+++NewtonBeamLong.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\newtonbeamlong.png
+++NewtonBeamShort.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\newtonbeamshort.cs
+++NewtonBeamShort.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\newtonbeamshort.png
+++SinLaser.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\sinlaser.cs
+++SinLaser.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\sinlaser.png
+++TrailingStar.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstar.cs
+++TrailingStar.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstar.png
+++TrailingStarChaotic.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarchaotic.cs
+++TrailingStarChaotic.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarchaotic.png
+++TrailingStarPlain.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarplain.cs
+++TrailingStarPlain.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarplain.png
+++Sound
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\sound\
+++build.txt
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\build.txt
+++description.txt
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\description.txt
+++icon.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\icon.png
+++PhysicsBoss.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\physicsboss.cs
+++README.md
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\readme.md
+++launchSettings.json
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\properties\launchsettings.json
+++分析器
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:分析器
+++包
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:包
+++框架
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:框架
+++程序集
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:程序集
+++Beam.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\beam.png
+++BlueGreenGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\bluegreengradient.png
+++ColorGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\colorgradient.png
+++FNBlock.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnblock.png
+++FNMotion.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnmotion.png
+++FNNormal.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnnormal.png
+++LuminanceGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradient.png
+++LuminanceGradientRepeat.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradientrepeat.png
+++LuminanceGradientTopWhite.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradienttopwhite.png
+++LuminanceGradientTopWhiteHalf.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradienttopwhitehalf.png
+++RedOrangeGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\redorangegradient.png
+++ConwayBlock.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.cs
+++ConwayBlock.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.png
+++ConwayGameController.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwaygamecontroller.cs
+++ConwayGameController.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwaygamecontroller.png
+++ConwayGlider.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.cs
+++ConwayGlider.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.png
+++FractalRing.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\fractalring.cs
+++FractalRing.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\fractalring.png
+++Music
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\sound\music\
+++Microsoft.CodeAnalysis.CSharp.NetAnalyzers
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files\dotnet\sdk\6.0.200\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+++Microsoft.CodeAnalysis.NetAnalyzers
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files\dotnet\sdk\6.0.200\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+++System.Text.Json.SourceGeneration
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.2\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+++tModLoader.CodeAssist
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\.nuget\packages\tmodloader.codeassist\0.1.3\analyzers\dotnet\cs\tmodloader.codeassist.dll
+++tModLoader.CodeAssist (0.1.3)
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>2706
+++Microsoft.NETCore.App
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\microsoft.netcore.app
+++Basic.Reference.Assemblies.Net60
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\basic.reference.assemblies.net60\1.2.4\lib\netstandard2.0\basic.reference.assemblies.net60.dll
+++CsvHelper
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\csvhelper\2.0.0.0\csvhelper.dll
+++FNA
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\fna\1.0.0\fna.dll
+++Hjson
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\hjson\3.0.0\lib\netstandard1.3\hjson.dll
+++Ionic.Zip.Reduced
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\ionic.zip.reduced\1.9.1.8\ionic.zip.reduced.dll
+++log4net
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\log4net\2.0.8.0\log4net.dll
+++Microsoft.CodeAnalysis
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\microsoft.codeanalysis.common\4.0.0-6.final\lib\netcoreapp3.1\microsoft.codeanalysis.dll
+++Microsoft.CodeAnalysis.CSharp
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\microsoft.codeanalysis.csharp\4.0.0-6.final\lib\netcoreapp3.1\microsoft.codeanalysis.csharp.dll
+++Microsoft.Win32.SystemEvents
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\microsoft.win32.systemevents\6.0.0\lib\net6.0\microsoft.win32.systemevents.dll
+++Mono.Cecil
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\mono.cecil\0.11.4\lib\netstandard2.0\mono.cecil.dll
+++Mono.Cecil.Mdb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\mono.cecil\0.11.4\lib\netstandard2.0\mono.cecil.mdb.dll
+++Mono.Cecil.Pdb
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\mono.cecil\0.11.4\lib\netstandard2.0\mono.cecil.pdb.dll
+++Mono.Cecil.Rocks
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\mono.cecil\0.11.4\lib\netstandard2.0\mono.cecil.rocks.dll
+++MonoMod.RuntimeDetour
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\monomod.runtimedetour\22.5.1.1\lib\net5.0\monomod.runtimedetour.dll
+++MonoMod.Utils
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\monomod.utils\22.5.1.1\lib\net5.0\monomod.utils.dll
+++MP3Sharp
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\mp3sharp\1.0.0.0\mp3sharp.dll
+++Newtonsoft.Json
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\newtonsoft.json\12.0.0.0\newtonsoft.json.dll
+++NVorbis
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\nvorbis\0.10.0.3\nvorbis.dll
+++RailSDK.Net
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\railsdk.net\1.0.0.0\railsdk.net.dll
+++ReLogic
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\relogic\1.0.0\relogic.dll
+++SixLabors.ImageSharp
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\sixlabors.imagesharp\1.0.3\lib\netcoreapp3.1\sixlabors.imagesharp.dll
+++Steamworks.NET
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\steamworks.net\20.1.0.0\steamworks.net.dll
+++SteelSeriesEngineWrapper
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\steelseriesenginewrapper\1.0.0.0\steelseriesenginewrapper.dll
+++System.CodeDom
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\system.codedom\6.0.0\lib\net6.0\system.codedom.dll
+++System.Configuration.ConfigurationManager
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\system.configuration.configurationmanager\6.0.0\lib\net6.0\system.configuration.configurationmanager.dll
+++System.Diagnostics.PerformanceCounter
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\system.diagnostics.performancecounter\6.0.0\lib\net6.0\system.diagnostics.performancecounter.dll
+++System.Drawing.Common
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\system.drawing.common\6.0.0\lib\net6.0\system.drawing.common.dll
+++System.Security.Cryptography.ProtectedData
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\system.security.cryptography.protecteddata\6.0.0\lib\net6.0\system.security.cryptography.protecteddata.dll
+++System.Security.Permissions
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\system.security.permissions\6.0.0\lib\net6.0\system.security.permissions.dll
+++System.Windows.Extensions
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\system.windows.extensions\6.0.0\lib\net6.0\system.windows.extensions.dll
+++TerrariaHooks
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\terrariahooks\0.0.0.0\terrariahooks.dll
+++tModLoader
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\tmodloader.dll
+++CanonRockCut.mp3
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\sound\music\canonrockcut.mp3

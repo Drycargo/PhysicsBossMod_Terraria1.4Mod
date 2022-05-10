@@ -26,7 +26,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             set { Projectile.ai[1] = value; }
         }
 
-        public override float STEP => 2;
+        public override float STEP => 1;
 
         public override Matrix Transform =>
             Matrix.CreateScale(0.75f)
@@ -42,7 +42,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         protected override void setBasicDefaults()
         {
             base.setBasicDefaults();
-            Projectile.timeLeft = 8 * 60;
+            Projectile.timeLeft = 2 * 60;
             stopAcc = false;
             stopDec = false;
             AccTimer = 0;

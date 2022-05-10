@@ -3,6 +3,7 @@ texture2D texMask;
 texture2D texContent;
 float2 texSize;
 float timer;
+float threshold;
 
 sampler2D uMask = sampler_state
 {
@@ -37,7 +38,7 @@ float4 DynamicMask(float2 coords : TEXCOORD0) : COLOR0
     float4 color = tex2D(uMask, coords);
     if (!any(color))
         return tex2D(uImage0, coords);
-    if (color.r < 0.9)
+    if (color.r < 0.9 * threshold)
         return color + tex2D(uImage0, coords);
 
     float4 rawC = tex2D(uContent, coords);
@@ -53,7 +54,7 @@ float4 Mask(float2 coords : TEXCOORD0) : COLOR0
     float4 color = tex2D(uMask, coords);
     if (!any(color))
         return tex2D(uImage0, coords);
-    if (color.r < 0.9)
+    if (color.r < 0.9 * threshold)
         return color + tex2D(uImage0, coords);
 
     return tex2D(uContent, coords);

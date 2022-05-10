@@ -30,7 +30,7 @@ namespace PhysicsBoss.Items
 
         public override void SetDefaults()
         {
-            Item.damage = 250;
+            Item.damage = 50;
 
             Item.DamageType = DamageClass.Magic;
 
@@ -57,9 +57,9 @@ namespace PhysicsBoss.Items
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed*(Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX), 
                 type, damage, knockback, player.whoAmI).ModProjectile;
             
-            t.summonStarBundle<TrailingStarChua>();*/
+            t.summonStarBundle<TrailingStarChua>();
             //t.releaseStarBundle(player);
-            
+            */
             return false;
         }
     }
