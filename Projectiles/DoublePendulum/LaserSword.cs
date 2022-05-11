@@ -19,8 +19,11 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
     {
         private VertexStrip tail = new VertexStrip();
         public const int TRAILING_CONST = 15;
-        public const int TRANSIT = 15;
-
+        public const int CIRCLE_TRAILING_CONST = 10;
+        public const int CIRCLE_RADIUS = 70;
+        public const int CIRCLE_DURATION = 30;
+        public const int TRANSIT = 45;
+        private const float ACC = 1.2f;
         private Texture2D backTex;
         
         public float Timer
@@ -32,6 +35,11 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         private Texture2D tex;
 
         private Vector2 dir;
+        private Color drawColor;
+
+        private Vector2[] circlePos;
+        private float[] circleRot;
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Laser Sword");
@@ -55,11 +63,16 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             Timer = 0;
 
-            Projectile.width = tex.Width;
-            Projectile.height = tex.Height;
+            Projectile.width = tex.Width/2;
+            Projectile.height = tex.Height/2;
 
             backTex =
                 ModContent.Request<Texture2D>("PhysicsBoss/Asset/White").Value;
+
+            drawColor = Color.Red;
+
+            circlePos = new Vector2[CIRCLE_TRAILING_CONST];
+            circleRot = new float[CIRCLE_TRAILING_CONST];
         }
 
         public override void AI()
@@ -69,25 +82,44 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 dir = Projectile.velocity.SafeNormalize(Vector2.Zero);
                 Projectile.rotation = dir.ToRotation();
                 Projectile.velocity *= 0;
+                for (int i = 0; i < CIRCLE_TRAILING_CONST; i++) {
+                    circlePos[i] = CIRCLE_RADIUS * 0.5f * dir + Projectile.Center;
+                    circleRot[i] = Projectile.rotation + MathHelper.PiOver2;
+                }
             }
             else if (Timer > TRANSIT) {
-                Projectile.velocity += 0.5f * dir;
-                for (int i = 0; i < 3; i++)
-                {
-                    Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.RainbowRod).noGravity = true;
-                }
+                Projectile.velocity += ACC * dir;
+            }
+
+            if (Timer >= TRANSIT - CIRCLE_DURATION * 0.5
+                && Timer <= TRANSIT + CIRCLE_DURATION * 0.5 + 45) {
+                float factor = (Timer - (TRANSIT - CIRCLE_DURATION * 0.5f)) / (CIRCLE_DURATION);
+                factor = (float)Math.Sqrt(factor);
+                updateCircle(factor * 2.5f * MathHelper.TwoPi);
             }
 
             Timer++;
 
         }
 
+        private void updateCircle(float angle)
+        {
+            for (int j = CIRCLE_TRAILING_CONST - 1; j > 0; j--) {
+                circlePos[j] = circlePos[j - 1];
+                circleRot[j] = circleRot[j - 1];
+            }
+
+            circleRot[0] = angle + dir.ToRotation() + MathHelper.PiOver2;
+            circlePos[0] = CIRCLE_RADIUS * 0.5f * dir.RotatedBy(angle) + Projectile.Center ;
+        }
+
         public override bool PreDraw(ref Color lightColor)
         {
-            if (Timer < TRANSIT) {
+            if (Timer < TRANSIT * 1.25) {
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
                     Projectile.Center + Projectile.rotation.ToRotationVector2(),
-                    Color.Blue * 0.8f * Math.Min(1, (Timer * 2 / (float)TRANSIT)), 8);
+                    drawColor * 0.8f * (float)Math.Min(Math.Min(1, (TRANSIT * 1.25 - Timer)/((float)TRANSIT * 0.25)), 
+                    Timer / ((float)TRANSIT * 0.25)), 8);
             }
             return false;
         }
@@ -97,7 +129,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.Additive,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -107,11 +139,32 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
-                progress => Color.Blue * (float)Math.Pow(1f - progress, 0.5),
-                progress => Projectile.height * 0.35f,
-                Projectile.Size / 2 - Projectile.width * 0.5f * Projectile.rotation.ToRotationVector2()
+                progress => drawColor * (float)Math.Sqrt(1f - progress),
+                progress => Projectile.height * 0.15f,
+                Projectile.Size / 2 - Projectile.width * 0.25f * Projectile.rotation.ToRotationVector2()
                 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
+
+            if (Timer >= TRANSIT - CIRCLE_DURATION * 0.5
+                && Timer <= TRANSIT + CIRCLE_DURATION * 0.5 + 45)
+            {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                    BlendState.Additive,
+                    Main.DefaultSamplerState,
+                    DepthStencilState.None,
+                    RasterizerState.CullNone, null,
+                    Main.GameViewMatrix.TransformationMatrix);
+                VertexStrip circleTail = new VertexStrip();
+                Main.graphics.GraphicsDevice.Textures[0] = 
+                    ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNMotion").Value;
+
+                circleTail.PrepareStrip(circlePos, circleRot,
+                    progress =>  Color.Lerp(drawColor, Color.White, 0.5f) * (1f - progress) * 2,
+                    progress => 0.5f * CIRCLE_RADIUS,
+                    - Main.screenPosition, TRAILING_CONST);
+                circleTail.DrawTrail();
+            }
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
@@ -122,10 +175,22 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 Main.GameViewMatrix.TransformationMatrix);
             #endregion
 
-            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Color.White,
-                Projectile.rotation, Projectile.Size / 2, 1f, SpriteEffects.None, 0);
+            Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, 
+                drawColor * (Timer < TRANSIT ? 0.5f : 1), Projectile.rotation, Projectile.Size, 
+                0.5f, SpriteEffects.None, 0);
 
             //Lighting.AddLight(Projectile.Center, Color.LightGreen.ToVector3());
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            if (Timer < TRANSIT)
+                return false;
+            return base.Colliding(projHitbox, targetHitbox);
+        }
+
+        public void setColor(Color c) {
+            drawColor = c;
         }
     }
 }

@@ -28,7 +28,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
-        public const float DOUBLE_PENDULUM_TOTAL = 1000f;
+        public const float DOUBLE_PENDULUM_TOTAL_LENGTH = 1000f;
+        public const float DOUBLE_PENDULUM_PERIOD = 10/8f * 60;
         public const float G = 7f;
 
         public enum phase
@@ -45,7 +46,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             DoublePendulumOne9 = 9,
         }
 
-        
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -56,11 +57,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             49.65f,
             52f,
             56.8f,
-            60 + 1.15f, // 1.65
-        };
+            60 + 1.15f, // 1.65 -> 10
+            60 + 11.125f
+        };*/
         
         
-        /*
+        
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
@@ -69,11 +71,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             0,
             0,
             0,
-            0.1f,
-            4.9f,
-            9.25f
+            0,//0.1f,
+            0,//4.9f,
+            1f,//9.25f
+            11f
         };
-        */
+        
         
 
         private Texture2D tex;
@@ -170,8 +173,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             lastLife = NPC.lifeMax;
 
-            len0 = DOUBLE_PENDULUM_TOTAL * 0.45f;
-            len1 = DOUBLE_PENDULUM_TOTAL * 0.55f;
+            len0 = DOUBLE_PENDULUM_TOTAL_LENGTH * 0.45f;
+            len1 = DOUBLE_PENDULUM_TOTAL_LENGTH * 0.55f;
             angle0 = angle1 = MathHelper.Pi;
             angVel0 = angVel1 = 0;
             m0 = m1 = 1.0f;
@@ -490,26 +493,16 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_PREPARATION);
                 dimNode.Timer = 0;
             }
-            hover(target.Center + Vector2.UnitY * 0.25f * DOUBLE_PENDULUM_TOTAL, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            hover(target.Center + Vector2.UnitY * 0.25f * DOUBLE_PENDULUM_TOTAL_LENGTH, 20f, 0.3f, 1200, 10, 500f, 0.85f);
             Timer++;
         }
 
         private void doublePendulumOne9()
         {
-            if (Vector2.Distance(NPC.Center, target.Center) > 0.7 * DOUBLE_PENDULUM_TOTAL) {
-                NPC.Center = 0.99f * NPC.Center + 0.01f * target.Center;
-            }
-
-            if (fractalRing == null)
-                fractalRing = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<FractalRing>(), 100, 0);
-            fractalRing.Center = NPC.Center + 0.2f * DOUBLE_PENDULUM_TOTAL * Vector2.UnitY;
-            fractalRing.timeLeft++;
-
-            foreach (Player p in Main.player) {
-                float dist = Vector2.Distance(p.Center, NPC.Center);
-                if (p.active && dist > FractalRing.RADIUS)
-                    p.velocity += (float)Math.Min(25, 5 * dist) * (NPC.Center - p.Center).SafeNormalize(Vector2.Zero);
+            // approach
+            if (Vector2.Distance(NPC.Center, target.Center) > 0.7 * DOUBLE_PENDULUM_TOTAL_LENGTH)
+            {
+                NPC.Center = 0.995f * NPC.Center + 0.005f * target.Center;
             }
 
             if ((int)Timer == 0)
@@ -522,15 +515,14 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 selfFirework();
                 minionPendulumFirework();
 
-                m0 = 0.8f + 0.2f * Main.rand.NextFloat();
-                m1 = 0.8f + 0.2f * Main.rand.NextFloat();
-
-                len0 = (NPC.Center - dimNode.NPC.Center).Length();
-                len1 = (brightNode.NPC.Center - dimNode.NPC.Center).Length();
-
-                angle0 = MathHelper.PiOver2 - (dimNode.NPC.Center - NPC.Center).ToRotation();
-                angle1 = MathHelper.PiOver2 - (brightNode.NPC.Center - dimNode.NPC.Center).ToRotation();
+                initilizePendulum();
             }
+
+            // summon and maintain ring
+            summonMaintainFractalRing();
+
+            // restrict player
+            attractPlayer(FractalRing.RADIUS);
 
             doublePendulumMotion();
 
@@ -538,7 +530,54 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             dimNode.NPC.Center = NPC.Center + len0 * (MathHelper.PiOver2 - angle0).ToRotationVector2();
             brightNode.NPC.Center = dimNode.NPC.Center + len1 * (MathHelper.PiOver2 - angle1).ToRotationVector2();
 
+            float fixedTimer = Timer - 0.5f;
+
+            // brightNode Laser
+            if ((int)fixedTimer % (2 * DOUBLE_PENDULUM_PERIOD) < 0.75 * DOUBLE_PENDULUM_PERIOD) {
+                if ((int)Timer % 2 == 0) {
+                    if (fixedTimer % (4 * DOUBLE_PENDULUM_PERIOD) < DOUBLE_PENDULUM_PERIOD)
+                    {
+                        brightNode.summonLaserPairTangent();
+                    }
+                    else
+                    {
+                        brightNode.summonLaserPairNormal();
+                    }
+                }
+            }
+
             Timer++;
+        }
+
+        private void attractPlayer(float restrictionDist)
+        {
+            foreach (Player p in Main.player)
+            {
+                float dist = Vector2.Distance(p.Center, NPC.Center);
+                if (p.active && dist > restrictionDist)
+                    p.velocity += (float)Math.Min(15, 2.5 * dist) * (NPC.Center - p.Center).SafeNormalize(Vector2.Zero);
+            }
+        }
+
+        private void summonMaintainFractalRing()
+        {
+            if (fractalRing == null)
+                fractalRing = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<FractalRing>(), 100, 0);
+            fractalRing.Center = NPC.Center + 0.2f * DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY;
+            fractalRing.timeLeft++;
+        }
+
+        private void initilizePendulum()
+        {
+            m0 = 0.8f + 0.2f * Main.rand.NextFloat();
+            m1 = 0.8f + 0.2f * Main.rand.NextFloat();
+
+            len0 = (NPC.Center - dimNode.NPC.Center).Length();
+            len1 = (brightNode.NPC.Center - dimNode.NPC.Center).Length();
+
+            angle0 = MathHelper.PiOver2 - (dimNode.NPC.Center - NPC.Center).ToRotation();
+            angle1 = MathHelper.PiOver2 - (brightNode.NPC.Center - dimNode.NPC.Center).ToRotation();
         }
 
         private void doublePendulumMotion()

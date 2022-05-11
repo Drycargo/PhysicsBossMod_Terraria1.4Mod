@@ -5,9 +5,11 @@ i:{00000000-0000-0000-0000-000000000000}:PhysicsBoss
 ++Properties
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\properties\
 ++依赖项
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>2629
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>2783
 ++Asset
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\
+++Beam.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\beam.png
 ++DemoVideo
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\
 ++Demo 5.2.mp4
@@ -44,6 +46,26 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\input\worldm.fx
 ++Materials
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\
+++BlueGreenGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\bluegreengradient.png
+++ColorGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\colorgradient.png
+++FNBlock.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnblock.png
+++FNMotion.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnmotion.png
+++FNNormal.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnnormal.png
+++LuminanceGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradient.png
+++LuminanceGradientRepeat.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradientrepeat.png
+++LuminanceGradientTopWhite.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradienttopwhite.png
+++LuminanceGradientTopWhiteHalf.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradienttopwhitehalf.png
+++RedOrangeGradient.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\redorangegradient.png
 ++GlobalEffectController.cs
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\globaleffectcontroller.cs
 ++logfile.txt
@@ -112,6 +134,10 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\
 ++DoublePendulum
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\
+++FractalRing.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\fractalring.cs
+++FractalRing.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\fractalring.png
 ++TrailingStarMotion
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\
 ++TrailingStarChua.cs
@@ -206,28 +232,6 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:包
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:框架
 ++程序集
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:程序集
-++Beam.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\beam.png
-++BlueGreenGradient.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\bluegreengradient.png
-++ColorGradient.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\colorgradient.png
-++FNBlock.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnblock.png
-++FNMotion.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnmotion.png
-++FNNormal.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\fnnormal.png
-++LuminanceGradient.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradient.png
-++LuminanceGradientRepeat.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradientrepeat.png
-++LuminanceGradientTopWhite.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradienttopwhite.png
-++LuminanceGradientTopWhiteHalf.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\luminancegradienttopwhitehalf.png
-++RedOrangeGradient.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\materials\redorangegradient.png
 ++ConwayBlock.cs
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.cs
 ++ConwayBlock.png
@@ -240,10 +244,6 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.cs
 ++ConwayGlider.png
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.png
-++FractalRing.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\fractalring.cs
-++FractalRing.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\fractalring.png
 ++Music
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\sound\music\
 ++Microsoft.CodeAnalysis.CSharp.NetAnalyzers
@@ -255,7 +255,7 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files\dotnet\packs\microsoft
 ++tModLoader.CodeAssist
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\.nuget\packages\tmodloader.codeassist\0.1.3\analyzers\dotnet\cs\tmodloader.codeassist.dll
 ++tModLoader.CodeAssist (0.1.3)
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>2706
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>2825
 ++Microsoft.NETCore.App
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\microsoft.netcore.app
 ++Basic.Reference.Assemblies.Net60
@@ -324,3 +324,9 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\tmodloader.dll
 ++CanonRockCut.mp3
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\sound\music\canonrockcut.mp3
+++LaserSword.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\lasersword.cs
+++LaserSword.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\lasersword.png
+++White.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\white.png

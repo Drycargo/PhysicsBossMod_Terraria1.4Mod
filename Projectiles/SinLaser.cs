@@ -142,6 +142,9 @@ namespace PhysicsBoss.Projectiles
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
+            if (prog < 1)
+                return false;
+
             float point = 0f;
             for (int i = 0; i < TRAILING_CONST - 1; i++)
             {

@@ -125,7 +125,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             if (drawTrail != trail.SHADOW)
                                 drawTrail = trail.SHADOW;
 
-                            hover(owner.NPC.Center - 0.45f * ChaosTheory.DOUBLE_PENDULUM_TOTAL * Vector2.UnitY, 20, 0.3f, 60);
+                            hover(owner.NPC.Center - 0.45f * ChaosTheory.DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY, 20, 0.3f, 60);
                             break;
                         }
                     case (int)phase.DOUBLE_PENDULUM_ONE:
@@ -305,6 +305,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void halvorsen()
         {
+            if (bloomIntensity >= 0)
+                bloomIntensity = -1;
             if (Timer % 12 == 0)
             {
                 Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
@@ -328,19 +330,23 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void doublePendulumOne()
         {
-            if ((int)Timer % 10 == 0 && owner!=null) {
+            /*
+            if ((int)Timer % 5 == 0 && owner!=null) {
                 Vector2 dir = (NPC.Center - owner.NPC.Center).SafeNormalize(Vector2.Zero);
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, dir, 
                     ModContent.ProjectileType<LaserSword>(), 25, 0);
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, -dir,
                     ModContent.ProjectileType<LaserSword>(), 25, 0);
-            }
+            }*/
             Timer ++;
         }
 
         public override void OnKill()
         {
-            
+            if (bloomIntensity > 0)
+            {
+                GlobalEffectController.bloom(-1, 0);
+            }
             base.OnKill();
         }
     }

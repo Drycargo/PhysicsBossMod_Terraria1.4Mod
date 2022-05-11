@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
 using PhysicsBoss.Projectiles;
+using PhysicsBoss.Projectiles.DoublePendulum;
 using PhysicsBoss.Projectiles.TrailingStarMotion;
 using System;
 using System.Collections.Generic;
@@ -135,7 +136,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                                 orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
                             else
                             {
-                                hover(owner.NPC.Center - ChaosTheory.DOUBLE_PENDULUM_TOTAL * Vector2.UnitY, 20, 0.3f, 60); 
+                                hover(owner.NPC.Center - ChaosTheory.DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY, 20, 0.3f, 60); 
                             }
 
                             Timer++;
@@ -144,6 +145,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     case (int)phase.DOUBLE_PENDULUM_ONE: {
                             if (!drawConnection)
                                 drawConnection = true;
+                            if (drawTrail != trail.TAIL)
+                                drawTrail = trail.TAIL;
+                            doublePendulumOne();
                             break;
                         }
                     default: break;
@@ -171,7 +175,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (drawTrail == trail.SHADOW)
                 drawShadow(spriteBatch, Color.Red);
             else if (drawTrail == trail.TAIL)
-                drawTail(spriteBatch, Color.Crimson * 1.5f);
+                drawTail(spriteBatch, Color.OrangeRed * 3.5f);
 
             if (currentPhase == (int)phase.SIGNLE_PENDULUM_TWO) {
                 drawDisplacement();
@@ -318,8 +322,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             base.OnKill();
         }
 
-        
-
+ 
         private void chuaCircuit()
         {
             Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
@@ -460,6 +463,33 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.Center = new Vector2(
                 target.Center.X + realPos.X * (1f + adjustment),
                 target.Center.Y + realPos.Y * (1f + adjustment));
+        }
+
+        private void doublePendulumOne()
+        {
+            Timer++;
+        }
+
+        public void summonLaserPairNormal()
+        {
+            summonLaserPair(0);
+        }
+
+        public void summonLaserPairTangent()
+        {
+            summonLaserPair(MathHelper.PiOver2);
+        }
+
+        private void summonLaserPair(float dev)
+        {
+            if (owner == null || owner.dimNode == null)
+                return;
+            Vector2 dir = (NPC.Center - owner.dimNode.NPC.Center).RotatedBy(
+                                dev).SafeNormalize(Vector2.Zero);
+            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + dir * 10f, dir,
+                ModContent.ProjectileType<LaserSword>(), 25, 0);
+            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center - dir * 10f, -dir,
+                ModContent.ProjectileType<LaserSword>(), 25, 0);
         }
     }
 }
