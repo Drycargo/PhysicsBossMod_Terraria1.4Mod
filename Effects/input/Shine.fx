@@ -5,6 +5,7 @@ float4 shineColor;
 float threashold;
 
 float timer;
+float blurInten;
 float2 texSize;
 
 texture2D tex0;
@@ -38,7 +39,7 @@ float4 Blur(float2 coords : TEXCOORD0) : COLOR0
             color += gauss[i + 1][j + 1] * tex2D(uImage0, float2(coords.x + dx * i, coords.y + dy * j));
         }
     }
-    return 5 * timer * color + tex2D(uImage0, coords);
+    return blurInten * color + (1 - blurInten)*tex2D(uImage0, coords);
 
 }
 

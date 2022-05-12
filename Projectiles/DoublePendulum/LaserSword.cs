@@ -20,12 +20,14 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         private VertexStrip tail = new VertexStrip();
         public const int TRAILING_CONST = 15;
         public const int CIRCLE_TRAILING_CONST = 10;
-        public const int CIRCLE_RADIUS = 70;
+        public const int CIRCLE_RADIUS = 50;
         public const int CIRCLE_DURATION = 30;
         public const int TRANSIT = 45;
         private const float ACC = 1.2f;
         private Texture2D backTex;
-        
+
+        public static Color[] colors = { Color.Red, Color.OrangeRed, Color.DarkGoldenrod, Color.Crimson};
+
         public float Timer
         {
             get { return Projectile.ai[0]; }
@@ -91,11 +93,12 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 Projectile.velocity += ACC * dir;
             }
 
-            if (Timer >= TRANSIT - CIRCLE_DURATION * 0.5
-                && Timer <= TRANSIT + CIRCLE_DURATION * 0.5 + 45) {
+            if (Timer >= TRANSIT - CIRCLE_DURATION * 0.8
+                && Timer <= TRANSIT + CIRCLE_DURATION * 0.2 + 15) {
                 float factor = (Timer - (TRANSIT - CIRCLE_DURATION * 0.5f)) / (CIRCLE_DURATION);
-                factor = (float)Math.Sqrt(factor);
-                updateCircle(factor * 2.5f * MathHelper.TwoPi);
+                if (factor >= 1)
+                    factor = 1;
+                updateCircle(factor * 3f * MathHelper.TwoPi);
             }
 
             Timer++;
@@ -110,7 +113,8 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             }
 
             circleRot[0] = angle + dir.ToRotation() + MathHelper.PiOver2;
-            circlePos[0] = CIRCLE_RADIUS * 0.5f * dir.RotatedBy(angle) + Projectile.Center ;
+            circlePos[0] = CIRCLE_RADIUS * 0.5f * dir.RotatedBy(angle) + Projectile.Center;
+            Dust.NewDust(circlePos[0], 10,10,DustID.CrimsonTorch);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -145,24 +149,34 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
-            if (Timer >= TRANSIT - CIRCLE_DURATION * 0.5
-                && Timer <= TRANSIT + CIRCLE_DURATION * 0.5 + 45)
+            if (Timer >= TRANSIT - CIRCLE_DURATION * 0.8
+                && Timer <= TRANSIT + CIRCLE_DURATION * 0.2 + 15)
             {
+                /*
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                    BlendState.Additive,
+                    BlendState.NonPremultiplied,
                     Main.DefaultSamplerState,
                     DepthStencilState.None,
                     RasterizerState.CullNone, null,
                     Main.GameViewMatrix.TransformationMatrix);
+                                */
                 VertexStrip circleTail = new VertexStrip();
+
                 Main.graphics.GraphicsDevice.Textures[0] = 
-                    ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNMotion").Value;
+                    ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNNormal").Value;
+
+                PhysicsBoss.trailingEffect.Parameters["outsideBlade"].SetValue(Color.White.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["insideBlade"].SetValue(drawColor.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["amplitude"].SetValue(3f);
+                PhysicsBoss.trailingEffect.CurrentTechnique.Passes["BladeTrail"].Apply();
+
 
                 circleTail.PrepareStrip(circlePos, circleRot,
-                    progress =>  Color.Lerp(drawColor, Color.White, 0.5f) * (1f - progress) * 2,
-                    progress => 0.5f * CIRCLE_RADIUS,
+                    progress =>  Color.White * (1f - progress),
+                    progress => 0.5f * CIRCLE_RADIUS * (1f - progress),
                     - Main.screenPosition, TRAILING_CONST);
+
                 circleTail.DrawTrail();
             }
 
@@ -191,6 +205,11 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
 
         public void setColor(Color c) {
             drawColor = c;
+        }
+
+        public void setColor(int colorIndex)
+        {
+            drawColor = colors[colorIndex % colors.Length];
         }
     }
 }

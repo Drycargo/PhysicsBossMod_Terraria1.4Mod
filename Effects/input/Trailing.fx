@@ -7,9 +7,26 @@ float uTime;
 float intensity;
 texture2D tex0;
 
+texture2D tailColor;
+float4 tailStart;
+float4 tailEnd;
+
+float4 outsideBlade;
+float4 insideBlade;
+float amplitude;
+
 sampler2D uIm1 = sampler_state
 {
     Texture = <tex0>;
+    MinFilter = Linear;
+    MagFilter = Linear;
+    AddressU = wrap;
+    AddressV = wrap;
+};
+
+sampler2D uColor = sampler_state
+{
+    Texture = <tailColor>;
     MinFilter = Linear;
     MagFilter = Linear;
     AddressU = wrap;
@@ -51,6 +68,28 @@ float4 Displacement(float2 coords: TEXCOORD0) : COLOR0
     return tex2D(uImage0, coords + disVec);
 }
 
+float4 BladeTrail(float2 coords : TEXCOORD0) : COLOR0
+{
+    float c = tex2D(uImage0, coords);
+    float transparency = c.r * coords.y * (1 - coords.x)*amplitude;
+
+    if (coords.y < 0.4)
+        return transparency * outsideBlade;
+    if (coords.y > 0.6)
+        return transparency * insideBlade;
+    
+    return transparency * lerp(outsideBlade, insideBlade, (coords.y - 0.4) / 0.2);
+}
+
+float4 DynamicTrailSimple(float2 coords : TEXCOORD0) : COLOR0
+{
+    float transparency = 1;
+    //2 * abs(0.5 - coords.y) * (coords.x);
+    
+    return tex2D(uImage0, float2(coords.x + uTime, coords.y)) * transparency
+    * lerp(tailStart, tailEnd, coords.x);
+}
+
 float4 StaticTrail(PSInput input) : COLOR0
 {
     float3 coord = input.Texcoord;
@@ -90,6 +129,11 @@ technique Technique1 {
         PixelShader = compile ps_2_0 DynamicTrail();
     }
 
+    pass DynamicTrailSimple
+    {
+        PixelShader = compile ps_2_0 DynamicTrailSimple();
+    }
+
     pass StaticTrail
     {
         VertexShader = compile vs_2_0 VertexFn();
@@ -112,4 +156,10 @@ technique Technique1 {
         VertexShader = compile vs_2_0 VertexFn();
         PixelShader = compile ps_2_0 DefaultFn();
     }
+
+    Pass BladeTrail
+    {
+        PixelShader = compile ps_2_0 BladeTrail();
+    }
+
 }

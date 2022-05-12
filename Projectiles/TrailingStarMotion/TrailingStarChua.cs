@@ -18,7 +18,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         protected bool stopAcc;
         protected bool stopDec;
 
-        public static Color[] colors = { Color.Green, Color.Cyan, Color.Blue, Color.DarkViolet};
+        public static Color[] colors = { Color.LightSeaGreen, Color.Cyan, Color.Blue, Color.DarkViolet};
 
         public float AccTimer
         {

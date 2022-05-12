@@ -116,7 +116,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 Main.GameViewMatrix.TransformationMatrix);
 
             Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value,
-                Projectile.position - Main.screenPosition, Color.LightCyan);
+                Projectile.position - Main.screenPosition, Color.White);
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
