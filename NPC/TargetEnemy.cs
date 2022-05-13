@@ -30,6 +30,11 @@ namespace PhysicsBoss.NPC
             target = t;
         }
 
+        public Player getTarget()
+        {
+            return target;
+        }
+
         protected void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period)
         {
             hover(hoverCenter, hoverRadius, noise, period, 10f,-1f, 0.7f);

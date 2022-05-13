@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.Localization;
@@ -98,6 +99,10 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 if (factor >= 1)
                     factor = 1;
                 updateCircle(factor * 3f * MathHelper.TwoPi);
+            }
+
+            if ((int)Timer == TRANSIT) {
+                SoundEngine.PlaySound(SoundID.Item15, Projectile.Center);
             }
 
             Timer++;

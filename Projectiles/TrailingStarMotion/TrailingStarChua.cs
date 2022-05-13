@@ -73,7 +73,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             // initialize
             if (AccTimer == 0)
             {
-                Projectile.velocity = 0.5f * SPEED_LIMIT *
+                Projectile.velocity = 0.35f * SPEED_LIMIT *
                     (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
             }
             else if (!stopDec) {
@@ -110,7 +110,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 return;
 
             Vector2 disp = target.Center - Projectile.Center;
-            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.6 || disp.Length() < 180f)
+            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.5 || disp.Length() < 180f)
                 stopAcc = true;
             else if (target.active)
             {

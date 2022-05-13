@@ -15,15 +15,17 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 {
     public class TrailingStarThreeScroll: TrailingStarChaotic
     {
+        public static Color[] colors = { Color.Aqua, Color.DeepSkyBlue, Color.Blue, Color.DarkBlue };
         public override float SHRINK_CONST
         {
             get { return 20f; }
         }
         public override float STEP => 5;
         public override Matrix Transform =>
-            Matrix.CreateScale(0.05f)
-            //* Matrix.CreateRotationX(MathHelper.PiOver2)
-            * Matrix.CreateRotationY(0.1f * (float)Main.time);
+            Matrix.CreateScale(0.055f)
+            * Matrix.CreateRotationZ((float)Main.time * 0.025f)
+            * Matrix.CreateRotationY(MathHelper.PiOver2)
+            * Matrix.CreateTranslation(-6.5f,0,0);
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Trailing Star Three Scroll");
@@ -59,6 +61,11 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.RainbowRod).noGravity = true;
 
             base.motionUpdate();
+        }
+
+        public override void setColor(int colorIndex)
+        {
+            drawColor = colors[colorIndex % colors.Length];
         }
     }
 }

@@ -42,7 +42,7 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<TrailingStarController>();
+            Item.shoot = ModContent.ProjectileType<ThreeScrollController>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -52,12 +52,13 @@ namespace PhysicsBoss.Items
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
             */
-            
-            TrailingStarController t = (TrailingStarController) 
+
+            ThreeScrollController t = (ThreeScrollController) 
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed*(Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX), 
                 type, damage, knockback, player.whoAmI).ModProjectile;
             
             t.summonStarBundle<TrailingStarThreeScroll>();
+            t.release();
             //t.release((Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX));
             //t.releaseStarBundle(player);
 
