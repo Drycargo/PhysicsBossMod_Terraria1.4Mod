@@ -129,8 +129,13 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public override void Kill(int timeLeft)
         {
+            /*
             while (stars.Any())
-                releaseStar(lastTarget);
+                releaseStar(lastTarget);*/
+            while (stars.Any()){
+                ModProjectile p = stars.Dequeue();
+                p.Projectile.Kill();
+            }
             SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
         }
 

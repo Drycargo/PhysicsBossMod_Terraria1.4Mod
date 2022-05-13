@@ -18,7 +18,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         protected bool stopAcc;
         protected bool stopDec;
 
-        public static Color[] colors = { Color.LightSeaGreen, Color.Cyan, Color.Blue, Color.DarkViolet};
+        public static Color[] colors = { Color.LightSeaGreen, Color.Cyan, Color.Blue, Color.LightBlue};
 
         public float AccTimer
         {
@@ -42,7 +42,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         protected override void setBasicDefaults()
         {
             base.setBasicDefaults();
-            Projectile.timeLeft = 2 * 60;
+            Projectile.timeLeft = (int)(1.5 * 60);
             stopAcc = false;
             stopDec = false;
             AccTimer = 0;
@@ -73,7 +73,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             // initialize
             if (AccTimer == 0)
             {
-                Projectile.velocity = 0.35f * SPEED_LIMIT *
+                Projectile.velocity = 0.5f * SPEED_LIMIT *
                     (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
             }
             else if (!stopDec) {
@@ -114,7 +114,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 stopAcc = true;
             else if (target.active)
             {
-                Projectile.velocity = 0.8f * Projectile.velocity +
+                Projectile.velocity = 0.85f * Projectile.velocity +
                     3f * disp.SafeNormalize(Vector2.UnitX);
             }
         }

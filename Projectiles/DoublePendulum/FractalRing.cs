@@ -17,7 +17,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
     public class FractalRing:ModProjectile
     {
         public const int TRAILING_CONST = 45;
-        public const int RADIUS = 1000;
+        public const int RADIUS = 800;
         public const int TRANSIT = 60;
 
         private Texture2D tex;

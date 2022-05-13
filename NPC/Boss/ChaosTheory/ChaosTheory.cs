@@ -17,6 +17,7 @@ using PhysicsBoss.Projectiles;
 using PhysicsBoss.Effects;
 using PhysicsBoss.Projectiles.ConwayGame;
 using PhysicsBoss.Projectiles.DoublePendulum;
+using PhysicsBoss.Projectiles.TrailingStarMotion;
 
 namespace PhysicsBoss.NPC.Boss.ChaosTheory
 {
@@ -28,8 +29,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
-        public const float DOUBLE_PENDULUM_TOTAL_LENGTH = 1000f;
-        public const float DOUBLE_PENDULUM_PERIOD = 10/8f * 60;
+        public const float DOUBLE_PENDULUM_TOTAL_LENGTH = 800f;
+        public const float DOUBLE_PENDULUM_PERIOD = 10/4f * 60;
         public const float G = 7f;
 
         public enum phase
@@ -44,9 +45,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Halvorsen7 = 7,
             HalvorsenFinale8 = 8,
             DoublePendulumOne9 = 9,
+            DoublePendulumTwo10 = 10,
         }
 
-        /*
+
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -59,10 +61,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             56.8f,
             60 + 1.15f, // 1.65 -> 10
             60 + 11.125f
-        };*/
+        };
         
         
         
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
@@ -76,7 +79,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             1f,//9.25f
             11f
         };
-        
+        */
         
 
         private Texture2D tex;
@@ -532,19 +535,52 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             float fixedTimer = Timer - 0.5f;
 
+
+            int fac = (int)fixedTimer % (int)(2 * DOUBLE_PENDULUM_PERIOD);
+
             // brightNode Laser
-            if ((int)fixedTimer % (2 * DOUBLE_PENDULUM_PERIOD) < 0.75 * DOUBLE_PENDULUM_PERIOD) {
-                if ((int)Timer % 2 == 0) {
-                    if (fixedTimer % (4 * DOUBLE_PENDULUM_PERIOD) < DOUBLE_PENDULUM_PERIOD)
+            if ((int)(fac% DOUBLE_PENDULUM_PERIOD) < 0.3 * DOUBLE_PENDULUM_PERIOD) {
+                if ((int)Timer % 4 == 0) {
+                    try
                     {
                         brightNode.summonLaserPairTangent();
+                        brightNode.summonLaserPairNormal();
+                    }
+                    catch (IndexOutOfRangeException e) {
+                        foreach (Projectile p in Main.projectile) {
+                            if (p.type == ModContent.ProjectileType<LaserSword>())
+                            {   
+                                p.Kill();
+                                p.active = false;
+                            }
+                            
+                        }
+                    }
+                    
+                    /*
+                    if (fixedTimer % (4 * DOUBLE_PENDULUM_PERIOD) < DOUBLE_PENDULUM_PERIOD)
+                    {
+                        brightNode.summonLaserPairNormal(); 
                     }
                     else
                     {
-                        brightNode.summonLaserPairNormal();
-                    }
+                        brightNode.summonLaserPairTangent();
+                    }*/
                 }
             }
+
+            
+            // dimNode
+            /*
+            if (fac >= DOUBLE_PENDULUM_PERIOD) {
+                if ((int)(fac - DOUBLE_PENDULUM_PERIOD) % (int)(DOUBLE_PENDULUM_PERIOD / 3) == 0)
+                {
+                    Projectile.NewProjectile(
+                        dimNode.NPC.GetSource_FromAI(), dimNode.NPC.Center, Vector2.Zero, 
+                        ModContent.ProjectileType<AizawaController>(), 30, 0);
+                }
+            }
+            */
 
             Timer++;
         }
@@ -627,21 +663,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void minionPendulumFirework()
         {
-            for (int i = 0; i < 30; i++)
-            {
-                Dust d = Dust.NewDustDirect(brightNode.NPC.Center, 0, 0, DustID.RainbowRod);
-                d.velocity = Main.rand.NextVector2Unit() * 15f;
-                d.color = Color.Pink;
-                d.noGravity = true;
-            }
-
-            for (int i = 0; i < 30; i++)
-            {
-                Dust d = Dust.NewDustDirect(dimNode.NPC.Center, 0, 0, DustID.RainbowRod);
-                d.velocity = Main.rand.NextVector2Unit() * 15f;
-                d.color = Color.LightBlue;
-                d.noGravity = true;
-            }
+            brightNode.fireWork();
+            dimNode.fireWork();
         }
 
         private void selfFirework()

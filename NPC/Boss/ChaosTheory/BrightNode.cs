@@ -23,6 +23,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int SINGLE_PENDULUM_DIST = 200;
         public const double SINGLE_PENDULUM_PERIOD = 0.8;
         public const float HALVORSEN_PERIOD = 5.35f * 60/2.5f;
+        public const float HALVORSEN_FINALE_PERIOD = HALVORSEN_PERIOD/2;
 
 
         public static readonly int TRAILING_CONST = 15;
@@ -444,14 +445,14 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private void hyperbolicMotion()
         {
             float progress;
-            if (Timer % (2 * HALVORSEN_PERIOD) > HALVORSEN_PERIOD)
-                progress = 2 * (HALVORSEN_PERIOD - (Timer % HALVORSEN_PERIOD)) / HALVORSEN_PERIOD - 1;
+            if (Timer % (2 * HALVORSEN_FINALE_PERIOD) > HALVORSEN_FINALE_PERIOD)
+                progress = 2 * (HALVORSEN_FINALE_PERIOD - (Timer % HALVORSEN_FINALE_PERIOD)) / HALVORSEN_FINALE_PERIOD - 1;
             else
-                progress = 2 * (Timer % HALVORSEN_PERIOD) / HALVORSEN_PERIOD - 1;
+                progress = 2 * (Timer % HALVORSEN_FINALE_PERIOD) / HALVORSEN_FINALE_PERIOD - 1;
 
             float altitude = 500 * progress;
-            float radius = (float)Math.Sqrt(1f - progress * progress) * 500;
-            float innerAngle = (float)(MathHelper.TwoPi * ((Timer / (0.2 * HALVORSEN_PERIOD)) % 1f));
+            float radius = (float)(progress * progress) * 400 + 200;
+            float innerAngle = (float)(MathHelper.TwoPi * ((Timer / (0.2 * HALVORSEN_FINALE_PERIOD)) % 1f));
 
             Vector3 realPos = new Vector3(
                 radius * (float)Math.Cos(innerAngle),
@@ -486,10 +487,21 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 return;
             Vector2 dir = (NPC.Center - owner.dimNode.NPC.Center).RotatedBy(
                                 dev).SafeNormalize(Vector2.Zero);
-            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + dir * 10f, dir,
-                ModContent.ProjectileType<LaserSword>(), 25, 0);
-            Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center - dir * 10f, -dir,
-                ModContent.ProjectileType<LaserSword>(), 25, 0);
+            LaserSword a = (LaserSword)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + dir * 10f, dir,
+                ModContent.ProjectileType<LaserSword>(), 25, 0).ModProjectile);
+
+            float progress = (Timer % ChaosTheory.DOUBLE_PENDULUM_PERIOD)/ChaosTheory.DOUBLE_PENDULUM_PERIOD;
+            Color c = Color.Lerp(Color.Red, Color.Gold, progress);
+
+            a.setColor(c);
+            LaserSword b = (LaserSword)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center - dir * 10f, -dir,
+                ModContent.ProjectileType<LaserSword>(), 25, 0).ModProjectile);
+            b.setColor(c);
+        }
+
+        public void fireWork()
+        {
+            fireWork(Color.Pink);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace PhysicsBoss.NPC
@@ -52,6 +53,16 @@ namespace PhysicsBoss.NPC
                 NPC.Center = aim;
 
             NPC.rotation = (hoverCenter - NPC.Center).ToRotation();
+        }
+
+        protected void fireWork(Color c) {
+            for (int i = 0; i < 30; i++)
+            {
+                Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RainbowRod);
+                d.velocity = Main.rand.NextVector2Unit() * 15f;
+                d.color = c;
+                d.noGravity = true;
+            }
         }
     }
 }

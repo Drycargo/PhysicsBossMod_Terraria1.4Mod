@@ -83,10 +83,9 @@ float4 BladeTrail(float2 coords : TEXCOORD0) : COLOR0
 
 float4 DynamicTrailSimple(float2 coords : TEXCOORD0) : COLOR0
 {
-    float transparency = 1;
-    //2 * abs(0.5 - coords.y) * (coords.x);
+    float transparency = sqrt(2 * (0.5 - abs(0.5 - coords.y)));
     
-    return tex2D(uImage0, float2(coords.x + uTime, coords.y)) * transparency
+    return tex2D(uImage0, float2(coords.x + uTime, coords.y + uTime)) * transparency
     * lerp(tailStart, tailEnd, coords.x);
 }
 

@@ -266,8 +266,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
             Timer++;
 
-            
-            /* THE FOLLOWING IS AN ABANDONED IMPLEMENTATION, IN WHICH DIMNODE ROTATES A SPIRAL AROUND A FIXE POINT
+
+            // THE FOLLOWING IS AN ABANDONED IMPLEMENTATION, IN WHICH DIMNODE ROTATES A SPIRAL AROUND A FIXE POINT
+            #region spiral_star
+            /*
             if (trailingStarController != null)
             {
                 trailingStarController.Projectile.Center = NPC.Center;
@@ -299,6 +301,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     trailingStarController.summonStarBundle<TrailingStarChua>();
                 }
             }*/
+            #endregion
 
 
         }
@@ -330,16 +333,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void doublePendulumOne()
         {
-            /*
-            if ((int)Timer % 5 == 0 && owner!=null) {
-                Vector2 dir = (NPC.Center - owner.NPC.Center).SafeNormalize(Vector2.Zero);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, dir, 
-                    ModContent.ProjectileType<LaserSword>(), 25, 0);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, -dir,
-                    ModContent.ProjectileType<LaserSword>(), 25, 0);
-            }*/
+
             Timer ++;
         }
+
 
         public override void OnKill()
         {
@@ -349,5 +346,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
             base.OnKill();
         }
+
+        public void fireWork()
+        {
+            fireWork(Color.Blue);
+        }
+
     }
 }

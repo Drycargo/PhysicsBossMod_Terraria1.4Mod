@@ -20,10 +20,10 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         private VertexStrip tail = new VertexStrip();
         public const int TRAILING_CONST = 15;
         public const int CIRCLE_TRAILING_CONST = 10;
-        public const int CIRCLE_RADIUS = 50;
+        public const int CIRCLE_RADIUS = 30;
         public const int CIRCLE_DURATION = 30;
-        public const int TRANSIT = 45;
-        private const float ACC = 1.2f;
+        public const int TRANSIT = 30;
+        private const float ACC = 2f;
         private Texture2D backTex;
 
         public static Color[] colors = { Color.Red, Color.OrangeRed, Color.DarkGoldenrod, Color.Crimson};
@@ -51,13 +51,12 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
 
         public override void SetDefaults()
         {
-            base.SetDefaults();
             Projectile.friendly = false;
             Projectile.hostile = true;
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(3.75 * 60);
+            Projectile.timeLeft = (int)(1 * 60) + TRANSIT;
             Projectile.damage = 25;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
