@@ -52,7 +52,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override void AI()
         {
             if ((int)Timer == 0)
-                Projectile.velocity = - 30 * Vector2.UnitY;
+                Projectile.velocity.Y = -35;
             if (!activated)
             {
                 if (Projectile.velocity.Y >=0)
@@ -62,9 +62,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 }
             }
             else {
-                Projectile.velocity.X = 2*(float)Math.Sin(Timer/MathHelper.TwoPi * 1.5f);
+                Projectile.velocity.X = 20*(float)Math.Sin(Timer/MathHelper.TwoPi * 1.5f);
             }
-            Projectile.velocity += 0.5f * Vector2.UnitY;
+            Projectile.velocity.Y += 0.6f;
 
             // update old pos & rot
             if ((int)Timer % 3 == 0) {

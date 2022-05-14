@@ -21,6 +21,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         public const int TRANSIT = 60;
 
         private Texture2D tex;
+        private Texture2D contentTex;
         protected VertexStrip tail = new VertexStrip();
         private float prog;
         public override void SetStaticDefaults()
@@ -42,8 +43,9 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             Projectile.damage = 100;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
+            contentTex = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
 
-            Projectile.width = tex.Width;
+            Projectile.width = tex.Height;
             Projectile.height = tex.Height;
 
             prog = 0;
@@ -115,8 +117,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             PhysicsBoss.maskEffect.Parameters["timer"].SetValue((float)(Main.time * 0.005));
             PhysicsBoss.maskEffect.Parameters["threshold"].SetValue(prog);
             PhysicsBoss.maskEffect.Parameters["texMask"].SetValue(Main.screenTargetSwap);
-            PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value);
+            PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(contentTex);
 
             
             Main.graphics.GraphicsDevice.Textures[0] = screenTemp;

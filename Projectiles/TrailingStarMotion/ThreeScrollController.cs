@@ -91,7 +91,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             {
                 Player p = owner.getTarget();
                 float dTime = (p.Center - Projectile.Center).Length() / (SPEED/2);
-                dir = Vector2.Lerp(dir, p.Center + 1.5f * p.velocity * dTime - Projectile.Center, 0.25f);
+                dir = Vector2.Lerp(dir, p.Center + 1.5f * p.velocity * dTime - Projectile.Center, 0.05f);
             }
         }
 

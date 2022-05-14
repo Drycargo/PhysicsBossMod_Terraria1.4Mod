@@ -57,7 +57,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.width = tex.Width;
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
 
-            NPC.lifeMax = 1100;
+            NPC.lifeMax = 11000;
             NPC.defense = 100;
 
             NPC.knockBackResist = 0f;
@@ -126,7 +126,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             if (drawTrail != trail.SHADOW)
                                 drawTrail = trail.SHADOW;
 
-                            hover(owner.NPC.Center - 0.45f * ChaosTheory.DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY, 20, 0.3f, 60);
+                            hover(owner.NPC.Center - 0.5f * ChaosTheory.DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY, 20, 0.3f, 60);
                             break;
                         }
                     case (int)phase.DOUBLE_PENDULUM_ONE:

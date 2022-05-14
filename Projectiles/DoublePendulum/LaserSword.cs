@@ -20,7 +20,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
     {
         private VertexStrip tail = new VertexStrip();
         public const int TRAILING_CONST = 15;
-        public const int CIRCLE_TRAILING_CONST = 10;
+        public const int CIRCLE_TRAILING_CONST = 6;
         public const int CIRCLE_RADIUS = 30;
         public const int CIRCLE_DURATION = 30;
         public const int TRANSIT = 35;
@@ -102,7 +102,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             }
 
             if ((int)Timer == TRANSIT && Main.rand.NextBool()) {
-                SoundEngine.PlaySound(SoundID.Item15, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item13, Projectile.Center);
             }
 
             Timer++;

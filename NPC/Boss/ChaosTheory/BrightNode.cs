@@ -69,7 +69,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
             NPC.rotation = 0;
 
-            NPC.lifeMax = 1100;
+            NPC.lifeMax = 11000;
             NPC.defense = 100;
 
             NPC.knockBackResist = 0f;
@@ -218,7 +218,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 for (int i = 0; i < 3; i++) {
                     GlobalEffectController.drawRayLine(spriteBatch, NPC.Center,
                         NPC.Center + (triLaserAngle + (float)i * MathHelper.TwoPi/3).ToRotationVector2(),
-                        Color.Red, 10f);
+                        Color.Red*0.8f, 10f);
                 }
             }
 
