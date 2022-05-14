@@ -23,8 +23,8 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         public const int CIRCLE_TRAILING_CONST = 10;
         public const int CIRCLE_RADIUS = 30;
         public const int CIRCLE_DURATION = 30;
-        public const int TRANSIT = 30;
-        private const float ACC = 2f;
+        public const int TRANSIT = 35;
+        private const float ACC = 1.5f;
         private Texture2D backTex;
 
         public static Color[] colors = { Color.Red, Color.OrangeRed, Color.DarkGoldenrod, Color.Crimson};
@@ -101,7 +101,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 updateCircle(factor * 3f * MathHelper.TwoPi);
             }
 
-            if ((int)Timer == TRANSIT) {
+            if ((int)Timer == TRANSIT && Main.rand.NextBool()) {
                 SoundEngine.PlaySound(SoundID.Item15, Projectile.Center);
             }
 
@@ -126,7 +126,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             if (Timer < TRANSIT * 1.25) {
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
                     Projectile.Center + Projectile.rotation.ToRotationVector2(),
-                    drawColor * 0.8f * (float)Math.Min(Math.Min(1, (TRANSIT * 1.25 - Timer)/((float)TRANSIT * 0.25)), 
+                    drawColor * 0.6f * (float)Math.Min(Math.Min(1, (TRANSIT * 1.25 - Timer)/((float)TRANSIT * 0.25)), 
                     Timer / ((float)TRANSIT * 0.25)), 8);
             }
             return false;
@@ -213,7 +213,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
 
         public void setColor(int colorIndex)
         {
-            drawColor = colors[colorIndex % colors.Length];
+            drawColor = Color.Lerp(colors[colorIndex % colors.Length], Color.White, 0.3f);
         }
     }
 }

@@ -67,8 +67,9 @@ namespace PhysicsBoss.Projectiles
         {
             if (dead)
             {
-                GlobalEffectController.bloom((float)(Projectile.timeLeft - 1)/ 30 * 2f, 0.05f);
-                GlobalEffectController.shake((float)(Projectile.timeLeft - 1) / 30 * 2.5f);
+                float prog = ((Projectile.timeLeft - 1) / 30f);
+                GlobalEffectController.bloom((float)prog * 0.5f, 0.05f);
+                GlobalEffectController.shake((float)prog * 2.5f);
             } else if (initialized) {
                 for (int i = 0; i < CAPACITY; i++)
                 {

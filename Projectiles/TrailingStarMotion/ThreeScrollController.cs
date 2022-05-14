@@ -63,7 +63,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     Projectile.position = owner.NPC.Center;
                     Projectile.timeLeft++;
 
-                    if (Timer >= ChaosTheory.DOUBLE_PENDULUM_PERIOD / 3)
+                    if (Timer >= ChaosTheory.DOUBLE_PENDULUM_PERIOD / 4)
                         release();
                 }
                 else
@@ -91,7 +91,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             {
                 Player p = owner.getTarget();
                 float dTime = (p.Center - Projectile.Center).Length() / (SPEED/2);
-                dir = Vector2.Lerp(dir, p.Center + p.velocity * dTime - Projectile.Center, 0.25f);
+                dir = Vector2.Lerp(dir, p.Center + 1.5f * p.velocity * dTime - Projectile.Center, 0.25f);
             }
         }
 
@@ -107,7 +107,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
             if (!activated && dir != Vector2.Zero)
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center, Projectile.Center + dir, 
-                    Color.Blue * 0.8f * Math.Min(Timer/15f, 1), 20f);
+                    Color.LightBlue * 0.8f * Math.Min(Timer/15f, 1), 20f);
 
             if (activated) {
                 Main.graphics.GraphicsDevice.Textures[0] =
@@ -115,7 +115,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
                 PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(3 * Color.White.ToVector4());
-                PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(2 * Color.Blue.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(2 * Color.LightBlue.ToVector4());
                 PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue((float)Main.time * 0.01f);
                 PhysicsBoss.trailingEffect.CurrentTechnique.Passes["DynamicTrailSimple"].Apply();
 
@@ -125,7 +125,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     tex.Size() / 2 - Main.screenPosition, TRAILING_CONST);
 
                 tail.DrawTrail();
-                /*
+                
                 int l = Projectile.oldPos.Length;
                 for (int i = l - 1; i >= 0; i--)
                 {
@@ -135,11 +135,11 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                         Main.spriteBatch.Draw(tex, Projectile.oldPos[i] + tex.Size()/2 - Main.screenPosition,null,c, 
                             Projectile.oldRot[i], tex.Size() / 2, 1f, SpriteEffects.None, 0);
                     }
-                }*/
+                }
             }
 
             Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value,
-                Projectile.position - Main.screenPosition, Color.Lerp(Color.Blue, Color.White, 0.8f));
+                Projectile.position - Main.screenPosition, Color.Lerp(Color.LightBlue, Color.White, 0.5f));
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,

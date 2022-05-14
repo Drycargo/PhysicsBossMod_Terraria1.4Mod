@@ -20,6 +20,7 @@ float blurInten;
 
 float bloomInten;
 float blurThreshold;
+float2 targetRes;
 
 float gauss[3][3] =
 {
@@ -72,7 +73,7 @@ float4 BlurOnThreshold(float2 coords : TEXCOORD0) : COLOR0
 
 float4 BlurThresholdH(float2 coords : TEXCOORD0) : COLOR0
 {
-    float dx = 1 / uScreenResolution.x;
+    float dx = 1 / targetRes.x;
     float4 color = float4(0, 0, 0, 0);
     
     for (int i = -2; i <= 2; i++)
@@ -83,12 +84,12 @@ float4 BlurThresholdH(float2 coords : TEXCOORD0) : COLOR0
     }
     
     
-    return bloomInten * color;
+    return bloomInten * color + tex2D(uImage0, coords);
 }
 
 float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
 {
-    float dy = 1 / uScreenResolution.y;
+    float dy = 1 / targetRes.y;
     float4 color = float4(0, 0, 0, 0);
     
     for (int i = -2; i <= 2; i++)
@@ -99,7 +100,7 @@ float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
     }
     
     
-    return bloomInten * color;
+    return bloomInten * color + tex2D(uImage0, coords);
 }
 
 float4 Inverse(float2 coords : TEXCOORD0) : COLOR0

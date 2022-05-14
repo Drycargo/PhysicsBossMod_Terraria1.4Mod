@@ -32,7 +32,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private Texture2D luminanceTex;
         private Texture2D colorTex;
 
+        private Projectile[] triLasers;
+
         private Projectile[] sinlasers;
+
+        private bool drawTriLasers;
+        private float triLaserAngle;
         public enum phase
         {
             SIGNLE_PENDULUM_TWO = 0,
@@ -43,6 +48,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             HALVORSEN_FINALE = 5,
             DOUBLE_PENDULUM_PREPARATION = 6,
             DOUBLE_PENDULUM_ONE = 7,
+            DOUBLE_PENDULUM_TWO = 8,
         }
         public override void SetStaticDefaults()
         {
@@ -86,6 +92,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             sinlasers = new Projectile[2];
 
+            triLasers = new Projectile[3];
+            drawTriLasers = false;
+            triLaserAngle = MathHelper.PiOver2;
         }
 
         public override void AI()
@@ -151,10 +160,37 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             doublePendulumOne();
                             break;
                         }
+                    case (int)phase.DOUBLE_PENDULUM_TWO: {
+                            if (!drawConnection)
+                                drawConnection = true;
+                            if (drawTrail != trail.DEFAULT)
+                                drawTrail = trail.DEFAULT;
+                            if (!drawTriLasers)
+                                drawTriLasers = true;
+                            doublePendulumTwo();
+                            break;
+                        }
                     default: break;
                 }
             }
             base.AI();
+        }
+
+        private void doublePendulumTwo()
+        {
+            foreach (Projectile l in triLasers) {
+                if (l != null) {
+                    l.Center = NPC.Center;
+                }
+            }
+        }
+
+        public void summonTriLasers() {
+            for (int i = 0; i < 3; i++) {
+                triLasers[i] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<BlockFractalLaser>(),100,0);
+                triLasers[i].rotation = triLaserAngle + MathHelper.TwoPi / 3 * (float)i;
+            }
         }
 
         public override void FindFrame(int frameHeight)
@@ -177,6 +213,14 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 drawShadow(spriteBatch, Color.Red);
             else if (drawTrail == trail.TAIL)
                 drawTail(spriteBatch, Color.OrangeRed * 3.5f);
+
+            if (drawTriLasers) {
+                for (int i = 0; i < 3; i++) {
+                    GlobalEffectController.drawRayLine(spriteBatch, NPC.Center,
+                        NPC.Center + (triLaserAngle + (float)i * MathHelper.TwoPi/3).ToRotationVector2(),
+                        Color.Red, 10f);
+                }
+            }
 
             if (currentPhase == (int)phase.SIGNLE_PENDULUM_TWO) {
                 drawDisplacement();
@@ -502,6 +546,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public void fireWork()
         {
             fireWork(Color.Pink);
+        }
+
+        public void setTriLaserAngle(float angle) {
+            triLaserAngle = angle;
         }
     }
 }

@@ -42,17 +42,18 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<ThreeScrollController>();
+            Item.shoot = ModContent.ProjectileType<ElectricChargeController>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
 
-            /*
+            
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-            */
+            
 
+            /*
             ThreeScrollController t = (ThreeScrollController) 
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed*(Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX), 
                 type, damage, knockback, player.whoAmI).ModProjectile;
@@ -61,7 +62,7 @@ namespace PhysicsBoss.Items
             t.release();
             //t.release((Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX));
             //t.releaseStarBundle(player);
-
+            */
             return false;
         }
     }

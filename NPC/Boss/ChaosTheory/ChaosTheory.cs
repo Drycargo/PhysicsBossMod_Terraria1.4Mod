@@ -29,8 +29,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
-        public const float DOUBLE_PENDULUM_TOTAL_LENGTH = 600f;
+        public const float DOUBLE_PENDULUM_TOTAL_LENGTH = 500f;
         public const float DOUBLE_PENDULUM_PERIOD = 10/4f * 60;
+        public const float DOUBLE_PENDULUM_PERIOD2 = 9.725f/4f * 60;
         public const float G = 7f;
 
         public enum phase
@@ -46,9 +47,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             HalvorsenFinale8 = 8,
             DoublePendulumOne9 = 9,
             DoublePendulumTwo10 = 10,
+            ThreeBodyPreparation11 = 11,
         }
 
-        
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -60,12 +62,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             52f,
             56.8f,
             60 + 1.15f, // 1.65 -> 10
-            60 + 11.125f
+            60 + 11.125f,
+            60 + 20.85f,
         };
+        */
         
         
         
-        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
@@ -79,7 +82,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             1f,//9.25f
             11f
         };
-        */
+        
         
 
         private Texture2D tex;
@@ -108,6 +111,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private float angVel0, angVel1;
         private float m0, m1;
         private Projectile fractalRing = null;
+
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -152,7 +156,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             NPC.buffImmune[BuffID.OnFire3] = true;
             NPC.buffImmune[BuffID.Poisoned] = true;
             NPC.buffImmune[BuffID.Venom] = true;
-            
+
 
             Banner = NPC.type;
             BannerItem = ItemID.Gel; //stub
@@ -181,6 +185,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             angle0 = angle1 = MathHelper.Pi;
             angVel0 = angVel1 = 0;
             m0 = m1 = 1.0f;
+
         }
 
         public override void AI()
@@ -263,6 +268,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             doublePendulumOne9();
                             break;
                         }
+                    case phase.DoublePendulumTwo10:
+                        {
+                            doublePendulumTwo10();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -292,11 +302,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
         }
 
+
+
         public override void FindFrame(int frameHeight)
         {
             NPC.frame.Y = (int)NPC.frameCounter * NPC.height;
         }
-
 
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
@@ -533,7 +544,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             dimNode.NPC.Center = NPC.Center + len0 * (MathHelper.PiOver2 - angle0).ToRotationVector2();
             brightNode.NPC.Center = dimNode.NPC.Center + len1 * (MathHelper.PiOver2 - angle1).ToRotationVector2();
 
-            float fixedTimer = Timer - 0.5f;
+            float fixedTimer = Timer - 0.5f * 60;
 
 
             int fac = (int)fixedTimer % (int)(2 * DOUBLE_PENDULUM_PERIOD);
@@ -541,7 +552,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             // brightNode Laser
             if (fac < DOUBLE_PENDULUM_PERIOD)
             {
-                if ((int)(fac % DOUBLE_PENDULUM_PERIOD) < 0.5 * DOUBLE_PENDULUM_PERIOD)
+                if (fac > 0.05 * DOUBLE_PENDULUM_PERIOD && fac < 0.65 * DOUBLE_PENDULUM_PERIOD)
                 {
                     if ((int)Timer % 4 == 0)
                     {
@@ -590,7 +601,60 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     tsc.summonStarBundle<TrailingStarThreeScroll>();
                 }
             }
-            
+
+            for (int i = 0; i < 5; i++) {
+                Dust.NewDust(NPC.Center + Main.rand.NextVector2Unit() * len0, 0,0,DustID.MagicMirror);
+            }
+
+            Timer++;
+        }
+
+        private void doublePendulumTwo10()
+        {
+            // approach
+            if (Vector2.Distance(NPC.Center, target.Center) > 0.7 * DOUBLE_PENDULUM_TOTAL_LENGTH)
+            {
+                NPC.Center = 0.995f * NPC.Center + 0.005f * target.Center;
+            }
+
+            if ((int)Timer == 0)
+            {
+                NPC.velocity *= 0;
+                dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_TWO);
+                dimNode.setConnectionTarget(brightNode);
+                dimNode.Timer = 0;
+                brightNode.setPhase((int)BrightNode.phase.DOUBLE_PENDULUM_TWO);
+                brightNode.Timer = 0;
+                brightNode.setConnectionTarget(this);
+
+                selfFirework();
+                minionPendulumFirework();
+            }
+
+            summonMaintainFractalRing();
+
+            attractPlayer(FractalRing.RADIUS);
+
+            doublePendulumMotion();
+
+            brightNode.NPC.Center = NPC.Center + len0 * (MathHelper.PiOver2 - angle0).ToRotationVector2();
+            dimNode.NPC.Center = brightNode.NPC.Center + len1 * (MathHelper.PiOver2 - angle1).ToRotationVector2();
+
+            /*
+            int fac = (int)Timer % (int)(DOUBLE_PENDULUM_PERIOD2);
+            // brightNode lasers
+            if (fac <= 0.25 * DOUBLE_PENDULUM_PERIOD2)
+            {
+                float prog = (Timer % DOUBLE_PENDULUM_PERIOD2) / (0.25f * DOUBLE_PENDULUM_PERIOD2);
+                float angle = ((int)Timer % (int)(2 * DOUBLE_PENDULUM_PERIOD2) > DOUBLE_PENDULUM_PERIOD2) ?
+                    MathHelper.Lerp(MathHelper.PiOver2, MathHelper.TwoPi / 3, prog) :
+                    MathHelper.Lerp(MathHelper.Pi / 6, MathHelper.PiOver2, prog);
+
+                brightNode.setTriLaserAngle(angle);
+            }
+            else if (fac == (int)(0.5 * DOUBLE_PENDULUM_PERIOD2)) {
+                brightNode.summonTriLasers();
+            }*/
 
             Timer++;
         }

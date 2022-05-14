@@ -37,6 +37,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             HALVORSEN = 5,
             DOUBLE_PENDULUM_PREPARATION = 6,
             DOUBLE_PENDULUM_ONE = 7,
+            DOUBLE_PENDULUM_TWO = 8,
         }
         public override void SetStaticDefaults()
         {
@@ -133,6 +134,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             if (!drawConnection)
                                 drawConnection = true;
                             doublePendulumOne();
+                            break;
+                        }
+                    case (int)phase.DOUBLE_PENDULUM_TWO: 
+                        {
+                            doublePendulumTwo();
                             break;
                         }
                     default: break;
@@ -258,7 +264,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     trailingStarController.summonStarBundle<TrailingStarChua>();
                     if (bloomIntensity < 0)
                         bloomIntensity = 0;
-                    bloomIntensity += 0.2f; // changed
+                    bloomIntensity += 0.1f; // changed
                 } else if ((int)Timer % (int)CHUA_ORBIT_PERIOD == (int)(CHUA_ORBIT_PERIOD/2))
                 {
                     trailingStarController.releaseStarBundle(target);
@@ -335,6 +341,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
 
             Timer ++;
+        }
+
+        private void doublePendulumTwo()
+        {
+            Timer++;
         }
 
 
