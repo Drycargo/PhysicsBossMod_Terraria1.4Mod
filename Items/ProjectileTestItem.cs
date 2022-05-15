@@ -2,6 +2,7 @@
 using PhysicsBoss.Projectiles;
 using PhysicsBoss.Projectiles.ConwayGame;
 using PhysicsBoss.Projectiles.DoublePendulum;
+using PhysicsBoss.Projectiles.ThreeBodyMotion;
 using PhysicsBoss.Projectiles.TrailingStarMotion;
 using System;
 using System.Collections.Generic;
@@ -42,16 +43,18 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<ElectricChargeController>();
+            Item.shoot = ModContent.ProjectileType<WaterDrop>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            WaterDropController wdc = new WaterDropController(player.Center);
+            wdc.summonAll();
 
-            
+            /*
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-            
+            */
 
             /*
             ThreeScrollController t = (ThreeScrollController) 
