@@ -74,6 +74,7 @@ namespace PhysicsBoss
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
+
         }
 
         private void Main_OnResolutionChanged(Vector2 obj)

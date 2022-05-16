@@ -38,6 +38,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             DOUBLE_PENDULUM_PREPARATION = 6,
             DOUBLE_PENDULUM_ONE = 7,
             DOUBLE_PENDULUM_TWO = 8,
+            THREEBODY_MOTION = 9,
         }
         public override void SetStaticDefaults()
         {
@@ -138,7 +139,20 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                         }
                     case (int)phase.DOUBLE_PENDULUM_TWO: 
                         {
+                            if (drawTrail != trail.TAIL)
+                                drawTrail = trail.TAIL;
+                            if (!drawConnection)
+                                drawConnection = true;
                             doublePendulumTwo();
+                            break;
+                        }
+                    case (int)phase.THREEBODY_MOTION: 
+                        {
+                            if (drawConnection)
+                                drawConnection = false;
+                            if (drawTrail != trail.SHADOW)
+                                drawTrail = trail.SHADOW;
+                            orbit(owner.GeneralTimer / ORBIT_PERIOD * MathHelper.TwoPi);
                             break;
                         }
                     default: break;

@@ -52,7 +52,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override void AI()
         {
             if ((int)Timer == 0)
-                Projectile.velocity.Y = -15;
+                Projectile.velocity.Y = -30;
             if (!activated)
             {
                 if (Projectile.velocity.Y >=0)
@@ -61,9 +61,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     summonStarBundle<TrailingStarAizawa>();
                 }
             }
-            else {
-                Projectile.velocity.X = 20*(float)Math.Sin(Timer/MathHelper.TwoPi * 1.5f);
-            }
+
             Projectile.velocity.Y += 0.4f;
 
             // update old pos & rot

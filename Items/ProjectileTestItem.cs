@@ -48,7 +48,7 @@ namespace PhysicsBoss.Items
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            WaterDropController wdc = new WaterDropController(player.Center);
+            WaterDropController wdc = new WaterDropController(player.Center, 0);
             wdc.summonAll();
 
             /*

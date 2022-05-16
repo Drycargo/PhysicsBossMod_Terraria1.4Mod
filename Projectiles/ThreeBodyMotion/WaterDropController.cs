@@ -13,15 +13,15 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class WaterDropController
     {
         public const int TOTAL = 10;
-        public const float RADIUS = 1200;
+        public const float RADIUS = 900;
 
         private float angle;
         private WaterDrop[] waterDrops;
         private int count;
         private Vector2 center;
 
-        public WaterDropController(Vector2 c) {
-            angle = 0;
+        public WaterDropController(Vector2 c, float angle) {
+            this.angle = angle;
             waterDrops = new WaterDrop[TOTAL];
             count = 0;
             center = c;
@@ -32,18 +32,50 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 summonWaterDrop();
         }
 
-        private void summonWaterDrop() {
+        public void summonWaterDrop() {
             if (count >= TOTAL)
                 return;
             waterDrops[count] = (WaterDrop)(Projectile.NewProjectileDirect(
-                null, center + (angle + (float)count / (float)TOTAL * MathHelper.TwoPi).ToRotationVector2() * RADIUS,
+                null, getPosition(count) - getRotationAngle(count).ToRotationVector2() * 800f,
                 Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 150, 10).ModProjectile);
             waterDrops[count].Projectile.rotation = getRotationAngle(count);
             count++;
         }
 
+        public void updateAll(float newAngle) {
+            angle = newAngle;
+            for (int i = 0; i < count; i++) {
+                updatePosition(i);
+            }
+        }
+
+        private void updatePosition(int index) {
+            if (index >= count)
+                return;
+
+            Vector2 targetPos = getPosition(index);
+            if ((targetPos - waterDrops[index].Projectile.Center).Length() > 20f)
+            {
+                waterDrops[index].Projectile.Center = Vector2.Lerp(waterDrops[index].Projectile.Center,
+                    targetPos, 0.05f);
+            }
+            else {
+                waterDrops[index].Projectile.Center = targetPos;
+            }
+
+            waterDrops[index].Projectile.rotation = getRotationAngle(index);
+        }
+
+        private Vector2 getPosition(int index) {
+            return center + getPositionalAngle(index).ToRotationVector2() * RADIUS;
+        }
+
         private float getRotationAngle(int index) {
-            return angle + (float)index / (float)TOTAL * MathHelper.TwoPi - MathHelper.Pi / 5;
+            return  getPositionalAngle(index)- MathHelper.Pi * 3f / 10f;
+        }
+
+        private float getPositionalAngle(int index) {
+            return angle + (float)index / (float)TOTAL * MathHelper.TwoPi;
         }
     }
 }
