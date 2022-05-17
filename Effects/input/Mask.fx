@@ -5,6 +5,9 @@ float2 texSize;
 float timer;
 float threshold;
 
+float4 ordinaryTint;
+float4 contentTint;
+
 sampler2D uMask = sampler_state
 {
     Texture = <texMask>;
@@ -49,6 +52,22 @@ float4 DynamicMask(float2 coords : TEXCOORD0) : COLOR0
     return rawC * threshold + tex2D(uImage0, coords) * (1 - threshold);
 }
 
+float4 DynamicMaskTint(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 color = tex2D(uImage0, coords);
+    if (!any(color))
+        return tex2D(uImage0, coords);
+    if (color.r < threshold || color.a < threshold)
+        return color * ordinaryTint;
+
+    float4 rawC = tex2D(uContent, coords);
+    rawC.r = dynamicColor(rawC.r);
+    rawC.g = dynamicColor(rawC.g);
+    rawC.b = dynamicColor(rawC.b);
+
+    return rawC * contentTint;
+}
+
 float4 Mask(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uMask, coords);
@@ -71,5 +90,10 @@ technique Technique1
     pass DynamicMask
     {
         PixelShader = compile ps_2_0 DynamicMask();
+    }
+
+    pass DynamicMaskTint
+    {
+        PixelShader = compile ps_2_0 DynamicMaskTint();
     }
 }

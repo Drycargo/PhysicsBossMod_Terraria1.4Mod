@@ -38,7 +38,10 @@ namespace PhysicsBoss
             if (displacement.Length() >= 1)
                 displacement *= 0.9f;
             else
+            {
                 displacement *= 0;
+                deActivate();
+            }
 
             base.ModifyScreenPosition();
         }

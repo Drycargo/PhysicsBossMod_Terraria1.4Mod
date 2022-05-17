@@ -139,7 +139,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
             Main.graphics.GraphicsDevice.Textures[0] = trailTex;
 
-            PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(5 * Color.Blue.ToVector4());
+            PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(2.5f * Color.Blue.ToVector4());
             PhysicsBoss.shineEffect.Parameters["threashold"].SetValue(0.9f);
             PhysicsBoss.shineEffect.CurrentTechnique.Passes["Beam"].Apply();
 

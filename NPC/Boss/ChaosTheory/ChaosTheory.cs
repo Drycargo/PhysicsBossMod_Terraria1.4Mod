@@ -795,13 +795,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 waterDropController.summonWaterDrop();
             }
 
-            for (int i = 0; i < 30; i++) {
-                Dust d = Dust.NewDustDirect(NPC.Center + Main.rand.NextVector2Unit() * 450, 0,0,
-                    DustID.FlameBurst);
-                d.noGravity = true;
-                d.velocity *= 0;
-                d.scale *= 3;
-            }
 
             Timer++;
         }
