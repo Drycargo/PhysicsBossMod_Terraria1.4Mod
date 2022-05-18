@@ -31,7 +31,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
         public const float DOUBLE_PENDULUM_TOTAL_LENGTH = 550f;
-        public const float DOUBLE_PENDULUM_PERIOD = 10/4f * 60;
+        public const float DOUBLE_PENDULUM_PERIOD = 9.6f/4f * 60;
         public const float DOUBLE_PENDULUM_PERIOD2 = 9.725f/4f * 60;
         public const float G = 7f;
 
@@ -49,7 +49,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             DoublePendulumOne9 = 9,
             DoublePendulumTwo10 = 10,
             ThreeBodyPreparation11 = 11,
-            //ThreeBodyMotionOne12 = 12,
+            ThreeBodyMotionOne12 = 12,
         }
 
         
@@ -66,7 +66,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             60 + 1.15f, // 1.65 -> 10
             60 + 11.125f,
             60 + 20.85f,
-            //60 + 23.2f,
+            60 + 23.2f,
         };
         
         
@@ -120,6 +120,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         // for Three Body motion
         private WaterDropController waterDropController = null;
+        private ThreeBodyController threeBodyController = null;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -285,6 +286,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             threebodyPreparation11();
                             break;
                         }
+                    case phase.ThreeBodyMotionOne12: {
+                            CameraPlayer.deActivate();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -348,7 +353,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             if (fractalRing != null) {
-                fractalRing.timeLeft = FractalRing.TRANSIT - 1;
+                fractalRing.Kill();
+            }
+
+            if (threeBodyController != null)
+            {
+                threeBodyController.Projectile.Kill();
             }
 
             CameraPlayer.deActivate();
@@ -657,9 +667,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             float fac = Timer %(DOUBLE_PENDULUM_PERIOD2);
 
             // brightNode lasers
-            if (fac <= 0.25 * DOUBLE_PENDULUM_PERIOD2)
+            if (fac <= 0.35 * DOUBLE_PENDULUM_PERIOD2)
             {
-                float prog = fac / (0.25f * DOUBLE_PENDULUM_PERIOD2);
+                float prog = fac / (0.35f * DOUBLE_PENDULUM_PERIOD2);
                 float angle = ((int)Timer % (int)(2 * DOUBLE_PENDULUM_PERIOD2) > DOUBLE_PENDULUM_PERIOD2) ?
                     MathHelper.Lerp(MathHelper.PiOver2, MathHelper.Pi * (1f - 1f/6f), prog) :
                     MathHelper.Lerp(MathHelper.Pi / 6, MathHelper.PiOver2, prog);
@@ -771,30 +781,46 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     waterDropController = new WaterDropController(NPC.Center, -(GeneralTimer/1800) * MathHelper.TwoPi);
                 }
 
+                if (threeBodyController == null) {
+                    threeBodyController = (ThreeBodyController)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                        NPC.Center, Vector2.Zero, ModContent.ProjectileType<ThreeBodyController>(), 0, 0).ModProjectile);
+                }
+
                 dimNode.setPhase((int)DimNode.phase.THREEBODY_MOTION);
-                brightNode.setPhase((int)DimNode.phase.THREEBODY_MOTION);
+                brightNode.setPhase((int)BrightNode.phase.THREEBODY_MOTION);
 
                 CameraPlayer.activate();
+
+                NPC.dontTakeDamage = true;
             }
 
             NPC.velocity *= 0;
 
             if (waterDropController != null)
+            {
+                if (Timer >= 30 && Timer < 120 && (int)Timer % 9 == 0)
+                {
+                    waterDropController.summonWaterDrop();
+                }
                 waterDropController.updateAll(-(GeneralTimer / 1800) * MathHelper.TwoPi);
+            }
+
+            if (threeBodyController != null)
+            {
+                threeBodyController.Projectile.Center = NPC.Center;
+                threeBodyController.Projectile.timeLeft++;
+                if ((int)Timer == 120)
+                    threeBodyController.summonSuns();
+            }
 
             if (Timer <= 90)
             {
-                CameraPlayer.setDisplacement(Vector2.Lerp(Vector2.Zero,
-                    (NPC.Center - Main.ScreenSize.ToVector2() / 2) - Main.screenPosition, (Timer / 90f) * (Timer / 90f)));
+                CameraPlayer.setDisplacement(Vector2.Lerp(Main.screenPosition,
+                    (NPC.Center - Main.ScreenSize.ToVector2() / 2), (Timer / 90f) * (Timer / 90f)));
             }
             else {
-                CameraPlayer.setDisplacement(NPC.Center - Main.ScreenSize.ToVector2() / 2 -Main.screenPosition);
+                CameraPlayer.setDisplacement(NPC.Center - Main.ScreenSize.ToVector2() / 2);
             }
-
-            if (Timer >= 30 && Timer < 150 && (int)Timer % 12 == 0) {
-                waterDropController.summonWaterDrop();
-            }
-
 
             Timer++;
         }
@@ -842,6 +868,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             brightNode.setOwner(this);
             brightNode.setTarget(target);
             SoundEngine.PlaySound(SoundID.DrumTomHigh);
+        }
+
+        public phase getPhase() {
+            return currentPhase;
         }
 
         #endregion

@@ -43,18 +43,13 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<WaterDrop>();
-            Item.shootSpeed = 10f;
+            Item.shoot = ModContent.ProjectileType<Sun>();
+            Item.shootSpeed = 5f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            WaterDropController wdc = new WaterDropController(player.Center, 0);
-            wdc.summonAll();
-
-            /*
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-            */
 
             /*
             ThreeScrollController t = (ThreeScrollController) 

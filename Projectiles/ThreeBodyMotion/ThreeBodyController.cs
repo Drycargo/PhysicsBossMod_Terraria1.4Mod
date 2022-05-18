@@ -21,12 +21,14 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         public const int TRAILING_CONST = 10;
         public const float G = 6000;
         public const float FOCAL = 1000;
+        public const float INTENSITY_MAX = 10f;
 
         private Texture2D tex;
 
         private Sun[] suns;
         private bool summoned;
 
+        private float visualEffectIntensity;
 
         //private 
         public float Timer
@@ -54,29 +56,33 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             tex = ModContent.Request<Texture2D>(Texture).Value;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            Timer = 0;
+            Timer = (float)(Main.rand.Next() % 600);
 
             Projectile.width = tex.Width;
             Projectile.height = tex.Height;
 
             suns = new Sun[3];
             summoned = false;
+            visualEffectIntensity = 0;
         }
 
         public override void AI()
         {
             Projectile.velocity *= 0;
 
-            if (summoned) {
+            if (summoned)
+            {
 
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 3; i++)
+                {
                     Vector2 acc = Vector2.Zero;
 
-                    for (int j = 0; j < 3; j++) {
+                    for (int j = 0; j < 3; j++)
+                    {
                         if (j == i)
                             continue;
 
-                        acc += G * suns[j].Mass / 
+                        acc += G * suns[j].Mass /
                             Math.Max((suns[j].Projectile.Center - suns[i].Projectile.Center).LengthSquared(), 400f)
                             * (suns[j].Projectile.Center - suns[i].Projectile.Center).SafeNormalize(Vector2.Zero);
                     }
@@ -86,10 +92,11 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     float dist = (suns[i].Projectile.Center - Projectile.Center).Length();
 
                     if (dist > Sun.DIST_LIMIT)
-                        suns[i].Projectile.velocity -= 0.035f * (dist - Sun.DIST_LIMIT) 
+                        suns[i].Projectile.velocity -= 0.035f * (dist - Sun.DIST_LIMIT)
                             * (suns[i].Projectile.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
 
-                    if (suns[i].Projectile.velocity.Length() > Sun.SPEED_LIMIT) {
+                    if (suns[i].Projectile.velocity.Length() > Sun.SPEED_LIMIT)
+                    {
                         suns[i].Projectile.velocity.Normalize();
                         suns[i].Projectile.velocity *= Sun.SPEED_LIMIT;
                     }
@@ -111,70 +118,30 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     suns[i].Projectile.Center -= (cm - Projectile.Center);
                     suns[i].Projectile.timeLeft++;
                 }
-
-                #region 3d
-                /*
-                for (int i = 0; i < 3; i++) {
-                    Vector3 acc = Vector3.Zero;
-
-                    for (int j = 0; j < 3; j++)
-                    {
-                        if (j == i)
-                            continue;
-
-                        acc += G * suns[j].Mass / Math.Max((suns[j].RealPos - suns[i].RealPos).LengthSquared(), 100f)
-                            * SafeNormalize(suns[j].RealPos - suns[i].RealPos, Vector3.Zero);
-                        
-                    }
-
-                    suns[i].RealVel += acc;
-
-                    if (suns[i].RealVel.Length() > Sun.SPEED_LIMIT) {
-                        suns[i].RealVel.Normalize();
-                        suns[i].RealVel *= Sun.SPEED_LIMIT;
-                    }
-                }
-
-                Vector3 cm = Vector3.Zero;
-                float massSum = 0;
-
-                for (int i = 0; i < 3; i++)
-                {
-                    suns[i].RealPos += suns[i].RealVel;
-                    cm += suns[i].RealPos * suns[i].Mass;
-                    massSum += suns[i].Mass;
-                }
-
-                cm /= massSum;
-
-                for (int i = 0; i < 3; i++) {
-                    // render
-
-                    // normalize wrt center of mass
-                    suns[i].RealPos -= cm;
-
-
-                    // constrain
-                    if (suns[i].RealPos.Length() > Sun.DIST_LIMIT)
-                        suns[i].RealVel -= (float)(suns[i].RealPos.Length() - Sun.DIST_LIMIT) 
-                            * (SafeNormalize(suns[i].RealPos));
-
-                    float factor = FOCAL;
-                    if (suns[i].RealPos.Z >= FOCAL)
-                        factor /= 0.1f;
-                    else
-                        factor /= (FOCAL - suns[i].RealPos.Z);
-
-                    suns[i].Projectile.Center = new Vector2(
-                        Projectile.Center.X + suns[i].RealPos.X * factor,
-                        Projectile.Center.Y + suns[i].RealPos.Y * factor);
-
-                    // sustain
-                    suns[i].Projectile.timeLeft++;
-                }
-                */
-                #endregion
             }
+            else {
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        Dust d = Dust.NewDustDirect(Projectile.Center + 0.7f * Sun.DIST_LIMIT * 
+                            (Timer/600 * MathHelper.TwoPi + (float)i * MathHelper.TwoPi/3).ToRotationVector2()
+                            + Main.rand.NextVector2Unit() * 30f,
+                            0,0,DustID.FlameBurst);
+                        d.velocity *= 0.5f;
+                        d.scale *= 3f;
+                        d.noGravity = true;
+                    }
+                }
+            }
+
+            GlobalEffectController.centerTwist(visualEffectIntensity * 0.2f, 
+                (INTENSITY_MAX - visualEffectIntensity)/INTENSITY_MAX * 1500 + 50, 50, Projectile.Center);
+            GlobalEffectController.shake(visualEffectIntensity);
+            GlobalEffectController.blur(visualEffectIntensity);
+
+            if (visualEffectIntensity > 0)
+                visualEffectIntensity -= 0.1f;
+            else
+                visualEffectIntensity = 0;
 
             Timer++;
         }
@@ -196,6 +163,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     suns[i].Timer = Sun.PERIOD * Main.rand.NextFloat();
                 }
                 summoned = true;
+
+                visualEffectIntensity = INTENSITY_MAX;
             }
         }
 

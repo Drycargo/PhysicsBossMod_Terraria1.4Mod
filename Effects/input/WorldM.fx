@@ -22,6 +22,28 @@ float bloomInten;
 float blurThreshold;
 float2 targetRes;
 
+float twistInten;
+float twistRadius;
+float twistWidth;
+float2 twistCenter;
+float2 texSize;
+
+float4 CenterTwist(float2 coords : TEXCOORD0) : COLOR0
+{
+    float2 originalCoord = float2(coords.x * texSize.x, coords.y * texSize.y);
+    float diffX = abs(originalCoord.x - twistCenter.x);
+    float diffY = abs(originalCoord.y - twistCenter.y);
+    float dist = sqrt(diffX * diffX + diffY*diffY);
+    
+    if (dist > twistRadius + twistWidth || dist < twistRadius - twistWidth)
+        return tex2D(uImage0, coords);
+    
+    float inten = (twistWidth - abs(dist - twistRadius)) / twistWidth * twistInten;
+    
+    return tex2D(uImage0, float2(coords.x + inten * diffX / texSize.x,
+        coords.y + inten * diffY / texSize.y));
+}
+
 float gauss[3][3] =
 {
     0.075, 0.124, 0.075,
@@ -146,5 +168,10 @@ technique Technique1
     pass BlurThresholdV
     {
         PixelShader = compile ps_2_0 BlurThresholdV();
+    }
+
+    pass CenterTwist
+    {
+        PixelShader = compile ps_2_0 CenterTwist();
     }
 }

@@ -17,30 +17,24 @@ namespace PhysicsBoss
         private static bool activated = false;
         public override void ModifyScreenPosition()
         {
-            /*
-            // check for ChaosTheory in ThreeBodyPreparation Phase
-            int requiredType = ModContent.NPCType<ChaosTheory>();
-            foreach (Terraria.NPC npc in Main.npc) {
-                if (npc.type == requiredType && npc.active) {
-                    Main.screenPosition = npc.position;
-                    break;
-                }
-            }*/
 
             if (activated)
             {
+                // check for ChaosTheory in ThreeBodyPreparation Phase
+                int requiredType = ModContent.NPCType<ChaosTheory>();
+                foreach (Terraria.NPC npc in Main.npc)
+                {
+                    if (npc.type == requiredType && npc.active)
+                    {
+                        break;
+                    }
+                    activated = false;
+                    return;
+                }
 
-                Main.screenPosition += displacement;
+                Main.screenPosition = displacement;
                 Main.screenPosition.X = Math.Max(Main.screenPosition.X, 0);
                 Main.screenPosition.Y = Math.Max(Main.screenPosition.Y, 0);
-            }
-
-            if (displacement.Length() >= 1)
-                displacement *= 0.9f;
-            else
-            {
-                displacement *= 0;
-                deActivate();
             }
 
             base.ModifyScreenPosition();

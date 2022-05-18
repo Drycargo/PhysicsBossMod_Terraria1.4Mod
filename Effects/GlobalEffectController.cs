@@ -101,6 +101,24 @@ namespace PhysicsBoss.Effects
             PhysicsBoss.worldEffect.Parameters["blurInten"].SetValue(intensity);
         }
 
+        public static void centerTwist(float intensity, float radius, float width, Vector2 Center) {
+            if (intensity <= 0 && Filters.Scene["PhysicsBoss:CenterTwist"].IsActive()) {
+                Filters.Scene.Deactivate("PhysicsBoss:CenterTwist");
+                return;
+            }
+
+            if (intensity > 0 && !Filters.Scene["PhysicsBoss:CenterTwist"].IsActive())
+            {
+                Filters.Scene.Activate("PhysicsBoss:CenterTwist");
+            }
+
+            PhysicsBoss.worldEffect.Parameters["twistInten"].SetValue(intensity);
+            PhysicsBoss.worldEffect.Parameters["twistRadius"].SetValue(radius);
+            PhysicsBoss.worldEffect.Parameters["twistWidth"].SetValue(width);
+            PhysicsBoss.worldEffect.Parameters["twistCenter"].SetValue(Center - Main.screenPosition);
+            PhysicsBoss.worldEffect.Parameters["texSize"].SetValue(Main.ScreenSize.ToVector2());
+        }
+
         public static void bloom(float intensity, float threashold) {
             /*
             if (intensity < 0 && Filters.Scene["PhysicsBoss:Bloom"].IsActive())
