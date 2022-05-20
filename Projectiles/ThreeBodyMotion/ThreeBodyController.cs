@@ -38,9 +38,9 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             set { Projectile.ai[0] = value; }
         }
 
-        public Vector2 this[int i]
+        public Sun this[int i]
         {
-            get { return suns[i].Projectile.Center; }
+            get { return suns[i]; }
         }
 
         public override void SetStaticDefaults()

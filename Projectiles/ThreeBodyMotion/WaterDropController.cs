@@ -85,5 +85,9 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 waterDrops[i].Projectile.Kill();
             }
         }
+
+        public Vector2 getCenter() {
+            return center;
+        }
     }
 }

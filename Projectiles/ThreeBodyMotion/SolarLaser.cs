@@ -15,17 +15,18 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace PhysicsBoss.Projectiles
+namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 {
-    public class BlockFractalLaser: ModProjectile
+    public class SolarLaser : ModProjectile
     {
-
         public const float LENGTH = 2500;
         public const float TRANSIT = 10;
-        public const float WIDTH = 40;
+        public const float WIDTH = 85;
+        private VertexStrip tail = new VertexStrip();
+        public const int TRAILING_CONST = 30;
 
         private float prog;
-        private Color drawColor = Color.Red;
+        private Color drawColor = Color.Yellow;
 
         protected Texture2D tex;
 
@@ -37,8 +38,8 @@ namespace PhysicsBoss.Projectiles
 
         public override void SetStaticDefaults()
         {
-            DisplayName.SetDefault("Block Fractal Laser");
-            DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "块状分型杂色激光");
+            DisplayName.SetDefault("Solar Laser");
+            DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "太阳激光");
             base.SetStaticDefaults();
         }
 
@@ -50,7 +51,7 @@ namespace PhysicsBoss.Projectiles
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(0.8 * 60);
+            Projectile.timeLeft = (int)(10 * 60);
             Projectile.damage = 100;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -62,6 +63,9 @@ namespace PhysicsBoss.Projectiles
             Timer = 0;
 
             prog = 0.0f;
+
+            Projectile.oldPos = new Vector2[TRAILING_CONST];
+            Projectile.oldRot = new float[TRAILING_CONST];
         }
 
         public override void AI()
@@ -76,51 +80,58 @@ namespace PhysicsBoss.Projectiles
             if (Timer < TRANSIT)
             {
                 GlobalEffectController.blur(1f * (1 - (Timer / TRANSIT)));
-                GlobalEffectController.shake(5f * (1 - (Timer/TRANSIT)));
-                
+                GlobalEffectController.shake(7.5f * (1 - (Timer / TRANSIT)));
+            }
+
+            if (Timer < TRANSIT || Timer % 10 == 0)
+            {
                 for (int j = 0; j < 50; j++)
                 {
-                    Vector2 pos = (Vector2.UnitX * ((float)j + Main.rand.NextFloat() - 0.5f)/ 
+                    Vector2 pos = (Vector2.UnitX * ((float)j + Main.rand.NextFloat() - 0.5f) /
                         50 * LENGTH).RotatedBy(Projectile.rotation) + Projectile.Center;
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < 2; i++)
                     {
-                        Dust d = Dust.NewDustDirect(pos, 0, 0, DustID.Torch);
+                        Dust d = Dust.NewDustDirect(pos, 0, 0, DustID.SolarFlare);
                         d.color = drawColor;
                         d.noGravity = true;
-                        d.velocity = 7f * (Projectile.rotation +
+                        d.velocity = ((float)j+1f)/50f * 15f * (Projectile.rotation +
                             (i % 2 == 0 ? 1 : -1) * MathHelper.PiOver2).ToRotationVector2();
                     }
                 }
             }
+
+            update();
 
             Timer++;
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
+
+            update();
+
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
+                BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
-            PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(prog * 2f * drawColor.ToVector4());
-            PhysicsBoss.shineEffect.Parameters["threashold"].SetValue(0.6f);
-            PhysicsBoss.shineEffect.Parameters["timer"].SetValue(-(float)Timer * 250);
-            PhysicsBoss.shineEffect.Parameters["texSize"].SetValue(tex.Size());
-            PhysicsBoss.shineEffect.Parameters["tex0"].SetValue(
-                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvanceTexture").Value);
-            PhysicsBoss.shineEffect.CurrentTechnique.Passes["DynamicBeam"].Apply();
+            PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(Color.White.ToVector4());
+            PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(3 * Color.Yellow.ToVector4());
+            PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
+            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["DynamicTrailSimple"].Apply();
 
             Main.graphics.GraphicsDevice.Textures[0] = tex;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
-            Main.spriteBatch.Draw(tex, Projectile.Center + LENGTH * Projectile.rotation.ToRotationVector2() / 2 - Main.screenPosition,
-                null, drawColor, Projectile.rotation, tex.Size() / 2f, 
-                new Vector2(LENGTH / tex.Width, prog * WIDTH / tex.Height), SpriteEffects.None, 0);
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
+                progress => Color.White,
+                progress => WIDTH * prog * (float)Math.Sqrt(progress) + 10f,
+                -Main.screenPosition, TRAILING_CONST);
+            tail.DrawTrail();
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
@@ -137,13 +148,37 @@ namespace PhysicsBoss.Projectiles
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             float point = 0f;
-            return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                   Projectile.Center, Projectile.Center + Projectile.rotation.ToRotationVector2() * LENGTH, 
-                   WIDTH / 2 * prog, ref point);
+
+            for (int i = 0; i < TRAILING_CONST - 1; i++) {
+                float width = (float)Math.Sqrt((float)i / (float)TRAILING_CONST);
+
+                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
+                   Projectile.oldPos[i], Projectile.oldPos[i + 1],
+                   width * prog, ref point))
+                    return true;
+            }
+
+            return false;
         }
 
-        public void setColor(Color c) {
+
+        public void setColor(Color c)
+        {
             drawColor = c;
+        }
+
+        private void update()
+        {
+            for (int i = 0; i < TRAILING_CONST; i++)
+            {
+                Projectile.oldRot[i] = Projectile.rotation;
+
+                float factor = (float)i / ((float)TRAILING_CONST);
+
+                Vector2 horizontalDisp = new Vector2(factor * LENGTH,0);
+
+                Projectile.oldPos[i] = Projectile.Center + horizontalDisp.RotatedBy(Projectile.rotation);
+            }
         }
     }
 }

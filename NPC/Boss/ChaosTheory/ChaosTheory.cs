@@ -34,6 +34,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         public const float DOUBLE_PENDULUM_PERIOD = 9.6f/4f * 60;
         public const float DOUBLE_PENDULUM_PERIOD2 = 9.725f/4f * 60;
         public const float THREE_BODY_PERIOD1 = 9.65f/4f * 60;
+        public const float THREE_BODY_PERIOD2 = 9.78f * 60;
         public const float G = 7f;
 
         public enum phase
@@ -52,9 +53,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ThreeBodyPreparation11 = 11,
             ThreeBodyMotionOne12 = 12,
             ThreeBodyMotionTwo13 = 13,
+            SpiralSink14 = 14,
         }
 
-        
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -70,11 +72,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             60 + 20.85f,
             60 + 23.2f,
             60 + 32.85f,
+            60 + 42.63f,
         };
-        
-        
-        
-        /*
+        */
+
+
+
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
@@ -90,8 +93,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             0,
             2.5f,
             12f,
+            21.6f,
         };
-        */
+        
         
 
         private Texture2D tex;
@@ -129,7 +133,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private Color circleColor;
         private Vector2 dashTarget;
         private Vector2 dashStart;
-        private bool drawAimLine;
+        private float aimLineTransparency;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -207,7 +211,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             circleRadius = 0;
             circleColor = Color.White;
             dashTarget = Vector2.Zero;
-            drawAimLine = false;
+            aimLineTransparency = 0;
         }
 
         public override void AI()
@@ -304,6 +308,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             threeBodyMotionOne12();
                             break;
                         }
+                    case phase.ThreeBodyMotionTwo13:
+                        {
+                            threeBodyMotionTwo13();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -333,6 +342,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
         }
 
+
         public override void FindFrame(int frameHeight)
         {
             NPC.frame.Y = (int)NPC.frameCounter * NPC.height;
@@ -340,8 +350,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
-            if (drawAimLine) {
-                GlobalEffectController.drawRayLine(spriteBatch, NPC.Center, target.Center, Color.Orange, 50f);
+            if (aimLineTransparency > 0) {
+                GlobalEffectController.drawRayLine(spriteBatch, NPC.Center, target.Center, Color.Orange * aimLineTransparency, 50f);
             }
 
             Color c = Color.White * ((255f - NPC.alpha)/255f);
@@ -726,14 +736,19 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Timer++;
         }
 
-        private void attractPlayer(float restrictionDist)
+        private void attractPlayer(float restrictionDist, Vector2 center)
         {
             foreach (Player p in Main.player)
             {
-                float dist = Vector2.Distance(p.Center, NPC.Center);
+                float dist = Vector2.Distance(p.Center, center);
                 if (p.active && dist > restrictionDist)
-                    p.velocity += (float)Math.Min(15, 2.5 * dist) * (NPC.Center - p.Center).SafeNormalize(Vector2.Zero);
+                    p.velocity += (float)Math.Min(15, 2.5 * dist) * (center - p.Center).SafeNormalize(Vector2.Zero);
             }
+        }
+
+        private void attractPlayer(float restrictionDist)
+        {
+            attractPlayer(restrictionDist, NPC.Center);
         }
 
         private void summonMaintainFractalRing()
@@ -861,6 +876,9 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     waterDropController.summonWaterDrop();
                 }
                 waterDropController.updateAll(-(GeneralTimer / 1800) * MathHelper.TwoPi);
+
+                // attract player
+                attractPlayer(WaterDropController.RADIUS, waterDropController.getCenter());
             }
 
             if (threeBodyController != null) {
@@ -871,7 +889,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     for (int i = 0; i < 3; i++) {
                         SolarRadiation sr = (SolarRadiation)(Projectile.NewProjectileDirect(
                             NPC.GetSource_FromAI(), NPC.Center, 
-                            (threeBodyController[i] - NPC.Center).SafeNormalize(Vector2.Zero) * (10f),
+                            (threeBodyController[i].Projectile.Center - NPC.Center).SafeNormalize(Vector2.Zero) * (10f),
                             ModContent.ProjectileType<SolarRadiation>(), 30, 0).ModProjectile);
                         sr.setTarget(target);
                     }
@@ -880,19 +898,41 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
             // dash
             float factor = Timer % THREE_BODY_PERIOD1;
-            if (factor < THREE_BODY_PERIOD1 * 0.55f)
+            if (factor > 0.45 * THREE_BODY_PERIOD1 && factor < 0.8 * THREE_BODY_PERIOD1)
             {
-                drawAimLine = true;
+                aimLineTransparency = (float)(0.7f * Math.Max(0, (THREE_BODY_PERIOD1 * 0.55f - factor) / (0.1 * THREE_BODY_PERIOD1)));
+                NPC.velocity *= 0;
+                dash(dashStart, dashTarget, (factor - THREE_BODY_PERIOD1 * 0.45f) / (0.35f * THREE_BODY_PERIOD1));
+                if ((int)factor == (int)(THREE_BODY_PERIOD1 * 0.45f))
+                    SoundEngine.PlaySound(SoundID.Thunder, NPC.Center);
+            }
+            else {
+                if (factor < THREE_BODY_PERIOD1 * 0.45f)
+                {
+                    aimLineTransparency = (float)(0.7f * Math.Min(1, factor / (0.4 * THREE_BODY_PERIOD1)));
+                }
+
+                dashTarget = target.Center;
+                dashStart = NPC.Center;
+                NPC.velocity = -5f * Vector2.Normalize(target.Center - NPC.Center);
+            }
+
+            /*
+            if (factor < THREE_BODY_PERIOD1 * 0.65f)
+            {
+                aimLineTransparency = (float)(0.7f * Math.Min(1, factor/(0.4 * THREE_BODY_PERIOD1)));
                 dashTarget = target.Center;
                 dashStart = NPC.Center;
                 NPC.velocity = -5f * Vector2.Normalize(target.Center - NPC.Center);
             }
             else {
-                drawAimLine = false;
+                aimLineTransparency = (float)(0.7f * Math.Max(0, (THREE_BODY_PERIOD1 * 0.75f - factor) / (0.1 * THREE_BODY_PERIOD1)));
                 NPC.velocity *= 0;
-                dash(dashStart, dashTarget, (factor - THREE_BODY_PERIOD1 * 0.55f) /(0.45f * THREE_BODY_PERIOD1));
+                dash(dashStart, dashTarget, (factor - THREE_BODY_PERIOD1 * 0.65f) /(0.35f * THREE_BODY_PERIOD1));
+                if ((int)factor == (int)(THREE_BODY_PERIOD1 * 0.65f))
+                    SoundEngine.PlaySound(SoundID.Thunder, NPC.Center);
             }
-
+            */
 
             Timer++;
         }
@@ -901,9 +941,45 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             if (targetPos == NPC.Center)
                 return;
-            Vector2 finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 100f;
+
+            Vector2 finalPos;
+            if (Vector2.Distance(targetPos, startPos) < 350)
+                finalPos = startPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 350f;
+            else
+                finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 100f;
+
             NPC.Center = Vector2.Lerp(startPos, finalPos, (float)Math.Sin(MathHelper.Pi * progress - MathHelper.PiOver2) * 0.5f + 0.5f);
-            GlobalEffectController.shake(5.5f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/600)));
+            GlobalEffectController.shake(6f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/600)));
+        }
+
+        private void threeBodyMotionTwo13()
+        {
+            if (Timer == 0) {
+                if (threeBodyController != null && waterDropController != null) {
+                    threeBodyController[0].fireLaser(waterDropController.getCenter());
+                    threeBodyController[1].fireLaser(waterDropController.getCenter());
+                }
+            }
+
+            if (threeBodyController != null)
+            {
+                threeBodyController.Projectile.Center = NPC.Center;
+                threeBodyController.Projectile.timeLeft++;
+            }
+
+            if (waterDropController != null)
+            {
+                waterDropController.updateAll(-(GeneralTimer / 1800) * MathHelper.TwoPi);
+
+                // attract player
+                attractPlayer(WaterDropController.RADIUS, waterDropController.getCenter());
+
+                hover(waterDropController.getCenter(), WaterDropController.RADIUS * 0.9f, 0, THREE_BODY_PERIOD2 / 2f,50, MAX_DISTANCE, 0.01f);
+            }
+
+
+
+            Timer++;
         }
 
         #endregion

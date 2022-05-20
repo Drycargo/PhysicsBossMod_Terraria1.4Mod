@@ -31,6 +31,10 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         private float mass;
         private Vector2 realPos;
 
+        private Projectile laser;
+        private float aimLineTransparency;
+        private Vector2 target;
+
         public Vector2 RealPos {
             get { return realPos; }
             set { realPos = value; }
@@ -76,14 +80,35 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.height = tex.Height;
 
             mass = 1f + 0.5f * (Main.rand.NextFloat() - 0.5f);
+
+            laser = null;
+            aimLineTransparency = 0;
+            target = new Vector2(-1, -1);
         }
 
         public override void AI() {
             //Projectile.velocity *= 0;
 
             Projectile.rotation = Projectile.velocity.ToRotation();
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 1; i++) {
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.SolarFlare);
+            }
+
+            if (target.X >= 0) {
+                if (aimLineTransparency < 0.8f)
+                    aimLineTransparency += 0.8f / 60f;
+                if (aimLineTransparency >= 0.8f) {
+                    if (laser == null)
+                        laser = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero,
+                            ModContent.ProjectileType<SolarLaser>(), 100, 0);
+                }
+            }
+
+            if (laser != null)
+            {
+                laser.Center = Projectile.Center;
+                laser.rotation = (target - Projectile.Center).ToRotation();
+                laser.timeLeft++;
             }
 
             Timer++;
@@ -97,6 +122,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
         public override void PostDraw(Color lightColor)
         {
+            if (aimLineTransparency > 0 && target.X >= 0 && laser == null)
+                GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center, target, Color.Yellow, 50f);
             
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
@@ -129,6 +156,17 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            if (laser != null)
+                laser.timeLeft = (int)SolarLaser.TRANSIT;
+            base.Kill(timeLeft);
+        }
+
+        public void fireLaser(Vector2 targetPos) {
+            target = targetPos;
         }
     }
 }
