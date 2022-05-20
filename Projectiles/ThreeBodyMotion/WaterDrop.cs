@@ -168,7 +168,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             if (currState == state.STATIC) {
                 float point = 0;
                 return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                    Projectile.Center,Projectile.oldPos[TRAILING_CONST - 1], 5f, ref point);
+                    Projectile.Center,Projectile.oldPos[TRAILING_CONST - 1], 2f, ref point);
             }
             return base.Colliding(projHitbox, targetHitbox);
         }

@@ -115,6 +115,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                                 Timer = 0;
                             if (drawTrail != trail.SHADOW)
                                 drawTrail = trail.SHADOW;
+                            if (NPC.dontTakeDamage)
+                                NPC.dontTakeDamage = false;
                             orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
                             break;
                         }

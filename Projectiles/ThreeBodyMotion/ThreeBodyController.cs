@@ -19,7 +19,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class ThreeBodyController:ModProjectile
     {
         public const int TRAILING_CONST = 10;
-        public const float G = 6000;
+        public const float G = 7000;
         public const float FOCAL = 1000;
         public const float INTENSITY_MAX = 10f;
 
@@ -29,6 +29,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         private bool summoned;
 
         private float visualEffectIntensity;
+        private float bloomIntensity;
 
         //private 
         public float Timer
@@ -36,6 +37,12 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             get { return Projectile.ai[0]; }
             set { Projectile.ai[0] = value; }
         }
+
+        public Vector2 this[int i]
+        {
+            get { return suns[i].Projectile.Center; }
+        }
+
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Three Body Controller");
@@ -64,6 +71,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             suns = new Sun[3];
             summoned = false;
             visualEffectIntensity = 0;
+            bloomIntensity = 0;
         }
 
         public override void AI()
@@ -75,6 +83,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
                 for (int i = 0; i < 3; i++)
                 {
+                    suns[i].Projectile.timeLeft++;
                     Vector2 acc = Vector2.Zero;
 
                     for (int j = 0; j < 3; j++)
@@ -92,7 +101,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     float dist = (suns[i].Projectile.Center - Projectile.Center).Length();
 
                     if (dist > Sun.DIST_LIMIT)
-                        suns[i].Projectile.velocity -= 0.035f * (dist - Sun.DIST_LIMIT)
+                        suns[i].Projectile.velocity -= 0.05f * (dist - Sun.DIST_LIMIT)
                             * (suns[i].Projectile.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
 
                     if (suns[i].Projectile.velocity.Length() > Sun.SPEED_LIMIT)
@@ -118,6 +127,11 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     suns[i].Projectile.Center -= (cm - Projectile.Center);
                     suns[i].Projectile.timeLeft++;
                 }
+
+                if (bloomIntensity > 1)
+                    bloomIntensity *= 0.95f;
+                else
+                    bloomIntensity = 0;
             }
             else {
                 for (int i = 0; i < 3; i++) {
@@ -131,12 +145,17 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                         d.noGravity = true;
                     }
                 }
+
+                bloomIntensity = 0.1f * INTENSITY_MAX * Math.Min(1, (Timer / 75f));
             }
 
-            GlobalEffectController.centerTwist(visualEffectIntensity * 0.2f, 
-                (INTENSITY_MAX - visualEffectIntensity)/INTENSITY_MAX * 1500 + 50, 50, Projectile.Center);
-            GlobalEffectController.shake(visualEffectIntensity);
-            GlobalEffectController.blur(visualEffectIntensity);
+            if (visualEffectIntensity > 0)
+            {
+                GlobalEffectController.centerTwist(visualEffectIntensity * 0.2f,
+                    (INTENSITY_MAX - visualEffectIntensity) / INTENSITY_MAX * 2500 + 50, 50, Projectile.Center);
+                GlobalEffectController.shake(2 * visualEffectIntensity);
+                GlobalEffectController.blur(visualEffectIntensity / INTENSITY_MAX * 0.5f);
+            }
 
             if (visualEffectIntensity > 0)
                 visualEffectIntensity -= 0.1f;
@@ -154,23 +173,27 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     suns[i] = (Sun)(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(),
                         Projectile.Center + (Timer / 600 * MathHelper.TwoPi + (float)i * MathHelper.TwoPi / 3).ToRotationVector2() * Sun.DIST_LIMIT * 0.7f,
                         Main.rand.NextVector2Unit() * 10f, ModContent.ProjectileType<Sun>(), 50, 0).ModProjectile);
-                    /*
-                    suns[i].RealPos = new Vector3(suns[i].Projectile.Center.X - Projectile.Center.X,
-                        suns[i].Projectile.Center.Y - Projectile.Center.Y, 0);
-                    suns[i].RealVel = 20 * new Vector3((float)Main.rand.NextFloat() - 0.5f,
-                        (float)Main.rand.NextFloat() - 0.5f, (float)Main.rand.NextFloat() - 0.5f);
-                    */
+
                     suns[i].Timer = Sun.PERIOD * Main.rand.NextFloat();
                 }
                 summoned = true;
 
                 visualEffectIntensity = INTENSITY_MAX;
+                bloomIntensity = 1.5f * INTENSITY_MAX;
             }
         }
 
         public override bool PreDraw(ref Color lightColor)
         {
             return false;
+        }
+
+        public override void PostDraw(Color lightColor)
+        {
+            if (bloomIntensity > 0)
+                GlobalEffectController.bloom(bloomIntensity * 0.1f, 0.05f);
+            if (Projectile.timeLeft <= 1)
+                GlobalEffectController.bloom(-1, 0.9f);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -192,6 +215,10 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     suns[i].Projectile.Kill();
                 }
             }
+
+            GlobalEffectController.centerTwist(-1,0,0, Projectile.Center);
+            GlobalEffectController.shake(-1);
+            GlobalEffectController.blur(-1);
             base.Kill(timeLeft);
         }
     }

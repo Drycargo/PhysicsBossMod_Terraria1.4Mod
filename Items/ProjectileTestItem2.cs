@@ -51,7 +51,7 @@ namespace PhysicsBoss.Items
             ThreeBodyController tbc = (ThreeBodyController) (Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI).ModProjectile);
 
-            tbc.summonSuns();
+            //tbc.summonSuns();
 
             return false;
         }

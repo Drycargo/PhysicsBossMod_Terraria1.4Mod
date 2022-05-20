@@ -74,6 +74,8 @@ namespace PhysicsBoss
             Filters.Scene["PhysicsBoss:BlurV"].Load();
             Filters.Scene["PhysicsBoss:CenterTwist"].Load();
 
+            CameraPlayer.deActivate();
+
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;

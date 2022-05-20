@@ -18,6 +18,7 @@ namespace PhysicsBoss.Effects
     {
         public static Texture2D beamTex  = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
         public static Texture2D ColorGradient  = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ColorGradient").Value;
+        public static Texture2D circleTex  = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Circle").Value;
         public static void drawAimLine(SpriteBatch spriteBatch, Vector2 center, Vector2 targetPos, Color color, float width)
         {
             spriteBatch.End();
@@ -35,7 +36,7 @@ namespace PhysicsBoss.Effects
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -63,7 +64,36 @@ namespace PhysicsBoss.Effects
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public static void drawCircle(SpriteBatch spriteBatch, Vector2 center, float radius, Color c) {
+            if (radius <= 0)
+                return;
+
+            
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.NonPremultiplied,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+            
+
+            Vector2 pos = center - Main.screenPosition - radius * Vector2.One;
+
+            spriteBatch.Draw(ModContent.Request<Texture2D>("PhysicsBoss/Asset/Circle").Value,
+                new Rectangle((int)(pos.X), (int)pos.Y,
+                (int)(2* radius), (int)(2 * radius)), null, c);
+
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,

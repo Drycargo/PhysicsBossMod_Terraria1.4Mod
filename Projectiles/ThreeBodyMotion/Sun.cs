@@ -18,8 +18,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 {
     public class Sun : ModProjectile
     {
-        public const float SPEED_LIMIT = 25f;
-        public const float DIST_LIMIT = 250f;
+        public const float SPEED_LIMIT = 45f;
+        public const float DIST_LIMIT = 180f;
         public const float PERIOD = 1/ 0.0075f;
 
         public const int TRAILING_CONST = 30;
@@ -83,7 +83,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
             Projectile.rotation = Projectile.velocity.ToRotation();
             for (int i = 0; i < 3; i++) {
-                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Enchanted_Gold);
+                Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.SolarFlare);
             }
 
             Timer++;
@@ -105,26 +105,27 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/Smoke").Value;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
-            PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(2 * Color.Red.ToVector4());
-            PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(Color.Yellow.ToVector4());
+            PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(3 * Color.Red.ToVector4());
+            PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(3 * Color.Yellow.ToVector4());
             PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue((float)Main.time * 0.01f);
             PhysicsBoss.trailingEffect.CurrentTechnique.Passes["DynamicTrailSimple"].Apply();
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
                 progress => Color.White,
-                progress => Projectile.width * 0.45f * (1 - progress),
+                progress => Projectile.width * 0.35f * (1 - progress),
                 tex.Size() / 2 - Main.screenPosition, TRAILING_CONST);
 
             tail.DrawTrail();
 
             PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(contentTex);
             PhysicsBoss.maskEffect.Parameters["threshold"].SetValue(0.9f);
-            PhysicsBoss.maskEffect.Parameters["ordinaryTint"].SetValue( Color.LightGoldenrodYellow.ToVector4());
+            PhysicsBoss.maskEffect.Parameters["ordinaryTint"].SetValue(2 * Color.Gold.ToVector4());
             PhysicsBoss.maskEffect.Parameters["contentTint"].SetValue(2 * Color.OrangeRed.ToVector4());
             PhysicsBoss.maskEffect.Parameters["timer"].SetValue(Timer / PERIOD);
             PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicMaskTint"].Apply();
 
             Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition, Color.White);
+
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);

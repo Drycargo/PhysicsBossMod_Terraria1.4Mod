@@ -21,6 +21,7 @@ namespace PhysicsBoss
             if (activated)
             {
                 // check for ChaosTheory in ThreeBodyPreparation Phase
+                
                 int requiredType = ModContent.NPCType<ChaosTheory>();
                 foreach (Terraria.NPC npc in Main.npc)
                 {
