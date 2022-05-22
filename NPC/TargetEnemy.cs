@@ -14,16 +14,16 @@ namespace PhysicsBoss.NPC
         protected Player target;
         public static Player seekTarget(Vector2 myCenter, float minDist)
         {
-            Player target = null;
+            Player t = null;
             foreach (var player in Main.player)
             {
-                if (player.active && Vector2.Distance(player.Center, myCenter) < minDist)
+                if (player.active && player.statLife > 0 && Vector2.Distance(player.Center, myCenter) < minDist)
                 {
                     minDist = Vector2.Distance(player.Center, myCenter);
-                    target = player;
+                    t = player;
                 }
             }
-            return target;
+            return t;
         }
 
         public void setTarget(Player t) {

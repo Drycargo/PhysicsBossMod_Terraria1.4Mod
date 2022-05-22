@@ -89,6 +89,14 @@ float4 DynamicTrailSimple(float2 coords : TEXCOORD0) : COLOR0
     * lerp(tailStart, tailEnd, coords.x);
 }
 
+float4 DynamicTrailSimpleFade(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 color = DynamicTrailSimple(coords);
+    color.a *= sqrt(1 - coords.x);
+    return color;
+
+}
+
 float4 StaticTrail(PSInput input) : COLOR0
 {
     float3 coord = input.Texcoord;
@@ -131,6 +139,11 @@ technique Technique1 {
     pass DynamicTrailSimple
     {
         PixelShader = compile ps_2_0 DynamicTrailSimple();
+    }
+
+    pass DynamicTrailSimpleFade
+    {
+        PixelShader = compile ps_2_0 DynamicTrailSimpleFade();
     }
 
     pass StaticTrail

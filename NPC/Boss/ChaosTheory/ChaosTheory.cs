@@ -53,10 +53,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ThreeBodyPreparation11 = 11,
             ThreeBodyMotionOne12 = 12,
             ThreeBodyMotionTwo13 = 13,
-            SpiralSink14 = 14,
+            ThreeBodyMotionFinale14 = 14,
+            //SpiralSink14 = 14,
         }
 
-        /*
+        
         public static readonly float[] phaseTiming = new float[] {
             0,
             2.25f,
@@ -72,12 +73,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             60 + 20.85f,
             60 + 23.2f,
             60 + 32.85f,
-            60 + 42.63f,
+            60 + 41.63f,
         };
-        */
-
-
-
+        
+        /*
         public static readonly float[] phaseTiming = new float[] {
             0,
             0,
@@ -95,7 +94,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             12f,
             21.6f,
         };
-        
+        */
         
 
         private Texture2D tex;
@@ -229,7 +228,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             // seek target
-            if (target == null)
+            if (target == null || !target.active || target.statLife <= 0)
             {
                 target = seekTarget(NPC.Center, MAX_DISTANCE);
                 if (target != null)
@@ -239,17 +238,27 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     if (brightNode != null)
                         brightNode.setTarget(target);
                 }
+                else {
+                    if (dimNode != null)
+                        dimNode.NPC.active = false;
+                    if (brightNode != null)
+                        dimNode.NPC.active = false;
+                    NPC.active = false;
+                    deActivate();
+                }
             }
 
-            if (target != null) {
-                switch (currentPhase) {
-                    case phase.INIT: 
+            if (target != null && target.active && target.statLife > 0)
+            {
+                switch (currentPhase)
+                {
+                    case phase.INIT:
                         {
                             init();
                             Timer++;
                             break;
                         }
-                    case phase.PendulumOne1: 
+                    case phase.PendulumOne1:
                         {
                             NPC.alpha = 0;
                             pendulumeOne1();
@@ -258,9 +267,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     case phase.PendulumOnePhaseTwo2:
                         {
                             pendulumeOne2();
-                            break;    
+                            break;
                         }
-                    case phase.ElectricCharge3: {
+                    case phase.ElectricCharge3:
+                        {
                             electricCharge3();
                             break;
                         }
@@ -274,17 +284,17 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             chuaCircuit5();
                             break;
                         }
-                    case phase.ChuaCircuitFinale6: 
+                    case phase.ChuaCircuitFinale6:
                         {
                             chuaCircuitFinale6();
                             break;
                         }
-                    case phase.Halvorsen7: 
+                    case phase.Halvorsen7:
                         {
                             halvorsen7();
                             break;
                         }
-                    case phase.HalvorsenFinale8: 
+                    case phase.HalvorsenFinale8:
                         {
                             halvorsenFinale8();
                             break;
@@ -299,11 +309,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             doublePendulumTwo10();
                             break;
                         }
-                    case phase.ThreeBodyPreparation11: {
+                    case phase.ThreeBodyPreparation11:
+                        {
                             threebodyPreparation11();
                             break;
                         }
-                    case phase.ThreeBodyMotionOne12: {
+                    case phase.ThreeBodyMotionOne12:
+                        {
                             CameraPlayer.deActivate();
                             threeBodyMotionOne12();
                             break;
@@ -311,6 +323,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     case phase.ThreeBodyMotionTwo13:
                         {
                             threeBodyMotionTwo13();
+                            break;
+                        }
+                    case phase.ThreeBodyMotionFinale14:
+                        {
+                            threeBodyMotionFinale14();
                             break;
                         }
                     default: break;
@@ -342,7 +359,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
         }
 
-
         public override void FindFrame(int frameHeight)
         {
             NPC.frame.Y = (int)NPC.frameCounter * NPC.height;
@@ -366,7 +382,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         public override void OnKill()
         {
-            if (dimNode != null) {
+            if (dimNode != null)
+            {
                 dimNode.OnKill();
                 dimNode.NPC.active = false;
                 dimNode.NPC.life = -1;
@@ -379,12 +396,21 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 brightNode.NPC.life = -1;
             }
 
-            if (conwayGameController != null) {
+            deActivate();
+
+            base.OnKill();
+        }
+
+        private void deActivate()
+        {
+            if (conwayGameController != null)
+            {
                 conwayGameController.Kill();
                 conwayGameController = null;
             }
 
-            if (fractalRing != null) {
+            if (fractalRing != null)
+            {
                 fractalRing.Kill();
             }
 
@@ -399,8 +425,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
 
             CameraPlayer.deActivate();
-
-            base.OnKill();
         }
 
 
@@ -904,7 +928,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 NPC.velocity *= 0;
                 dash(dashStart, dashTarget, (factor - THREE_BODY_PERIOD1 * 0.45f) / (0.35f * THREE_BODY_PERIOD1));
                 if ((int)factor == (int)(THREE_BODY_PERIOD1 * 0.45f))
-                    SoundEngine.PlaySound(SoundID.Thunder, NPC.Center);
+                    SoundEngine.PlaySound(SoundID.Thunder);
             }
             else {
                 if (factor < THREE_BODY_PERIOD1 * 0.45f)
@@ -946,10 +970,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (Vector2.Distance(targetPos, startPos) < 350)
                 finalPos = startPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 350f;
             else
-                finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 100f;
+                finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 150f;
 
             NPC.Center = Vector2.Lerp(startPos, finalPos, (float)Math.Sin(MathHelper.Pi * progress - MathHelper.PiOver2) * 0.5f + 0.5f);
-            GlobalEffectController.shake(6f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/600)));
+            GlobalEffectController.shake(12f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/1000)));
         }
 
         private void threeBodyMotionTwo13()
@@ -964,6 +988,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (threeBodyController != null)
             {
                 threeBodyController.Projectile.Center = NPC.Center;
+                if ((int)Timer % (int)(THREE_BODY_PERIOD2 / 8) == 0)
+                {
+                    threeBodyController[2].fireSpike();
+                }
                 threeBodyController.Projectile.timeLeft++;
             }
 
@@ -974,13 +1002,42 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 // attract player
                 attractPlayer(WaterDropController.RADIUS, waterDropController.getCenter());
 
-                hover(waterDropController.getCenter(), WaterDropController.RADIUS * 0.9f, 0, THREE_BODY_PERIOD2 / 2f,50, MAX_DISTANCE, 0.01f);
+                hover(waterDropController.getCenter(), WaterDropController.RADIUS * 0.75f, 0, 
+                    THREE_BODY_PERIOD2 * MathHelper.Lerp(1f/2f,  1f/ 2.5f, Timer/THREE_BODY_PERIOD2),50, MAX_DISTANCE, 0.01f);
             }
-
 
 
             Timer++;
         }
+
+
+        private void threeBodyMotionFinale14()
+        {
+            hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
+
+            if (Timer == 0) {
+                if (threeBodyController != null) {
+                    threeBodyController.Projectile.Kill();
+                    threeBodyController = null;
+                }
+
+                if (waterDropController != null) {
+                    waterDropController.aimAll(target.Center);
+                }
+            }
+
+            if (Timer == 60) {
+                if (waterDropController != null)
+                {
+                    waterDropController.launchAll();
+                    waterDropController = null;
+                    SoundEngine.PlaySound(SoundID.Item12);
+                }
+            }
+
+            Timer++;
+        }
+
 
         #endregion
 

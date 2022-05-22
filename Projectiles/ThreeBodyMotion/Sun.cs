@@ -94,13 +94,16 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.SolarFlare);
             }
 
-            if (target.X >= 0) {
+            if (target.X >= 0 && laser == null) {
                 if (aimLineTransparency < 0.8f)
                     aimLineTransparency += 0.8f / 60f;
                 if (aimLineTransparency >= 0.8f) {
                     if (laser == null)
+                    {
                         laser = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero,
                             ModContent.ProjectileType<SolarLaser>(), 100, 0);
+                        aimLineTransparency = 0;
+                    }
                 }
             }
 
@@ -123,7 +126,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         public override void PostDraw(Color lightColor)
         {
             if (aimLineTransparency > 0 && target.X >= 0 && laser == null)
-                GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center, target, Color.Yellow, 50f);
+                GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center, target, 
+                    Color.Yellow * aimLineTransparency, 50f);
             
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
@@ -167,6 +171,13 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
         public void fireLaser(Vector2 targetPos) {
             target = targetPos;
+        }
+
+        public void fireSpike() {
+            for (int i = 0; i < 8; i++) {
+                Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, ((float)i/8f * MathHelper.TwoPi).ToRotationVector2(),
+                    ModContent.ProjectileType<SolarSpike>(), 50, 0);
+            }
         }
     }
 }

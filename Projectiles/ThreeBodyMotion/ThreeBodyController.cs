@@ -146,7 +146,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     }
                 }
 
-                bloomIntensity = 0.1f * INTENSITY_MAX * Math.Min(1, (Timer / 75f));
+                bloomIntensity = 0.01f * INTENSITY_MAX * Math.Min(1, (Timer / 75f));
             }
 
             if (visualEffectIntensity > 0)

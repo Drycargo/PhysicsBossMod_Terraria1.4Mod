@@ -13,7 +13,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class WaterDropController
     {
         public const int TOTAL = 10;
-        public const float RADIUS = 850;
+        public const float RADIUS = 800;
 
         private float angle;
         private WaterDrop[] waterDrops;
@@ -37,7 +37,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 return;
             waterDrops[count] = (WaterDrop)(Projectile.NewProjectileDirect(
                 null, getPosition(count) - getRotationAngle(count).ToRotationVector2() * 800f,
-                Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 150, 10).ModProjectile);
+                Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 80, 10).ModProjectile);
             waterDrops[count].Projectile.rotation = getRotationAngle(count);
             count++;
         }
@@ -88,6 +88,17 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
         public Vector2 getCenter() {
             return center;
+        }
+
+        public void aimAll(Vector2 aimPos) {
+            for (int i = 0; i < count; i++)
+                waterDrops[i].setStateAim(aimPos);
+        }
+
+        public void launchAll()
+        {
+            for (int i = 0; i < count; i++)
+                waterDrops[i].launch();
         }
     }
 }

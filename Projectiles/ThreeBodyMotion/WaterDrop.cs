@@ -20,7 +20,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class WaterDrop: ModProjectile
     {
         private VertexStrip tail = new VertexStrip();
-        public const int TRAILING_CONST = 8;
+        public const int TRAILING_CONST = 10;
         public const int TRAIL_LENGTH = 1500;
 
         private Texture2D tex;
@@ -56,7 +56,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.penetrate = -1;
 
             Projectile.timeLeft = (int)(20 * 60);
-            Projectile.damage = 100;
+            Projectile.damage = 80;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
@@ -89,8 +89,12 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                         break;
                     }
                 case state.AIM: {
-                        if (Projectile.velocity == Vector2.Zero) {
-                            Projectile.velocity = 25f * Projectile.rotation.ToRotationVector2();
+                        if (Projectile.velocity == Vector2.Zero)
+                        {
+                            Projectile.velocity = 5f * Projectile.rotation.ToRotationVector2();
+                        }
+                        else {
+                            Projectile.velocity *= 1.05f;
                         }
                         break;
                     }
@@ -121,7 +125,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         {
             if (currState == state.AIM)
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
-                    aim, Color.Lerp(Color.Blue, Color.White, 0.5f), 7.5f);
+                    aim, Color.Lerp(Color.Blue, Color.White, 0.5f) * Math.Min(1f, Timer / 30f), 7.5f);
 
             #region drawtail
             Main.spriteBatch.End();
@@ -167,14 +171,17 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         {
             if (currState == state.STATIC) {
                 float point = 0;
-                return Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                    Projectile.Center,Projectile.oldPos[TRAILING_CONST - 1], 2f, ref point);
+                if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
+                    Projectile.Center,Projectile.oldPos[TRAILING_CONST - 1], 2f, ref point))
+                    return true;
             }
-            return base.Colliding(projHitbox, targetHitbox);
+            return base.Colliding(new Rectangle((int)(projHitbox.Left + tex.Width * 0.7f),
+                (int)(projHitbox.Top + tex.Height * 0.7f), (int)(tex.Width * 0.6f), (int)(tex.Height * 0.6f)), targetHitbox);
         }
 
         public void setStateAim(Vector2 aimPos) {
             if (currState == state.STATIC) {
+                Timer = 0;
                 aim = aimPos;
                 currState = state.AIM;
             }
@@ -185,7 +192,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             {
                 currState = state.LAUNCHED;
                 if (aim != Vector2.Zero)
-                    Projectile.velocity = (aim - Projectile.Center).SafeNormalize(Vector2.UnitX) * 80f;
+                    Projectile.velocity = (aim - Projectile.Center).SafeNormalize(Vector2.UnitX) * 50f;
             }
         }
     }

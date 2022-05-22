@@ -21,7 +21,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     {
         public const float LENGTH = 2500;
         public const float TRANSIT = 10;
-        public const float WIDTH = 85;
+        public const float WIDTH = 95;
         private VertexStrip tail = new VertexStrip();
         public const int TRAILING_CONST = 30;
 
@@ -74,7 +74,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.velocity *= 0;
 
             if ((int)Timer == 0)
-                SoundEngine.PlaySound(SoundID.Item33, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item33);
 
 
             if (Timer < TRANSIT)
