@@ -181,8 +181,10 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             else if (drawTrail == trail.TAIL)
                 drawTail(spriteBatch, Color.Blue * 3.5f);
 
+            /*
             if (bloomIntensity > 0)
                 GlobalEffectController.bloom(bloomIntensity, 0.2f);
+            */
 
             spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), Color.White);
         }

@@ -20,7 +20,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class WaterDrop: ModProjectile
     {
         private VertexStrip tail = new VertexStrip();
-        public const int TRAILING_CONST = 10;
+        public const int TRAILING_CONST = 15;
         public const int TRAIL_LENGTH = 1500;
 
         private Texture2D tex;

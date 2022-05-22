@@ -79,8 +79,8 @@ namespace PhysicsBoss
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
-
         }
+
 
         private void Main_OnResolutionChanged(Vector2 obj)
         {
@@ -95,6 +95,7 @@ namespace PhysicsBoss
         private void FilterManager_EndCapture(On.Terraria.Graphics.Effects.FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
         {
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
+
         }
 
         public override void Unload()

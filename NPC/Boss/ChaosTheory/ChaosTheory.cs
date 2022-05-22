@@ -54,7 +54,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             ThreeBodyMotionOne12 = 12,
             ThreeBodyMotionTwo13 = 13,
             ThreeBodyMotionFinale14 = 14,
-            //SpiralSink14 = 14,
+            SpiralSink15 = 15,
         }
 
         
@@ -74,6 +74,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             60 + 23.2f,
             60 + 32.85f,
             60 + 41.63f,
+            60 + 43.13f, // 44.63
         };
         
         /*
@@ -126,6 +127,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         private Projectile fractalRing = null;
 
         // for Three Body motion
+        private Vector2 initialScreenPos = Vector2.Zero;
         private WaterDropController waterDropController = null;
         private ThreeBodyController threeBodyController = null;
         private float circleRadius;
@@ -330,6 +332,11 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                             threeBodyMotionFinale14();
                             break;
                         }
+                    case phase.SpiralSink15:
+                        {
+                            spiralSink15();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -358,6 +365,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 }
             }
         }
+
 
         public override void FindFrame(int frameHeight)
         {
@@ -837,8 +845,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void threebodyPreparation11()
         {
-            CameraPlayer.activate();
-            CameraPlayer.setDisplacement(NPC.Center - Main.ScreenSize.ToVector2() / 2);
+
 
             if ((int)Timer == 0) {
                 if (fractalRing != null) {
@@ -855,7 +862,16 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 brightNode.setPhase((int)BrightNode.phase.THREEBODY_MOTION);
 
                 NPC.dontTakeDamage = true;
+
+                initialScreenPos = Main.screenPosition;
             }
+
+            CameraPlayer.activate();
+
+            if (Timer < 60 && initialScreenPos != Vector2.Zero)
+                CameraPlayer.setDisplacement(Vector2.Lerp(initialScreenPos, NPC.Center - Main.ScreenSize.ToVector2() / 2, Timer/60f));
+            else
+                CameraPlayer.setDisplacement(NPC.Center - Main.ScreenSize.ToVector2() / 2);
 
             NPC.velocity *= 0;
 
@@ -892,6 +908,15 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 brightNode.setPhase((int)BrightNode.phase.ORBIT);
                 NPC.dontTakeDamage = false;
             }
+
+            if (Timer < 30)
+            {
+                CameraPlayer.activate();
+                CameraPlayer.setDisplacement(Vector2.Lerp(NPC.Center - Main.ScreenSize.ToVector2() / 2, Main.screenPosition, Timer / 30f));
+            }
+            else
+                CameraPlayer.deActivate();
+
 
             if (waterDropController != null)
             {
@@ -970,7 +995,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (Vector2.Distance(targetPos, startPos) < 350)
                 finalPos = startPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 350f;
             else
-                finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 150f;
+                finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 120f;
 
             NPC.Center = Vector2.Lerp(startPos, finalPos, (float)Math.Sin(MathHelper.Pi * progress - MathHelper.PiOver2) * 0.5f + 0.5f);
             GlobalEffectController.shake(12f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/1000)));
@@ -1003,7 +1028,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 attractPlayer(WaterDropController.RADIUS, waterDropController.getCenter());
 
                 hover(waterDropController.getCenter(), WaterDropController.RADIUS * 0.75f, 0, 
-                    THREE_BODY_PERIOD2 * MathHelper.Lerp(1f/2f,  1f/ 2.5f, Timer/THREE_BODY_PERIOD2),50, MAX_DISTANCE, 0.01f);
+                    THREE_BODY_PERIOD2 * MathHelper.Lerp(1f/2f,  1f/ 2.25f, Timer/THREE_BODY_PERIOD2),50, MAX_DISTANCE, 0.01f);
             }
 
 
@@ -1035,6 +1060,15 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 }
             }
 
+            Timer++;
+        }
+
+        private void spiralSink15()
+        {
+            if (Timer < 30) {
+                
+            }
+            NPC.velocity *= 0;
             Timer++;
         }
 

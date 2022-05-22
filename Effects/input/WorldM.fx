@@ -28,6 +28,8 @@ float twistWidth;
 float2 twistCenter;
 float2 texSize;
 
+float extractThreshold;
+
 float4 CenterTwist(float2 coords : TEXCOORD0) : COLOR0
 {
     float2 originalCoord = float2(coords.x * texSize.x, coords.y * texSize.y);
@@ -54,6 +56,13 @@ float gauss[3][3] =
 float gaussOneD[5] =
     { 0.054, 0.244, 0.403, 0.244, 0.054};
 
+float4 Extract(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 c = tex2D(uImage0, coords);
+    if (c.r * 0.4 + c.g * 0.4 + c.b * 0.2 >= extractThreshold)
+        return c;
+    return float4(0,0,0,0);
+}
 
 float4 GaussBlur(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -106,7 +115,7 @@ float4 BlurThresholdH(float2 coords : TEXCOORD0) : COLOR0
     }
     
     
-    return bloomInten * color + tex2D(uImage0, coords);
+    return bloomInten * color;
 }
 
 float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
@@ -122,7 +131,7 @@ float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
     }
     
     
-    return bloomInten * color + tex2D(uImage0, coords);
+    return bloomInten * color;
 }
 
 float4 Inverse(float2 coords : TEXCOORD0) : COLOR0
@@ -173,5 +182,10 @@ technique Technique1
     pass CenterTwist
     {
         PixelShader = compile ps_2_0 CenterTwist();
+    }
+
+    pass Extract
+    {
+        PixelShader = compile ps_2_0 Extract();
     }
 }

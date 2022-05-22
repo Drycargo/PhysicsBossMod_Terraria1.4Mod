@@ -146,7 +146,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     }
                 }
 
-                bloomIntensity = 0.01f * INTENSITY_MAX * Math.Min(1, (Timer / 75f));
+                bloomIntensity = 0.02f * INTENSITY_MAX * Math.Min(1, (Timer / 75f));
             }
 
             if (visualEffectIntensity > 0)
@@ -191,7 +191,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         public override void PostDraw(Color lightColor)
         {
             if (bloomIntensity > 0)
-                GlobalEffectController.bloom(bloomIntensity * 0.1f, 0.05f);
+                GlobalEffectController.bloom(bloomIntensity, 0.3f);
             if (Projectile.timeLeft <= 1)
                 GlobalEffectController.bloom(-1, 0.9f);
         }
