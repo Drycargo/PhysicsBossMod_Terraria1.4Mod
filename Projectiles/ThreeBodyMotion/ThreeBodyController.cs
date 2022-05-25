@@ -128,8 +128,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     suns[i].Projectile.timeLeft++;
                 }
 
-                if (bloomIntensity > 1)
-                    bloomIntensity *= 0.95f;
+                if (bloomIntensity > 0)
+                    bloomIntensity -= 0.05f;
                 else
                     bloomIntensity = 0;
             }
@@ -146,7 +146,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     }
                 }
 
-                bloomIntensity = 0.02f * INTENSITY_MAX * Math.Min(1, (Timer / 75f));
+                bloomIntensity = 0.8f * Math.Min(1, (Timer / 75f));
             }
 
             if (visualEffectIntensity > 0)
@@ -179,7 +179,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 summoned = true;
 
                 visualEffectIntensity = INTENSITY_MAX;
-                bloomIntensity = 1.5f * INTENSITY_MAX;
+                bloomIntensity = 1.3f;
             }
         }
 
@@ -219,6 +219,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             GlobalEffectController.centerTwist(-1,0,0, Projectile.Center);
             GlobalEffectController.shake(-1);
             GlobalEffectController.blur(-1);
+            GlobalEffectController.bloom(-1, 1);
             base.Kill(timeLeft);
         }
     }

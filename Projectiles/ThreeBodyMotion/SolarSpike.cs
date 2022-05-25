@@ -88,7 +88,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 if (Timer == TRANSIT + 1)
                 {
                     Projectile.velocity = vel.SafeNormalize(Vector2.UnitX) * 100f;
-                    SoundEngine.PlaySound(SoundID.Item74, Projectile.Center);
+                    SoundEngine.PlaySound(SoundID.Item74);
                 }
                 else
                     Projectile.velocity *= 0.95f;

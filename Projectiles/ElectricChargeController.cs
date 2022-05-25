@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
-using PhysicsBoss.NPC.Boss.ChaosTheory;
+using PhysicsBoss.NPCs.Boss.ChaosTheory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -68,7 +68,7 @@ namespace PhysicsBoss.Projectiles
             if (dead)
             {
                 float prog = ((Projectile.timeLeft - 1) / 30f);
-                GlobalEffectController.bloom((float)prog * 3.5f, 0.5f);
+                GlobalEffectController.bloom((float)prog * 2f, 0.3f);
                 GlobalEffectController.shake((float)prog * 2.5f);
             } else if (initialized) {
                 for (int i = 0; i < CAPACITY; i++)

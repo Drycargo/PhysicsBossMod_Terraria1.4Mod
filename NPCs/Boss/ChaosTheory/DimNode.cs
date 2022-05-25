@@ -16,7 +16,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace PhysicsBoss.NPC.Boss.ChaosTheory
+namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 {
     public class DimNode:NodeMinion
     {
@@ -130,6 +130,8 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                                 drawTrail = trail.SHADOW;
 
                             hover(owner.NPC.Center - 0.5f * ChaosTheory.DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY, 20, 0.3f, 60);
+                            fireCircularStar();
+                            Timer++;
                             break;
                         }
                     case (int)phase.DOUBLE_PENDULUM_ONE:
@@ -336,6 +338,13 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
         {
             if (bloomIntensity >= 0)
                 bloomIntensity = -1;
+            fireCircularStar();
+
+            Timer++;
+        }
+
+        private void fireCircularStar()
+        {
             if (Timer % 12 == 0)
             {
                 Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
@@ -353,8 +362,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                     }
                 }
             }
-
-            Timer++;
         }
 
         private void doublePendulumOne()

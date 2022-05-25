@@ -19,8 +19,9 @@ using PhysicsBoss.Projectiles.ConwayGame;
 using PhysicsBoss.Projectiles.DoublePendulum;
 using PhysicsBoss.Projectiles.TrailingStarMotion;
 using PhysicsBoss.Projectiles.ThreeBodyMotion;
+using PhysicsBoss.NPCs;
 
-namespace PhysicsBoss.NPC.Boss.ChaosTheory
+namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 {
     [AutoloadBossHead]
     public class ChaosTheory : TargetEnemy
@@ -74,7 +75,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             60 + 23.2f,
             60 + 32.85f,
             60 + 41.63f,
-            60 + 43.13f, // 44.63
+            60 + 43.00f, // 44.63
         };
         
         /*
@@ -184,6 +185,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             Banner = NPC.type;
             BannerItem = ItemID.Gel; //stub
 
+            NPC.lavaImmune = true;
             NPC.dontTakeDamage = true;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
@@ -549,6 +551,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             }
             Timer++;
         }
+
         private void chuaCircuit5()
         {
             if ((int)Timer == 0) {
@@ -952,8 +955,6 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 aimLineTransparency = (float)(0.7f * Math.Max(0, (THREE_BODY_PERIOD1 * 0.55f - factor) / (0.1 * THREE_BODY_PERIOD1)));
                 NPC.velocity *= 0;
                 dash(dashStart, dashTarget, (factor - THREE_BODY_PERIOD1 * 0.45f) / (0.35f * THREE_BODY_PERIOD1));
-                if ((int)factor == (int)(THREE_BODY_PERIOD1 * 0.45f))
-                    SoundEngine.PlaySound(SoundID.Thunder);
             }
             else {
                 if (factor < THREE_BODY_PERIOD1 * 0.45f)
@@ -991,9 +992,12 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (targetPos == NPC.Center)
                 return;
 
+            if (NPC.Center == startPos)
+                SoundEngine.PlaySound(SoundID.Roar);
+
             Vector2 finalPos;
-            if (Vector2.Distance(targetPos, startPos) < 350)
-                finalPos = startPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 350f;
+            if (Vector2.Distance(targetPos, startPos) < 300)
+                finalPos = startPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 300f;
             else
                 finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 120f;
 
@@ -1013,7 +1017,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
             if (threeBodyController != null)
             {
                 threeBodyController.Projectile.Center = NPC.Center;
-                if ((int)Timer % (int)(THREE_BODY_PERIOD2 / 8) == 0)
+                if (Timer > 60 && (int)Timer % (int)(THREE_BODY_PERIOD2 / 8) == 0)
                 {
                     threeBodyController[2].fireSpike();
                 }
@@ -1048,6 +1052,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
                 if (waterDropController != null) {
                     waterDropController.aimAll(target.Center);
+                    SoundEngine.PlaySound(SoundID.Item12);
                 }
             }
 
@@ -1056,7 +1061,7 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
                 {
                     waterDropController.launchAll();
                     waterDropController = null;
-                    SoundEngine.PlaySound(SoundID.Item12);
+                    SoundEngine.PlaySound(SoundID.Item33);
                 }
             }
 
@@ -1065,8 +1070,19 @@ namespace PhysicsBoss.NPC.Boss.ChaosTheory
 
         private void spiralSink15()
         {
-            if (Timer < 30) {
-                
+            if (Timer < 30)
+            {
+                GlobalEffectController.bloom(1.5f * Timer / 15f, 0);
+            }
+            else if (Timer < 75){
+                GlobalEffectController.bloom(1.5f * ((75f - Timer) / 45f), 0);
+                for (int i = 0; i < 3; i++) {
+                    Dust d = Dust.NewDustDirect(Main.screenPosition - Main.ScreenSize.ToVector2()/2, 
+                        2 * Main.screenWidth, 2 * Main.screenHeight, DustID.RainbowRod);
+                    d.noGravity = true;
+                    d.velocity.Y = 1;
+                    d.scale *= 5f * (75f - Timer) / 45f + 1;
+                }
             }
             NPC.velocity *= 0;
             Timer++;

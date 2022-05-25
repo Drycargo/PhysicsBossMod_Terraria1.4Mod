@@ -8,7 +8,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace PhysicsBoss.NPC
+namespace PhysicsBoss.NPCs
 {
     public abstract class TargetEnemy: ModNPC {
         protected Player target;

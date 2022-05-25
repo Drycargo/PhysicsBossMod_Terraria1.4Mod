@@ -17,7 +17,7 @@ using Terraria.DataStructures;
 using Terraria.Graphics;
 using PhysicsBoss.Projectiles.TrailingStarMotion;
 
-namespace PhysicsBoss.NPC.Boss.ChaosTheory
+namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 {
     public abstract class NodeMinion: TargetEnemy
     {

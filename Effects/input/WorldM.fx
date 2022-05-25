@@ -30,6 +30,64 @@ float2 texSize;
 
 float extractThreshold;
 
+float4 fillColor;
+
+float2 dispCenter;
+float dispTimer;
+Texture2D dispMap;
+float dispInten;
+
+sampler2D uDisp = sampler_state
+{
+    Texture = <dispMap>;
+    MinFilter = Linear;
+    MagFilter = Linear;
+    AddressU = wrap;
+    AddressV = wrap;
+};
+
+float4 Extract(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 c = tex2D(uImage0, coords);
+    if (c.r * 0.4 + c.g * 0.4 + c.b * 0.2 >= extractThreshold)
+        return c;
+    return float4(0, 0, 0, 0);
+}
+
+float4 FillOnThreshold(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 rawC = Extract(coords);
+    if (rawC.a == 0)
+        return rawC;
+    return fillColor;
+}
+
+float4 CenterDisplacement(float2 coords : TEXCOORD0) : COLOR0
+{
+    float realX = coords.x * uScreenResolution.x - dispCenter.x;
+    float realY = coords.y * uScreenResolution.y - dispCenter.y;
+    
+    float angle = atan(realY / realX);
+    if (realX < 0)
+        angle += 3.14159265359;
+    if (angle < 0)
+        angle += 6.28318530718;
+    
+    float4 dispC = tex2D(uDisp, float2(angle /6.28318530718, dispTimer));
+    
+    float inten = (dispC.r > 0.7 ? ((dispC.r - 0.7) / 0.3) : 0);
+    if (inten > 0.5)
+        inten = (1 - (1 - inten) * (1 - inten)) * dispInten;
+    else
+        inten *= inten * dispInten;
+        
+    if (length(float2(realX, realY)) < inten)
+        return float4(0, 0, 0, 0);
+    
+    return tex2D(uImage0, float2(coords.x - cos(angle) * inten / uScreenResolution.x, coords.y - sin(angle) * inten / uScreenResolution.y));
+
+}
+
 float4 CenterTwist(float2 coords : TEXCOORD0) : COLOR0
 {
     float2 originalCoord = float2(coords.x * texSize.x, coords.y * texSize.y);
@@ -56,13 +114,7 @@ float gauss[3][3] =
 float gaussOneD[5] =
     { 0.054, 0.244, 0.403, 0.244, 0.054};
 
-float4 Extract(float2 coords : TEXCOORD0) : COLOR0
-{
-    float4 c = tex2D(uImage0, coords);
-    if (c.r * 0.4 + c.g * 0.4 + c.b * 0.2 >= extractThreshold)
-        return c;
-    return float4(0,0,0,0);
-}
+
 
 float4 GaussBlur(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -115,7 +167,9 @@ float4 BlurThresholdH(float2 coords : TEXCOORD0) : COLOR0
     }
     
     
-    return bloomInten * color;
+    color *= bloomInten;
+    color.a = 1;
+    return color;
 }
 
 float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
@@ -130,8 +184,9 @@ float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
             color += gaussOneD[i + 2] * addColor;
     }
     
-    
-    return bloomInten * color;
+    color *= bloomInten;
+    color.a = 1;
+    return color;
 }
 
 float4 Inverse(float2 coords : TEXCOORD0) : COLOR0
@@ -187,5 +242,15 @@ technique Technique1
     pass Extract
     {
         PixelShader = compile ps_2_0 Extract();
+    }
+
+    pass FillOnThreshold
+    {
+        PixelShader = compile ps_2_0 FillOnThreshold();
+    }
+
+    pass CenterDisplacement
+    {
+        PixelShader = compile ps_2_0 CenterDisplacement();
     }
 }

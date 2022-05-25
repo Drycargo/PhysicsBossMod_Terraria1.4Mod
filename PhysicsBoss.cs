@@ -94,10 +94,13 @@ namespace PhysicsBoss
 
         private void FilterManager_EndCapture(On.Terraria.Graphics.Effects.FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
         {
+            
+            GlobalEffectController.applyBloom();
+            GlobalEffectController.applyFlash();
+
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
-
         }
-
+        
         public override void Unload()
         {
             trailingEffect = null;

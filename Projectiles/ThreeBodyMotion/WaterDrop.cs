@@ -46,6 +46,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             DisplayName.SetDefault("Water Drop");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "水滴");
             base.SetStaticDefaults();
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         public override void SetDefaults()
@@ -59,8 +61,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.damage = 80;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+
             Timer = 0;
 
             Projectile.width = tex.Width;

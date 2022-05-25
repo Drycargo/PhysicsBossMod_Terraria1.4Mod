@@ -19,6 +19,16 @@ namespace PhysicsBoss.Effects
         public static Texture2D beamTex  = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
         public static Texture2D ColorGradient  = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ColorGradient").Value;
         public static Texture2D circleTex  = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Circle").Value;
+
+        private static float bloomInten = 0f;
+        private static float bloomThreshold = 1;
+
+        private static float flashThreshold = 1;
+        private static Vector2 flashCenterPoint = Vector2.Zero;
+        private static Vector2 realCenterPoint;
+        private static int flashTimeLeft = 0;
+        private static float dispIntensity = 0;
+
         public static void drawAimLine(SpriteBatch spriteBatch, Vector2 center, Vector2 targetPos, Color color, float width)
         {
             spriteBatch.End();
@@ -149,9 +159,17 @@ namespace PhysicsBoss.Effects
             PhysicsBoss.worldEffect.Parameters["texSize"].SetValue(Main.ScreenSize.ToVector2());
         }
 
-        public static void bloom(float intensity, float threashold) {
+        public static void bloom(float intensity, float threshold)
+        {
+            bloomInten = intensity;
+            bloomThreshold = threshold;
+            //applyBloom(intensity, threashold);
+        }
+
+        public static void applyBloom()
+        {
             /*
-            if (intensity < 0 && Filters.Scene["PhysicsBoss:Bloom"].IsActive())
+            if (bloomInten < 0 && Filters.Scene["PhysicsBoss:Bloom"].IsActive())
             {
                 Filters.Scene.Deactivate("PhysicsBoss:Bloom");
                 return;
@@ -162,17 +180,16 @@ namespace PhysicsBoss.Effects
                 Filters.Scene.Activate("PhysicsBoss:Bloom");
             }
 
-            PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity);
-            PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
+            PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(bloomInten);
+            PhysicsBoss.worldEffect.Parameters["blurbloomThreshold"].SetValue(threashold);
             */
 
-            if (intensity < 0)
+            if (bloomInten <= 0)
                 return;
 
             GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
-            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width/2, Main.screenTarget.Height/2);
+            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width / 2, Main.screenTarget.Height / 2);
             SpriteBatch spriteBatch = Main.spriteBatch;
-            spriteBatch.End();
 
             #region original
             /*
@@ -189,20 +206,20 @@ namespace PhysicsBoss.Effects
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
                 spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
 
-                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity * 0.25f);
-                PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
+                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(bloomInten * 0.25f);
+                PhysicsBoss.worldEffect.Parameters["blurbloomThreshold"].SetValue(threashold);
 
-                //PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurOnThreshold"].Apply();
-                PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurThresholdH"].Apply();
+                //PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurOnbloomThreshold"].Apply();
+                PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurbloomThresholdH"].Apply();
 
                 spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                 spriteBatch.End();
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity * 0.25f);
-                PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(threashold);
+                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(bloomInten * 0.25f);
+                PhysicsBoss.worldEffect.Parameters["blurbloomThreshold"].SetValue(threashold);
 
-                PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurThresholdV"].Apply();
+                PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurbloomThresholdV"].Apply();
 
                 spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
                 spriteBatch.End();
@@ -214,9 +231,9 @@ namespace PhysicsBoss.Effects
             graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(threashold);
+            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(bloomThreshold);
             PhysicsBoss.worldEffect.CurrentTechnique.Passes["Extract"].Apply();
-            spriteBatch.Draw(Main.screenTarget,Vector2.Zero, Color.White);
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             for (int i = 0; i < 3; i++)
@@ -224,22 +241,22 @@ namespace PhysicsBoss.Effects
                 graphicsDevice.SetRenderTarget(screenTemp);
                 graphicsDevice.Clear(Color.Transparent);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity);
+                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(bloomInten);
                 PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(0);
                 PhysicsBoss.worldEffect.Parameters["targetRes"].SetValue(screenTemp.Size());
                 PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurThresholdH"].Apply();
-                spriteBatch.Draw(Main.screenTargetSwap, 
-                    new Rectangle(0,0, screenTemp.Width, screenTemp.Height), Color.White);
+                spriteBatch.Draw(Main.screenTargetSwap,
+                    new Rectangle(0, 0, screenTemp.Width, screenTemp.Height), Color.White);
                 spriteBatch.End();
 
                 graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
                 graphicsDevice.Clear(Color.Transparent);
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(intensity);
+                PhysicsBoss.worldEffect.Parameters["bloomInten"].SetValue(bloomInten);
                 PhysicsBoss.worldEffect.Parameters["blurThreshold"].SetValue(0);
                 PhysicsBoss.worldEffect.Parameters["targetRes"].SetValue(Main.screenTargetSwap.Size());
                 PhysicsBoss.worldEffect.CurrentTechnique.Passes["BlurThresholdV"].Apply();
-                spriteBatch.Draw(screenTemp, 
+                spriteBatch.Draw(screenTemp,
                     new Rectangle(0, 0, Main.screenTargetSwap.Width, Main.screenTargetSwap.Height), Color.White);
                 spriteBatch.End();
             }
@@ -261,16 +278,79 @@ namespace PhysicsBoss.Effects
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
             spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
-            spriteBatch.Draw(screenTemp, 
+            spriteBatch.Draw(screenTemp,
                 new Rectangle(0, 0, Main.screenTarget.Width, Main.screenTarget.Height), Color.White);
             spriteBatch.End();
+        }
 
-            spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
+        public static void flash(float threshold, Vector2 centerPos, int timeLeft, float intensity) {
+            flashThreshold = threshold;
+            flashTimeLeft = timeLeft;
+            flashCenterPoint = centerPos;
+            dispIntensity = intensity;
+        }
+
+        public static void applyFlash() {
+            if (flashTimeLeft <= 0)
+            {
+                realCenterPoint = Vector2.Zero;
+                return;
+            }
+
+            if (realCenterPoint == Vector2.Zero || flashTimeLeft % 5 == 0) {
+                realCenterPoint = flashCenterPoint + Main.rand.NextVector2Circular(450f,300f);
+            }
+
+            Texture2D noise = ModContent.Request<Texture2D>("PhysicsBoss/Asset/PerlinNoise").Value;
+            //Texture2D noise = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNNormal").Value;
+            GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
+            //RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width / 2, Main.screenTarget.Height / 2);
+            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width, Main.screenTarget.Height);
+            SpriteBatch spriteBatch = Main.spriteBatch;
+
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(flashThreshold);
+            PhysicsBoss.worldEffect.Parameters["fillColor"].SetValue(Color.White.ToVector4());
+            PhysicsBoss.worldEffect.CurrentTechnique.Passes["FillOnThreshold"].Apply();
+            spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+            Utils.DrawLine(spriteBatch, new Vector2(Main.screenPosition.X, Main.screenPosition.Y + realCenterPoint.Y),
+                new Vector2(Main.screenPosition.X + Main.screenWidth, Main.screenPosition.Y + realCenterPoint.Y), Color.White, Color.White, 30f);
+            Utils.DrawLine(spriteBatch, new Vector2(Main.screenPosition.X + realCenterPoint.X, Main.screenPosition.Y),
+                new Vector2(Main.screenPosition.X + realCenterPoint.X, Main.screenPosition.Y + Main.screenHeight), Color.White, Color.White, 30f);
+            spriteBatch.End();
+
+            graphicsDevice.SetRenderTarget(screenTemp);
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            PhysicsBoss.worldEffect.Parameters["dispCenter"].SetValue(realCenterPoint);
+            PhysicsBoss.worldEffect.Parameters["dispInten"].SetValue(dispIntensity);
+            PhysicsBoss.worldEffect.Parameters["dispMap"].SetValue(noise);
+            PhysicsBoss.worldEffect.Parameters["dispTimer"].SetValue((int)(flashTimeLeft/5) * 0.01f);
+            PhysicsBoss.worldEffect.CurrentTechnique.Passes["CenterDisplacement"].Apply();
+            spriteBatch.Draw(Main.screenTargetSwap,
+                new Rectangle(0, 0, screenTemp.Width, screenTemp.Height), Color.White);
+
+            spriteBatch.End();
+
+            graphicsDevice.SetRenderTarget(Main.screenTarget);
+            //graphicsDevice.Clear((flashTimeLeft % 10 < 5 ? Color.White * 0.75f : Color.Transparent));
+            graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            /*
+            if (flashTimeLeft % 10 < 5) {
+                PhysicsBoss.worldEffect.CurrentTechnique.Passes["Inverse"].Apply();
+            }
+            */
+            spriteBatch.Draw(screenTemp,
+                new Rectangle(0, 0, Main.screenTarget.Width, Main.screenTarget.Height), Color.White * 0.95f);
+            spriteBatch.End();
+
+
+            if (flashTimeLeft > 0)
+                flashTimeLeft--;
+            
         }
     }
 }

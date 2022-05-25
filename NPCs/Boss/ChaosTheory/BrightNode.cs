@@ -16,7 +16,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 
-namespace PhysicsBoss.NPC.Boss.ChaosTheory
+namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 {
     public class BrightNode:NodeMinion
     {

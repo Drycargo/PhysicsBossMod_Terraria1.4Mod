@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using PhysicsBoss.NPC.Boss.ChaosTheory;
+using PhysicsBoss.NPCs.Boss.ChaosTheory;
 using System;
 using System.Collections.Generic;
 using System.Linq;

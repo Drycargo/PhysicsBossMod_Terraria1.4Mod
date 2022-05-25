@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
-using PhysicsBoss.NPC.Boss.ChaosTheory;
+using PhysicsBoss.NPCs.Boss.ChaosTheory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,6 +98,10 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                             (i % 2 == 0 ? 1 : -1) * MathHelper.PiOver2).ToRotationVector2();
                     }
                 }
+            }
+
+            if ((int)Timer % 30 == 0) {
+                SoundEngine.PlaySound(SoundID.Item34, Projectile.Center);
             }
 
             update();

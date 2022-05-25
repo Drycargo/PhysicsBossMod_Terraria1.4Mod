@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
-using PhysicsBoss.NPC.Boss.ChaosTheory;
+using PhysicsBoss.NPCs.Boss.ChaosTheory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
