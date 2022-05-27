@@ -91,14 +91,6 @@ namespace PhysicsBoss.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
-            //Main.spriteBatch.Draw(tex, Projectile.position - Main.screenPosition, lightColor);
             return true;
         }
 

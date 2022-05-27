@@ -141,7 +141,7 @@ namespace PhysicsBoss.Projectiles.ConwayGame
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,

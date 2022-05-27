@@ -124,6 +124,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     tex.Size() / 2 - Main.screenPosition, TRAILING_CONST);
 
                 tail.DrawTrail();
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
             }
             return false;
         }

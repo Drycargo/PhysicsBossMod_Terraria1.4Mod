@@ -27,19 +27,32 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             center = c;
         }
 
-        public void summonAll() {
+        public void summonAll(NPC owner) {
             for (int i = 0; i < TOTAL; i++)
-                summonWaterDrop();
+                summonWaterDrop(owner);
         }
 
-        public void summonWaterDrop() {
+        public int getCount() {
+            return count;
+        }
+
+        public void summonWaterDrop(NPC o) {
             if (count >= TOTAL)
                 return;
-            waterDrops[count] = (WaterDrop)(Projectile.NewProjectileDirect(
-                null, getPosition(count) - getRotationAngle(count).ToRotationVector2() * 800f,
-                Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 80, 10).ModProjectile);
-            waterDrops[count].Projectile.rotation = getRotationAngle(count);
-            count++;
+
+            try
+            {
+                waterDrops[count] = (WaterDrop)(Projectile.NewProjectileDirect(
+                    o.GetSource_FromAI(), getPosition(count) - getRotationAngle(count).ToRotationVector2() * 800f,
+                    Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 80, 10).ModProjectile);
+                waterDrops[count].Projectile.rotation = getRotationAngle(count);
+                count++;
+            }
+            catch (IndexOutOfRangeException e)
+            {
+
+            }
+
         }
 
         public void updateAll(float newAngle) {

@@ -197,6 +197,14 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 drawColor * (Timer < TRANSIT ? 0.5f : 1), Projectile.rotation, Projectile.Size, 
                 0.5f, SpriteEffects.None, 0);
 
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
+
             //Lighting.AddLight(Projectile.Center, Color.LightGreen.ToVector3());
         }
 

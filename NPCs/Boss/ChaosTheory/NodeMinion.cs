@@ -93,15 +93,15 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         protected abstract void summonEvent();
 
-        public void orbit(float degree)
+        public void orbit(float degree, float radius = ORBIT_DIST)
         {
             NPC.velocity *= 0;
             if (owner != null && owner.NPC.active) {
                 // return to position
                 Vector2 aim = owner.NPC.Center + Vector2.UnitY.RotatedBy(degree)
-                    * (ORBIT_DIST + owner.NPC.width/2 + NPC.width/2);
+                    * (radius + owner.NPC.width/2 + NPC.width/2);
 
-                if (aim.Distance(NPC.Center) > 0.3 * (float)ORBIT_DIST)
+                if (aim.Distance(NPC.Center) > 0.3 * (float)radius)
                 {
                     if (aim.Distance(NPC.Center) > ChaosTheory.MAX_DISTANCE)
                         NPC.Center = aim;
@@ -177,7 +177,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -203,8 +203,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
 
             Main.spriteBatch.End();
-            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using PhysicsBoss.NPCs.Boss.ChaosTheory;
 using PhysicsBoss.Projectiles;
 using PhysicsBoss.Projectiles.ConwayGame;
 using PhysicsBoss.Projectiles.DoublePendulum;
@@ -43,14 +44,16 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<ElectricChargeController>();
+            Item.shoot = ProjectileID.RainbowWhip; //ModContent.ProjectileType<ElectricChargeController>();
             Item.shootSpeed = 5f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            NPC.NewNPC(player.GetSource_FromThis(), (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<ButterflySpiralSink>());
+            /*
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-
+            */
             /*
             ThreeScrollController t = (ThreeScrollController) 
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed*(Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX), 

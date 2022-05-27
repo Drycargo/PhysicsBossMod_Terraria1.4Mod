@@ -20,6 +20,7 @@ using PhysicsBoss.Projectiles.DoublePendulum;
 using PhysicsBoss.Projectiles.TrailingStarMotion;
 using PhysicsBoss.Projectiles.ThreeBodyMotion;
 using PhysicsBoss.NPCs;
+using Terraria.GameContent.Drawing;
 
 namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 {
@@ -36,6 +37,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public const float DOUBLE_PENDULUM_PERIOD2 = 9.725f/4f * 60;
         public const float THREE_BODY_PERIOD1 = 9.65f/4f * 60;
         public const float THREE_BODY_PERIOD2 = 9.78f * 60;
+        public const float SPIRAL_SINK_RADIUS = 700f;
         public const float G = 7f;
 
         public enum phase
@@ -75,7 +77,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             60 + 23.2f,
             60 + 32.85f,
             60 + 41.63f,
-            60 + 43.00f, // 44.63
+            60 + 42.75f, // 44.63
         };
         
         /*
@@ -136,6 +138,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         private Vector2 dashTarget;
         private Vector2 dashStart;
         private float aimLineTransparency;
+
+        // for spiral sink
+        private float target_Distance = -1;
+        private float target_Angle = 0;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -560,7 +566,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.CHUA_CIRCUIT);
             }
 
-            hover(target.Center + (-MathHelper.Pi/6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.9f * Math.Min(1, Timer/SinLaser.TRANSIT));
+            //hover(target.Center + (-MathHelper.Pi/6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.9f * Math.Min(1, Timer/SinLaser.TRANSIT));
+            hover(target.Center + 450f * Vector2.UnitY, 10f, 0.3f, 1200, 10, 500, 0.25f * Math.Min(1, Timer / SinLaser.TRANSIT));
             Timer++;
         }
 
@@ -574,7 +581,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
 
             //hover(target.Center + (-MathHelper.Pi / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.9f);
-            hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.95f);
+            hover(target.Center - Vector2.UnitY * 450f, 20f, 0.3f, 1200, 10, 500f, 0.9f);
             Timer++;
         }
 
@@ -588,7 +595,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 dimNode.Timer = 0;
             }
 
-            hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            //hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            hover(target.Center - Vector2.UnitY * 450f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
 
             Timer++;
         }
@@ -602,7 +610,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_PREPARATION);
                 dimNode.Timer = 0;
             }
-            hover(target.Center + Vector2.UnitY * 0.25f * DOUBLE_PENDULUM_TOTAL_LENGTH, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            hover(target.Center - Vector2.UnitY * 0.25f * DOUBLE_PENDULUM_TOTAL_LENGTH, 10f, 0.3f, 1200, 10, 500f, 0.85f);
             Timer++;
         }
 
@@ -848,8 +856,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void threebodyPreparation11()
         {
-
-
             if ((int)Timer == 0) {
                 if (fractalRing != null) {
                     fractalRing.Kill();
@@ -862,7 +868,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
 
                 dimNode.setPhase((int)DimNode.phase.THREEBODY_MOTION);
+                dimNode.NPC.dontTakeDamage = true;
                 brightNode.setPhase((int)BrightNode.phase.THREEBODY_MOTION);
+                brightNode.NPC.dontTakeDamage = true;
 
                 NPC.dontTakeDamage = true;
 
@@ -908,7 +916,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     waterDropController = new WaterDropController(target.Center, -(GeneralTimer / 1800) * MathHelper.TwoPi);
                 }
                 dimNode.setPhase((int)DimNode.phase.ORBIT);
+                dimNode.NPC.dontTakeDamage = false;
                 brightNode.setPhase((int)BrightNode.phase.ORBIT);
+                brightNode.NPC.dontTakeDamage = false;
                 NPC.dontTakeDamage = false;
             }
 
@@ -923,9 +933,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             if (waterDropController != null)
             {
-                if (Timer >= 5 && Timer < 35 && (int)Timer % 3 == 0)
+                if (Timer >= 25 && (int)Timer % 5 == 0 && waterDropController.getCount() < WaterDropController.TOTAL)
                 {
-                    waterDropController.summonWaterDrop();
+                    waterDropController.summonWaterDrop(NPC);
                 }
                 waterDropController.updateAll(-(GeneralTimer / 1800) * MathHelper.TwoPi);
 
@@ -1070,24 +1080,57 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void spiralSink15()
         {
-            if (Timer < 30)
+            if (Timer < 75)
             {
-                GlobalEffectController.bloom(1.5f * Timer / 15f, 0);
-            }
-            else if (Timer < 75){
-                GlobalEffectController.bloom(1.5f * ((75f - Timer) / 45f), 0);
-                for (int i = 0; i < 3; i++) {
-                    Dust d = Dust.NewDustDirect(Main.screenPosition - Main.ScreenSize.ToVector2()/2, 
-                        2 * Main.screenWidth, 2 * Main.screenHeight, DustID.RainbowRod);
-                    d.noGravity = true;
-                    d.velocity.Y = 1;
-                    d.scale *= 5f * (75f - Timer) / 45f + 1;
+                hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
+                if (Timer < 30)
+                {
+                    GlobalEffectController.bloom(1.5f * Timer / 15f, 0);
+                }
+                else
+                {
+                    if ((int)Timer == 30)
+                    {
+                        NPC.dontTakeDamage = true;
+
+                        dimNode.setPhase((int)DimNode.phase.SPIRAL_SINK);
+                        dimNode.NPC.dontTakeDamage = true;
+                        brightNode.setPhase((int)BrightNode.phase.SPIRAL_SINK);
+                        brightNode.NPC.dontTakeDamage = true;
+                    }
+                    GlobalEffectController.bloom(1.5f * ((75f - Timer) / 45f), 0);
+                    ParticleOrchestraSettings settings = new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = Main.screenPosition + new Vector2(Main.screenWidth * Main.rand.NextFloat(),
+                            Main.screenHeight * Main.rand.NextFloat()),
+                        MovementVector = Main.rand.NextVector2Unit() * 5f
+                    };
+
+                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.RainbowRodHit, settings, NPC.whoAmI);
                 }
             }
+            else {
+                if ((int)Timer % 20 == 0) {
+                    for (int i = 0; i < 2; i++) {
+                        ButterflySpiralSink b = (ButterflySpiralSink)(NPC.NewNPCDirect(NPC.GetSource_FromAI(),
+                            (i % 2 == 0 ? dimNode.NPC : brightNode.NPC).Center, ModContent.NPCType<ButterflySpiralSink>()).ModNPC);
+                        b.setOwner(this);
+                    }
+                }
+
+                NPC.velocity *= 0;
+                attractPlayer(SPIRAL_SINK_RADIUS, NPC.Center);
+            }
+
+            target_Distance = targetDist();
+            target_Angle = targetAngle();
+
             NPC.velocity *= 0;
             Timer++;
         }
 
+        public float getTargetDist() { return target_Distance; }
+        public float getTargetAngle() { return target_Angle; }
 
         #endregion
 

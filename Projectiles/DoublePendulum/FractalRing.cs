@@ -129,7 +129,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,

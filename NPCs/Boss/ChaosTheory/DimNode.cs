@@ -39,6 +39,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             DOUBLE_PENDULUM_ONE = 7,
             DOUBLE_PENDULUM_TWO = 8,
             THREEBODY_MOTION = 9,
+            SPIRAL_SINK = 10,
         }
         public override void SetStaticDefaults()
         {
@@ -156,9 +157,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                                 drawConnection = false;
                             if (drawTrail != trail.SHADOW)
                                 drawTrail = trail.SHADOW;
-                            if(!NPC.dontTakeDamage)
-                                NPC.dontTakeDamage = true;
                             orbit(owner.GeneralTimer / ORBIT_PERIOD * MathHelper.TwoPi);
+                            break;
+                        }
+                    case (int)phase.SPIRAL_SINK:
+                        {
+                            if (!NPC.dontTakeDamage)
+                                NPC.dontTakeDamage = true;
+                            orbit(owner.GeneralTimer / (ORBIT_PERIOD * 0.5f) * MathHelper.TwoPi, ChaosTheory.SPIRAL_SINK_RADIUS);
                             break;
                         }
                     default: break;
@@ -243,15 +249,28 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 Timer = 0;
             }
 
+            /*
             hover(target.Center + 
                 600f * ((float)( MathHelper.Pi/5.5 * Math.Pow(Math.Sin(Timer/(180f/MathHelper.TwoPi)), 3) 
                 + MathHelper.Pi * (1f -  1 / 8f))).ToRotationVector2(),
                 30, 0.3f, 1200);
-
-            trailingStarController.Projectile.Center = NPC.Center;
+            */
 
             int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
 
+            // movement
+            if (factor == 0) {
+                fireWork();
+                int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
+                NPC.Center = target.Center + (posIndex * MathHelper.PiOver2 + 5f/6f*MathHelper.Pi).ToRotationVector2() * 450f;
+                fireWork();
+            }
+
+            hover(target.Center, 450f, 0.1f, 1800f, inertia: 0.2f);
+            trailingStarController.Projectile.Center = NPC.Center;
+
+
+            // fire stars
             if (factor == 0 || factor == 10)
                 trailingStarController.summonStarBundle<TrailingStarChua>();
             else if (factor == (int)(ChaosTheory.CHAOTIC_DURATION/2) 
@@ -352,7 +371,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 {
                     int reverse = (i == 0) ? 1 : -1;
                     Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 3.5),
+                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 5),
                         ModContent.ProjectileType<TrailingStarCircular>(), 75, 0);
                     TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
                     tsc.setRadius(1300f);

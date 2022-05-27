@@ -49,7 +49,7 @@ namespace PhysicsBoss.Items
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            GlobalEffectController.flash(0.35f, Main.MouseScreen, 60, 20f);
+            GlobalEffectController.flash(0.35f, Main.MouseScreen, 60, 15f);
             /*
             ThreeBodyController tbc = (ThreeBodyController) (Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI).ModProjectile);

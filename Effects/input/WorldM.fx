@@ -64,8 +64,8 @@ float4 FillOnThreshold(float2 coords : TEXCOORD0) : COLOR0
 
 float4 CenterDisplacement(float2 coords : TEXCOORD0) : COLOR0
 {
-    float realX = coords.x * uScreenResolution.x - dispCenter.x;
-    float realY = coords.y * uScreenResolution.y - dispCenter.y;
+    float realX = coords.x * texSize.x - dispCenter.x;
+    float realY = coords.y * texSize.y - dispCenter.y;
     
     float angle = atan(realY / realX);
     if (realX < 0)
@@ -84,7 +84,7 @@ float4 CenterDisplacement(float2 coords : TEXCOORD0) : COLOR0
     if (length(float2(realX, realY)) < inten)
         return float4(0, 0, 0, 0);
     
-    return tex2D(uImage0, float2(coords.x - cos(angle) * inten / uScreenResolution.x, coords.y - sin(angle) * inten / uScreenResolution.y));
+    return tex2D(uImage0, float2(coords.x - cos(angle) * inten / texSize.x, coords.y - sin(angle) * inten / texSize.y));
 
 }
 

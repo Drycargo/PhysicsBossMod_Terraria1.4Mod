@@ -47,7 +47,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             base.setBasicDefaults();
             Projectile.timeLeft = 8 * 60;
-            drawColor = Color.Crimson;
+            drawColor = Color.Crimson * 2;
             stopDec = false;
             drawRayLine = false;
             lastDir = -100;
@@ -213,7 +213,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public override void setColor(int colorIndex)
         {
-            drawColor = colors[colorIndex % colors.Length];
+            drawColor = colors[colorIndex % colors.Length] * 2;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

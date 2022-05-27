@@ -11,6 +11,7 @@ using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.GameContent;
 
 namespace PhysicsBoss.Effects
 {
@@ -23,6 +24,9 @@ namespace PhysicsBoss.Effects
         private static float bloomInten = 0f;
         private static float bloomThreshold = 1;
 
+        public const float FLASH_PERIOD = 16;
+        public const float FLASH_TRANSPARENCY = 0.9f;
+        public const int FLASH_WIDTH = 12;
         private static float flashThreshold = 1;
         private static Vector2 flashCenterPoint = Vector2.Zero;
         private static Vector2 realCenterPoint;
@@ -297,7 +301,9 @@ namespace PhysicsBoss.Effects
                 return;
             }
 
-            if (realCenterPoint == Vector2.Zero || flashTimeLeft % 5 == 0) {
+            shake(Math.Max(0,(float)(flashTimeLeft - 1)/30f));
+
+            if (realCenterPoint == Vector2.Zero || flashTimeLeft % (int)(FLASH_PERIOD/2) == 0) {
                 realCenterPoint = flashCenterPoint + Main.rand.NextVector2Circular(450f,300f);
             }
 
@@ -315,19 +321,21 @@ namespace PhysicsBoss.Effects
             PhysicsBoss.worldEffect.Parameters["fillColor"].SetValue(Color.White.ToVector4());
             PhysicsBoss.worldEffect.CurrentTechnique.Passes["FillOnThreshold"].Apply();
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
-            Utils.DrawLine(spriteBatch, new Vector2(Main.screenPosition.X, Main.screenPosition.Y + realCenterPoint.Y),
-                new Vector2(Main.screenPosition.X + Main.screenWidth, Main.screenPosition.Y + realCenterPoint.Y), Color.White, Color.White, 30f);
-            Utils.DrawLine(spriteBatch, new Vector2(Main.screenPosition.X + realCenterPoint.X, Main.screenPosition.Y),
-                new Vector2(Main.screenPosition.X + realCenterPoint.X, Main.screenPosition.Y + Main.screenHeight), Color.White, Color.White, 30f);
+
+            spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle((int)realCenterPoint.X - FLASH_WIDTH/2, 0, FLASH_WIDTH, Main.screenTargetSwap.Height), Color.White);
+            spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(0,(int)realCenterPoint.Y - FLASH_WIDTH / 2, Main.screenTargetSwap.Width, FLASH_WIDTH), Color.White);
+            spriteBatch.Draw(ModContent.Request<Texture2D>("PhysicsBoss/Asset/Circle").Value,
+                new Rectangle((int)(realCenterPoint.X - 150), (int)(realCenterPoint.Y - 150),300, 300), Color.White);
             spriteBatch.End();
 
             graphicsDevice.SetRenderTarget(screenTemp);
-            graphicsDevice.Clear(Color.Transparent);
+            graphicsDevice.Clear(Color.Black);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
             PhysicsBoss.worldEffect.Parameters["dispCenter"].SetValue(realCenterPoint);
             PhysicsBoss.worldEffect.Parameters["dispInten"].SetValue(dispIntensity);
             PhysicsBoss.worldEffect.Parameters["dispMap"].SetValue(noise);
-            PhysicsBoss.worldEffect.Parameters["dispTimer"].SetValue((int)(flashTimeLeft/5) * 0.01f);
+            PhysicsBoss.worldEffect.Parameters["dispTimer"].SetValue((int)(flashTimeLeft/(int)(FLASH_PERIOD/2)) * 0.01f);
+            PhysicsBoss.worldEffect.Parameters["texSize"].SetValue(screenTemp.Size());
             PhysicsBoss.worldEffect.CurrentTechnique.Passes["CenterDisplacement"].Apply();
             spriteBatch.Draw(Main.screenTargetSwap,
                 new Rectangle(0, 0, screenTemp.Width, screenTemp.Height), Color.White);
@@ -335,16 +343,16 @@ namespace PhysicsBoss.Effects
             spriteBatch.End();
 
             graphicsDevice.SetRenderTarget(Main.screenTarget);
-            //graphicsDevice.Clear((flashTimeLeft % 10 < 5 ? Color.White * 0.75f : Color.Transparent));
-            graphicsDevice.Clear(Color.Transparent);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
-            /*
-            if (flashTimeLeft % 10 < 5) {
+            graphicsDevice.Clear((flashTimeLeft % FLASH_PERIOD < (FLASH_PERIOD / 2) ? Color.White : Color.Black) * FLASH_TRANSPARENCY);
+            //graphicsDevice.Clear(Color.Transparent);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+            
+            if (flashTimeLeft % FLASH_PERIOD < (FLASH_PERIOD/2)) {
                 PhysicsBoss.worldEffect.CurrentTechnique.Passes["Inverse"].Apply();
             }
-            */
+            
             spriteBatch.Draw(screenTemp,
-                new Rectangle(0, 0, Main.screenTarget.Width, Main.screenTarget.Height), Color.White * 0.95f);
+                new Rectangle(0, 0, Main.screenTarget.Width, Main.screenTarget.Height), Color.White * FLASH_TRANSPARENCY);
             spriteBatch.End();
 
 

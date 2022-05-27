@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
@@ -35,13 +36,33 @@ namespace PhysicsBoss.NPCs
             return target;
         }
 
+        public float targetDist() {
+            if (target == null)
+                return -1;
+            return Vector2.Distance(target.Center, NPC.Center);
+        }
+
+        public float targetAngle() {
+            if (target == null)
+                return 0;
+            float angle = (float)Math.Atan((target.Center.Y - NPC.Center.Y)/
+                (target.Center.X - NPC.Center.X));
+            if (target.Center.X < NPC.Center.X)
+                angle += MathHelper.Pi;
+            if (angle < 0)
+                angle += MathHelper.TwoPi;
+            return angle;
+        }
+
+        /*
         protected void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period)
         {
             hover(hoverCenter, hoverRadius, noise, period, 10f,-1f, 0.7f);
         }
+        */
 
         // If period is negative, rotate counter-clockwise
-        protected void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period, float safetyDistance, float traceDistance,float inertia)
+        protected void hover(Vector2 hoverCenter, float hoverRadius, float noise, float period, float safetyDistance = 10f, float traceDistance = -1f,float inertia = 0.7f)
         {
             float degree = (NPC.Center - hoverCenter).ToRotation() + MathHelper.TwoPi / period;
 
@@ -68,6 +89,8 @@ namespace PhysicsBoss.NPCs
                 d.color = c;
                 d.noGravity = true;
             }
+
+            SoundEngine.PlaySound(SoundID.Item4, NPC.Center);
         }
     }
 }

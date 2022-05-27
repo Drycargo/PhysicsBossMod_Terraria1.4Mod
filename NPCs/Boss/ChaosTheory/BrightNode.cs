@@ -50,6 +50,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             DOUBLE_PENDULUM_ONE = 7,
             DOUBLE_PENDULUM_TWO = 8,
             THREEBODY_MOTION = 9,
+            SPIRAL_SINK = 10,
         }
         public override void SetStaticDefaults()
         {
@@ -181,9 +182,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                                 drawTrail = trail.SHADOW;
                             if (drawConnection)
                                 drawConnection = false;
+                            orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            break;
+                        }
+                    case (int)phase.SPIRAL_SINK:
+                        {
                             if (!NPC.dontTakeDamage)
                                 NPC.dontTakeDamage = true;
-                            orbit((owner.GeneralTimer / ORBIT_PERIOD + 0.5f) * MathHelper.TwoPi);
+                            orbit((owner.GeneralTimer / (ORBIT_PERIOD * 0.5f) + 0.5f) * MathHelper.TwoPi, ChaosTheory.SPIRAL_SINK_RADIUS);
                             break;
                         }
                     default: break;
@@ -363,7 +369,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred,
-                BlendState.NonPremultiplied,
+                BlendState.AlphaBlend,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -386,9 +392,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
  
         private void chuaCircuit()
         {
+            /*
             Vector2 dist = //(target.Center - owner.NPC.Center).SafeNormalize(Vector2.UnitX);
                 (MathHelper.Pi * 5f / 6 + (float)Math.Sin(Timer / 60f) / 36f).ToRotationVector2();
-            float angle = (float)(MathHelper.Pi / (3.75f + 1.5f * Math.Min(1, Timer / 60))
+            */
+            Vector2 dist = (-MathHelper.PiOver2 + (float)Math.Sin(Timer / 60f) / 36f).ToRotationVector2();
+            float angle = (float)(MathHelper.Pi / (4.5f + 1.5f * Math.Min(1, Timer / 60))
                 + Math.Sin(Timer / 60f) / 24f);
 
             Vector2 dir1 = dist.RotatedBy(angle);
@@ -435,15 +444,30 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 Timer = 0;
             }
 
+            /*
             hover(target.Center +
                 500f * ((float)(MathHelper.Pi / 3 * Math.Cos(Timer / (ChaosTheory.CHAOTIC_DURATION / MathHelper.TwoPi))
                 - MathHelper.Pi/ 7f)).ToRotationVector2(),
                 30, 0.3f, 1200);
+            */
+
+            // movement
+            int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
+            int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
+            if (factor == 0) {
+                fireWork();
+                NPC.Center = new Vector2(target.Center.X + (posIndex % 2 == 0 ? -1 : 1) * 450f, target.Center.Y - 600f);
+                fireWork();
+            }
+
+            float x = 2 * (float)factor / (float)((int)ChaosTheory.CHAOTIC_DURATION) - 1;
+
+            NPC.Center = new Vector2(target.Center.X + (posIndex % 2 == 0 ? -1 : 1) * 450f, MathHelper.Lerp(- 600, 600, (x * x * x + 1f)/2f) +  target.Center.Y);
 
             trailingStarController.Projectile.Center = NPC.Center;
 
-            int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
 
+            // fire lasers
             if (factor == 0 || factor == 10)
                 trailingStarController.releaseStarBundle(target);
             else if (factor == (int)(ChaosTheory.CHAOTIC_DURATION / 2)
