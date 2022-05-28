@@ -5,7 +5,7 @@ i:{00000000-0000-0000-0000-000000000000}:PhysicsBoss
 ++Properties
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\properties\
 ++依赖项
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4293
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4403
 ++Asset
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\
 ++Beam.png
@@ -104,6 +104,14 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\effects\使用说明.txt
 ++Items
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\
+++ProjectileTestItem.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem.cs
+++ProjectileTestItem.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem.png
+++ProjectileTestItem2.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem2.cs
+++ProjectileTestItem2.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem2.png
 ++NPCs
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\npcs\
 ++Boss
@@ -186,6 +194,8 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsenraise.cs
 ++TrailingStarHalvorsenRaise.png
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsenraise.png
+++TrailingStarLorenz.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarlorenz.cs
 ++TrailingStarThreeScroll.cs
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarthreescroll.cs
 ++TrailingStarThreeScroll.png
@@ -270,14 +280,6 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:程序集
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\demo 5.2.mp4
 ++Demo5.8.mp4
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\demo5.8.mp4
-++ProjectileTestItem.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem.cs
-++ProjectileTestItem.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem.png
-++ProjectileTestItem2.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem2.cs
-++ProjectileTestItem2.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\items\projectiletestitem2.png
 ++ConwayBlock.cs
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.cs
 ++ConwayBlock.png
@@ -333,7 +335,7 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files\dotnet\packs\microsoft
 ++tModLoader.CodeAssist
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\.nuget\packages\tmodloader.codeassist\0.1.3\analyzers\dotnet\cs\tmodloader.codeassist.dll
 ++tModLoader.CodeAssist (0.1.3)
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4335
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4445
 ++Microsoft.NETCore.App
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\microsoft.netcore.app
 ++Basic.Reference.Assemblies.Net60
@@ -400,3 +402,5 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\terrariahooks\0.0.0.0\terrariahooks.dll
 ++tModLoader
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\tmodloader.dll
+++TrailingStarLorenz.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarlorenz.png

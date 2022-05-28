@@ -82,7 +82,7 @@ namespace PhysicsBoss.Projectiles
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
                 colorFun, widthFun,
-                tex.Size() / 2 - Main.screenPosition, TRAILING_CONST);
+                Projectile.Size / 2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
             Main.spriteBatch.End();
@@ -108,12 +108,20 @@ namespace PhysicsBoss.Projectiles
                 Main.GameViewMatrix.TransformationMatrix);
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, 
-                null, drawColor, Projectile.rotation, tex.Size()/2, 1f, SpriteEffects.None, 0);
+                null, drawColor, Projectile.rotation, Projectile.Size /2, 1f, SpriteEffects.None, 0);
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition,
-                null, Color.White, Projectile.rotation, tex.Size() / 2, 0.6f, SpriteEffects.None, 0);
+                null, Color.White, Projectile.rotation, Projectile.Size / 2, 0.6f, SpriteEffects.None, 0);
 
             Lighting.AddLight(Projectile.Center, drawColor.ToVector3());
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                BlendState.AlphaBlend,
+                Main.DefaultSamplerState,
+                DepthStencilState.None,
+                RasterizerState.CullNone, null,
+                Main.GameViewMatrix.TransformationMatrix);
         }
 
         public virtual void setColor(int colorIndex)

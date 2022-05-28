@@ -240,7 +240,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 for (int i = 0; i < 3; i++) {
                     GlobalEffectController.drawRayLine(spriteBatch, NPC.Center,
                         NPC.Center + (triLaserAngle + (float)i * MathHelper.TwoPi/3).ToRotationVector2(),
-                        Color.Red*0.8f, 10f);
+                        Color.Red*0.6f, 20f);
                 }
             }
 

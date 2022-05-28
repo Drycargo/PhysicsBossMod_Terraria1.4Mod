@@ -132,7 +132,7 @@ namespace PhysicsBoss.Projectiles
             {
                 for (int i = 0; i < TRAILING_CONST; i++)
                 {
-                    Projectile.oldPos[i] = render(oldRealPos[i]) - tex.Size() / 2;
+                    Projectile.oldPos[i] = render(oldRealPos[i]) - Projectile.Size / 2;
                 }
             }
 

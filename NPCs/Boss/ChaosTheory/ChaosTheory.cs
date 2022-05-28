@@ -785,7 +785,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             {
                 float dist = Vector2.Distance(p.Center, center);
                 if (p.active && dist > restrictionDist)
-                    p.velocity += (float)Math.Min(15, 2.5 * dist) * (center - p.Center).SafeNormalize(Vector2.Zero);
+                    p.velocity += (float)Math.Min(15, 1f * dist) * (center - p.Center).SafeNormalize(Vector2.Zero);
             }
         }
 
