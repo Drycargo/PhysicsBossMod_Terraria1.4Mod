@@ -13,6 +13,7 @@ namespace PhysicsBoss
     public class CameraPlayer : ModPlayer
     {
         private static Vector2 displacement = Vector2.Zero;
+        private static int bossIndex = -1;
 
         private static bool activated = false;
         public override void ModifyScreenPosition()
@@ -21,17 +22,24 @@ namespace PhysicsBoss
             if (activated)
             {
                 // check for ChaosTheory in ThreeBodyPreparation Phase
-                
+                if (bossIndex < 0 || !Main.npc[bossIndex].active || Main.npc[bossIndex].life < 0
+                    || Main.npc[bossIndex].type != ModContent.NPCType<ChaosTheory>()) {
+                    deActivate();
+                    return;
+                }
+
+                /*
                 int requiredType = ModContent.NPCType<ChaosTheory>();
                 foreach (Terraria.NPC npc in Main.npc)
                 {
-                    if (npc.type == requiredType && npc.active)
+                    if (npc.type == requiredType)
                     {
                         break;
                     }
                     activated = false;
                     return;
                 }
+                */
 
                 Main.screenPosition = displacement;
                 Main.screenPosition.X = Math.Max(Main.screenPosition.X, 0);
@@ -45,13 +53,15 @@ namespace PhysicsBoss
             displacement = disp;
         }
 
-        public static void activate() {
+        public static void activate(int bossIndex) {
             activated = true;
+            CameraPlayer.bossIndex = bossIndex;
         }
 
         public static void deActivate()
         {
             activated = false;
+            bossIndex = -1;
         }
     }
 }

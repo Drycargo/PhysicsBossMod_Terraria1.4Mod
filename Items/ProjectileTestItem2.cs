@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
+using Terraria.GameContent.Events;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -49,7 +51,27 @@ namespace PhysicsBoss.Items
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            GlobalEffectController.flash(0.35f, Main.MouseScreen, 60, 15f);
+            int tot = Enum.GetNames(typeof(ParticleOrchestraType)).Length;
+            for (int i = 0; i < tot; i++) {
+                ParticleOrchestraSettings settings = new ParticleOrchestraSettings
+                {
+                    PositionInWorld = player.Center,
+                    MovementVector = ((float)i / (float)tot * MathHelper.TwoPi).ToRotationVector2() * 20f
+                };
+
+                ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, (ParticleOrchestraType)(Main.rand.Next(tot - 1)), settings);
+            }
+
+            Main.UseStormEffects = true;
+            if (Main.netMode != NetmodeID.MultiplayerClient) {
+                Sandstorm.StartSandstorm();
+                Main.StartRain();
+                Main.windSpeedCurrent = 1f;
+            }
+
+
+            //Main.stop
+            //GlobalEffectController.flash(0.35f, Main.MouseScreen, 60, 15f);
             /*
             ThreeBodyController tbc = (ThreeBodyController) (Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI).ModProjectile);

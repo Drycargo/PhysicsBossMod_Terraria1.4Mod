@@ -18,7 +18,7 @@ namespace PhysicsBoss.NPCs
             Player t = null;
             foreach (var player in Main.player)
             {
-                if (player.active && player.statLife > 0 && Vector2.Distance(player.Center, myCenter) < minDist)
+                if (player.active && !player.dead && Vector2.Distance(player.Center, myCenter) < minDist)
                 {
                     minDist = Vector2.Distance(player.Center, myCenter);
                     t = player;
@@ -91,6 +91,18 @@ namespace PhysicsBoss.NPCs
             }
 
             SoundEngine.PlaySound(SoundID.Item4, NPC.Center);
+        }
+
+        protected void follow(float dist = 500f, float speed = 15f) {
+            if (target == null || !target.active || target.statLife <= 0)
+                return;
+            if ((target.Center - NPC.Center).Length() > dist)
+            {
+                NPC.Center = (NPC.Center - target.Center).SafeNormalize(Vector2.UnitX) * dist + target.Center;
+            }
+            else {
+                NPC.velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX) * speed;
+            }
         }
     }
 }

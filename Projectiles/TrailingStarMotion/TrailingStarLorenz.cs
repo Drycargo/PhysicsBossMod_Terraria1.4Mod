@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.GameContent.Drawing;
 using Terraria.Graphics;
 using Terraria.ID;
 using Terraria.Localization;
@@ -82,7 +83,28 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
             realCenter += realVel;
 
+            Projectile.velocity *= 0;
+
             base.motionUpdate();
+        }
+
+        protected override void releaseAction()
+        {
+            if (Projectile.velocity == Vector2.Zero)
+            {
+                if (target == null || !target.active || target.statLife <= 0)
+                {
+                    Projectile.velocity = Main.rand.NextVector2Unit() * 5f;
+                }
+                else
+                {
+                    Projectile.velocity =
+                        (target.Center - Projectile.Center).SafeNormalize(Vector2.UnitX).RotatedByRandom(15 / 180 * MathHelper.Pi) * 5f;
+                }
+            }
+
+            if (Projectile.velocity.Length() < 50f)
+                Projectile.velocity *= 1.03f;
         }
 
         protected override Color colorFun(float progress)
@@ -92,7 +114,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         protected override float widthFun(float progress)
         {
-            return (1f - progress) * tex.Width * 0.35f;
+            return (1f - progress) * tex.Width * 0.45f;
         }
 
         public override void PostDraw(Color lightColor)
@@ -118,6 +140,21 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                ParticleOrchestraSettings settings = new ParticleOrchestraSettings
+                {
+                    PositionInWorld = Projectile.Center,
+                    MovementVector = Main.rand.NextVector2Unit() * 16f
+                };
+
+                ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.RainbowRodHit, settings);
+            }
+            base.Kill(timeLeft);
         }
     }
 }

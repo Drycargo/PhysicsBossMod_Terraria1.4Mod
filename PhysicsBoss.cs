@@ -5,6 +5,8 @@ using Terraria;
 using PhysicsBoss.Effects;
 using Microsoft.Xna.Framework;
 using System;
+using Terraria.GameContent;
+using PhysicsBoss.Skies;
 
 namespace PhysicsBoss
 {
@@ -65,6 +67,8 @@ namespace PhysicsBoss
                  new ScreenShaderApplier(new Ref<Effect>(worldEffect), "BlurThresholdV"), EffectPriority.Medium);
             Filters.Scene["PhysicsBoss:CenterTwist"] = new Filter(
                  new ScreenShaderApplier(new Ref<Effect>(worldEffect), "CenterTwist"), EffectPriority.Medium);
+            Filters.Scene["PhysicsBoss:Vignette"] = new Filter(
+                 new ScreenShaderApplier(new Ref<Effect>(worldEffect), "SimpleVignette"), EffectPriority.Medium);
 
             Filters.Scene["PhysicsBoss:Inverse"].Load();
             Filters.Scene["PhysicsBoss:Shake"].Load();
@@ -73,14 +77,18 @@ namespace PhysicsBoss
             Filters.Scene["PhysicsBoss:BlurH"].Load();
             Filters.Scene["PhysicsBoss:BlurV"].Load();
             Filters.Scene["PhysicsBoss:CenterTwist"].Load();
+            Filters.Scene["PhysicsBoss:Vignette"].Load();
 
             CameraPlayer.deActivate();
+
+            SkyManager.Instance["PhysicsBoss:BlackSky"] = new BlackSky();
+            SkyManager.Instance["PhysicsBoss:BlackSky"].Load();
 
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
+            
         }
-
 
         private void Main_OnResolutionChanged(Vector2 obj)
         {
@@ -95,8 +103,10 @@ namespace PhysicsBoss
         private void FilterManager_EndCapture(On.Terraria.Graphics.Effects.FilterManager.orig_EndCapture orig, FilterManager self, RenderTarget2D finalTexture, RenderTarget2D screenTarget1, RenderTarget2D screenTarget2, Color clearColor)
         {
             
-            GlobalEffectController.applyBloom();
-            GlobalEffectController.applyFlash();
+            GlobalEffectController.Main_applyBloom();
+            GlobalEffectController.Main_applyFlash();
+            GlobalEffectController.Main_applyVignette();
+            GlobalEffectController.Main_applyCenterTwist();
 
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }

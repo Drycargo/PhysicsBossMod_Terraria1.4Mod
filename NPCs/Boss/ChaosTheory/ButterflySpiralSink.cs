@@ -102,7 +102,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 float y = NPC.Center.Y - origin.NPC.Center.Y;
 
                 NPC.velocity = new Vector2(amplitude * sign * y,
-                    -amplitude * sign * x - y)/20;
+                    -amplitude * sign * x - y)/16;
                 if (NPC.velocity.Length() > 25f)
                     NPC.velocity = NPC.velocity.SafeNormalize(Vector2.Zero) * 25f;
             }

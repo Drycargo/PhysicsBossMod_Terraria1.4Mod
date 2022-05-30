@@ -262,11 +262,11 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if (factor == 0) {
                 fireWork();
                 int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
-                NPC.Center = target.Center + (posIndex * MathHelper.PiOver2 + 5f/6f*MathHelper.Pi).ToRotationVector2() * 450f;
+                NPC.Center = target.Center + Vector2.UnitY * 100 + (posIndex * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 550f;
                 fireWork();
             }
 
-            hover(target.Center, 450f, 0.1f, 1800f, inertia: 0.2f);
+            hover(target.Center + Vector2.UnitY * 100, 550f, 0.1f, 2400f, inertia: 0.2f);
             trailingStarController.Projectile.Center = NPC.Center;
 
 

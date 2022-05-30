@@ -5,7 +5,7 @@ i:{00000000-0000-0000-0000-000000000000}:PhysicsBoss
 ++Properties
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\properties\
 ++依赖项
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4403
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4451
 ++Asset
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\asset\
 ++Beam.png
@@ -146,6 +146,18 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\
 ++ConwayGame
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\
+++ConwayBlock.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.cs
+++ConwayBlock.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.png
+++ConwayGameController.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwaygamecontroller.cs
+++ConwayGameController.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwaygamecontroller.png
+++ConwayGlider.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.cs
+++ConwayGlider.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.png
 ++DoublePendulum
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\
 ++FractalRing.cs
@@ -158,6 +170,40 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\doublependulum\lasersword.png
 ++ThreeBodyMotion
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\
+++SolarFlame.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarflame.cs
+++SolarFlame.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarflame.png
+++SolarLaser.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarlaser.cs
+++SolarLaser.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarlaser.png
+++SolarLaser_Pre.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarlaser_pre.png
+++SolarRadiation.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarradiation.cs
+++SolarRadiation.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarradiation.png
+++SolarSpike.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarspike.cs
+++SolarSpike.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarspike.png
+++Sun.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\sun.cs
+++Sun.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\sun.png
+++SunContent.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\suncontent.png
+++ThreeBodyController.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\threebodycontroller.cs
+++ThreeBodyController.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\threebodycontroller.png
+++WaterDrop.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\waterdrop.cs
+++WaterDrop.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\waterdrop.png
+++WaterDropController.cs
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\waterdropcontroller.cs
 ++TrailingStarMotion
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\
 ++AizawaController.cs
@@ -196,6 +242,8 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my g
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarhalvorsenraise.png
 ++TrailingStarLorenz.cs
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarlorenz.cs
+++TrailingStarLorenz.png
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarlorenz.png
 ++TrailingStarThreeScroll.cs
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarthreescroll.cs
 ++TrailingStarThreeScroll.png
@@ -280,52 +328,6 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:程序集
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\demo 5.2.mp4
 ++Demo5.8.mp4
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\demovideo\demo5.8.mp4
-++ConwayBlock.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.cs
-++ConwayBlock.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayblock.png
-++ConwayGameController.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwaygamecontroller.cs
-++ConwayGameController.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwaygamecontroller.png
-++ConwayGlider.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.cs
-++ConwayGlider.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\conwaygame\conwayglider.png
-++SolarFlame.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarflame.cs
-++SolarFlame.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarflame.png
-++SolarLaser.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarlaser.cs
-++SolarLaser.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarlaser.png
-++SolarLaser_Pre.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarlaser_pre.png
-++SolarRadiation.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarradiation.cs
-++SolarRadiation.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarradiation.png
-++SolarSpike.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarspike.cs
-++SolarSpike.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\solarspike.png
-++Sun.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\sun.cs
-++Sun.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\sun.png
-++SunContent.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\suncontent.png
-++ThreeBodyController.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\threebodycontroller.cs
-++ThreeBodyController.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\threebodycontroller.png
-++WaterDrop.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\waterdrop.cs
-++WaterDrop.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\waterdrop.png
-++WaterDropController.cs
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\threebodymotion\waterdropcontroller.cs
 ++Microsoft.CodeAnalysis.CSharp.NetAnalyzers
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files\dotnet\sdk\6.0.200\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
 ++Microsoft.CodeAnalysis.NetAnalyzers
@@ -335,7 +337,7 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files\dotnet\packs\microsoft
 ++tModLoader.CodeAssist
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\.nuget\packages\tmodloader.codeassist\0.1.3\analyzers\dotnet\cs\tmodloader.codeassist.dll
 ++tModLoader.CodeAssist (0.1.3)
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4445
+i:{9635a6bc-b710-46ac-877e-6569f7b54263}:>4493
 ++Microsoft.NETCore.App
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\microsoft.netcore.app
 ++Basic.Reference.Assemblies.Net60
@@ -402,5 +404,3 @@ i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\libraries\terrariahooks\0.0.0.0\terrariahooks.dll
 ++tModLoader
 i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\program files (x86)\steam\steamapps\common\tmodloader\tmodloader.dll
-++TrailingStarLorenz.png
-i:{9635a6bc-b710-46ac-877e-6569f7b54263}:c:\users\htf\onedrive - ubc\文档\my games\terraria\tmodloader\modsources\physicsboss\projectiles\trailingstarmotion\trailingstarlorenz.png

@@ -37,7 +37,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public const float DOUBLE_PENDULUM_PERIOD2 = 9.725f/4f * 60;
         public const float THREE_BODY_PERIOD1 = 9.65f/4f * 60;
         public const float THREE_BODY_PERIOD2 = 9.78f * 60;
-        public const float SPIRAL_SINK_RADIUS = 700f;
+        public const float SPIRAL_SINK_RADIUS = 800f;
+        public const float LORENZ_PERIOD = 9.9f / 8f * 60;
         public const float G = 7f;
 
         public enum phase
@@ -58,6 +59,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             ThreeBodyMotionTwo13 = 13,
             ThreeBodyMotionFinale14 = 14,
             SpiralSink15 = 15,
+            LorenzOne16 = 16,
+            LorenzTwo17 = 17,
         }
 
         
@@ -77,7 +80,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             60 + 23.2f,
             60 + 32.85f,
             60 + 41.63f,
-            60 + 42.75f, // 44.63
+            60 + 43.25f, // 44.63
+            60 * 2 + 3f,
+            60 * 2 + 12.9f,
         };
         
         /*
@@ -142,6 +147,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         // for spiral sink
         private float target_Distance = -1;
         private float target_Angle = 0;
+
+        // for Lorentz
+        private TrailingStarController lorenzController = null;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -345,6 +353,16 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             spiralSink15();
                             break;
                         }
+                    case phase.LorenzOne16:
+                        {
+                            lorenzOne16();
+                            break;
+                        }
+                    case phase.LorenzTwo17:
+                        {
+                            lorenzTwo17();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -373,7 +391,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
             }
         }
-
 
         public override void FindFrame(int frameHeight)
         {
@@ -447,14 +464,21 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         #region private methods
         private void init()
         {
+            float factor = Math.Min(1, (Timer / 60f));
+            GlobalEffectController.vignette(1 * factor, 0.35f * factor, 0.05f);
+
             if (NPC.alpha >0 && GeneralTimer < 600) {
                 int newA = (int)MathHelper.Max(NPC.alpha - (255f / 600f), 0);
                 NPC.alpha = newA;
             }
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
+            Timer++;
         }
         private void pendulumeOne1()
         {
+            CameraPlayer.activate(NPC.whoAmI);
+            CameraPlayer.setDisplacement(NPC.Center - Main.ScreenSize.ToVector2()/2);
+            GlobalEffectController.vignette(1, 0.35f, 0.05f);
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
             if (dimNode == null) {
                 createDimNode();
@@ -464,6 +488,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         }
         private void pendulumeOne2()
         {
+            GlobalEffectController.vignette(1, 0.35f, 0.05f);
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
             dimNode.setPhase((int)DimNode.phase.SIGNLE_PENDULUM_TWO);
             if (brightNode == null)
@@ -476,6 +501,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void electricCharge3()
         {
+            float factor = Timer / 30f;
+            GlobalEffectController.vignette(1 *(1 -  factor), 0.35f * (1 + factor), 0.05f);
+
             if ((int)Timer == 0)
             {
                 NPC.dontTakeDamage = false;
@@ -877,7 +905,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 initialScreenPos = Main.screenPosition;
             }
 
-            CameraPlayer.activate();
+            CameraPlayer.activate(NPC.whoAmI);
 
             if (Timer < 60 && initialScreenPos != Vector2.Zero)
                 CameraPlayer.setDisplacement(Vector2.Lerp(initialScreenPos, NPC.Center - Main.ScreenSize.ToVector2() / 2, Timer/60f));
@@ -924,7 +952,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             if (Timer < 30)
             {
-                CameraPlayer.activate();
+                CameraPlayer.activate(NPC.whoAmI);
                 CameraPlayer.setDisplacement(Vector2.Lerp(NPC.Center - Main.ScreenSize.ToVector2() / 2, Main.screenPosition, Timer / 30f));
             }
             else
@@ -1110,7 +1138,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
             }
             else {
-                if ((int)Timer % 20 == 0) {
+                if ((int)Timer % 15 == 0) {
                     for (int i = 0; i < 2; i++) {
                         ButterflySpiralSink b = (ButterflySpiralSink)(NPC.NewNPCDirect(NPC.GetSource_FromAI(),
                             (i % 2 == 0 ? dimNode.NPC : brightNode.NPC).Center, ModContent.NPCType<ButterflySpiralSink>()).ModNPC);
@@ -1119,7 +1147,11 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
 
                 NPC.velocity *= 0;
-                attractPlayer(SPIRAL_SINK_RADIUS, NPC.Center);
+                attractPlayer(SPIRAL_SINK_RADIUS * 0.75f, NPC.Center);
+                for (int i = 0; i < 5; i++) {
+                    Dust.NewDustDirect(NPC.Center + 0.75f * SPIRAL_SINK_RADIUS * Main.rand.NextVector2Unit(),
+                        0,0, DustID.RainbowTorch).noGravity = true;
+                }
             }
 
             target_Distance = targetDist();
@@ -1131,6 +1163,64 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         public float getTargetDist() { return target_Distance; }
         public float getTargetAngle() { return target_Angle; }
+
+        private void lorenzOne16()
+        {
+            if ((int)Timer == 0) {
+                NPC.dontTakeDamage = false;
+                dimNode.setPhase((int)DimNode.phase.ORBIT);
+                dimNode.NPC.dontTakeDamage = false;
+                brightNode.setPhase((int)BrightNode.phase.ORBIT);
+                brightNode.NPC.dontTakeDamage = false;
+
+                lorenzController = (TrailingStarController)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<TrailingStarController>(), 0,0).ModProjectile);
+
+                for (int i = 0; i < 5; i++) {
+                    lorenzController.summonStarBundle<TrailingStarLorenz>();
+                }
+
+                int requiredType = ModContent.NPCType<ButterflySpiralSink>();
+                foreach (NPC npc in Main.npc) {
+                    if (npc.type == requiredType) {
+                        npc.life = -1;
+                        npc.active = false;
+                    }
+                }
+            }
+
+            if ((int)Timer % (int)LORENZ_PERIOD == 0) {
+                if ((int)Timer >= 4 * (int)LORENZ_PERIOD)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        lorenzController.summonStarBundle<TrailingStarLorenz>();
+                        lorenzController.releaseStarBundle(target);
+                    }
+                }
+            }
+
+            follow();
+            if (lorenzController != null)
+            {
+                lorenzController.Projectile.Center = NPC.Center;
+                lorenzController.Projectile.timeLeft++;
+            }
+
+            Timer++;
+        }
+
+        private void lorenzTwo17()
+        {
+            follow();
+            if (lorenzController != null)
+            {
+                lorenzController.Projectile.Center = NPC.Center;
+                lorenzController.Projectile.timeLeft++;
+            }
+
+            Timer++;
+        }
 
         #endregion
 

@@ -8,6 +8,11 @@ float threshold;
 float4 ordinaryTint;
 float4 contentTint;
 
+float darkThreshold;
+float brightThreshold;
+
+float polarizeShrink;
+
 sampler2D uMask = sampler_state
 {
     Texture = <texMask>;
@@ -68,6 +73,7 @@ float4 DynamicMaskTint(float2 coords : TEXCOORD0) : COLOR0
     return rawC * contentTint;
 }
 
+
 float4 Mask(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uMask, coords);
@@ -77,6 +83,37 @@ float4 Mask(float2 coords : TEXCOORD0) : COLOR0
         return color + tex2D(uImage0, coords);
 
     return tex2D(uContent, coords) * threshold + tex2D(uImage0, coords) * (1 - threshold);
+}
+
+
+float4 Polarize(float2 coords : TEXCOORD0) : COLOR0
+{
+    float realX = (coords.x - 0.5) * texSize.x;
+    float realY = (coords.y - 0.5) * texSize.y;
+    
+    float angle = atan(realY / realX);
+    if (realX < 0)
+        angle += 3.14159265359;
+    if (angle < 0)
+        angle += 6.28318530718;
+    
+    return tex2D(uImage0, float2(angle / 6.28318530718, 
+        polarizeShrink * length(float2(texSize.x / texSize.y * (coords.x - 0.5), coords.y - 0.5))));
+}
+
+float4 DynamicPolarize(float2 coords : TEXCOORD0) : COLOR0
+{
+    float realX = (coords.x - 0.5) * texSize.x;
+    float realY = (coords.y - 0.5) * texSize.y;
+    
+    float angle = atan(realY / realX);
+    if (realX < 0)
+        angle += 3.14159265359;
+    if (angle < 0)
+        angle += 6.28318530718;
+    
+    return tex2D(uImage0, float2(angle / 6.28318530718,
+        polarizeShrink * length(float2(texSize.x / texSize.y * (coords.x - 0.5), coords.y - 0.5)) + timer));
 }
 
 
@@ -95,5 +132,15 @@ technique Technique1
     pass DynamicMaskTint
     {
         PixelShader = compile ps_2_0 DynamicMaskTint();
+    }
+
+    pass Polarize
+    {
+        PixelShader = compile ps_2_0 Polarize();
+    }
+
+    pass DynamicPolarize
+    {
+        PixelShader = compile ps_2_0 DynamicPolarize();
     }
 }

@@ -55,7 +55,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             }
 
             if (target != null) {
-                Projectile.velocity += 0.3f * (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
+                Projectile.velocity += 0.35f * (target.Center - Projectile.Center).SafeNormalize(Vector2.Zero);
 
                 if (Projectile.velocity.Length() > 15f) {
                     Projectile.velocity.Normalize();
@@ -68,9 +68,11 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             target = t;
         }
 
+        
         public override bool PreDraw(ref Color lightColor)
         {
-            return false;
+            Color c = Color.Lerp(Color.Orange, Color.White, 0.5f);
+            return base.PreDraw(ref c);
         }
 
 

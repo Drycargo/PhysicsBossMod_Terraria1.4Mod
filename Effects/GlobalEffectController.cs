@@ -24,6 +24,11 @@ namespace PhysicsBoss.Effects
         private static float bloomInten = 0f;
         private static float bloomThreshold = 1;
 
+        private static Vector2 CTCenter = Vector2.Zero;
+        private static float CTInten = 0;
+        private static float CTRadius = 0;
+        private static float CTWidth = 0;
+
         public const float FLASH_PERIOD = 16;
         public const float FLASH_TRANSPARENCY = 0.9f;
         public const int FLASH_WIDTH = 12;
@@ -32,6 +37,29 @@ namespace PhysicsBoss.Effects
         private static Vector2 realCenterPoint;
         private static int flashTimeLeft = 0;
         private static float dispIntensity = 0;
+
+        private static int skyTimeLeft = 0;
+        private static Color skyColor = Color.Transparent;
+
+        private static float vigInten = 0;
+        private static float vigStartPercent = 0;
+        private static float vigIntenNoise = 0;
+        private static float vigStartPercentNoise = 0;
+
+        public static void changeSkyColor(Color c, int duration) {
+            skyTimeLeft = duration;
+            skyColor = c;
+        }
+
+        public static void applySkyColor() {
+            if (skyTimeLeft <= 0)
+            {
+                skyColor = Color.Transparent;
+                return;
+            }
+            skyTimeLeft--;
+            Main.ColorOfTheSkies = skyColor;
+        }
 
         public static void drawAimLine(SpriteBatch spriteBatch, Vector2 center, Vector2 targetPos, Color color, float width)
         {
@@ -114,6 +142,35 @@ namespace PhysicsBoss.Effects
                 Main.GameViewMatrix.TransformationMatrix);
         }
 
+        public static void vignette(float intensity, float startPercent, float intenNoise = 0, float percentNoise = 0) {
+            vigInten = intensity;
+            vigStartPercent = startPercent;
+            vigIntenNoise = intenNoise;
+            vigStartPercentNoise = percentNoise;
+        }
+
+
+        public static void Main_applyVignette()
+        {
+            if (vigInten <= 0)
+            {
+                if (Filters.Scene["PhysicsBoss:Vignette"].IsActive())
+                    Filters.Scene.Deactivate("PhysicsBoss:Vignette");
+                return;
+            }
+
+            if (!Filters.Scene["PhysicsBoss:Vignette"].IsActive())
+            {
+                Filters.Scene.Activate("PhysicsBoss:Vignette");
+            }
+
+            PhysicsBoss.worldEffect.Parameters["vigInten"].SetValue(vigInten * (1 + vigIntenNoise * (Main.rand.NextFloat() - 0.5f)));
+            PhysicsBoss.worldEffect.Parameters["vigStartPercent"].SetValue(vigStartPercent * (1 + vigStartPercentNoise * (Main.rand.NextFloat() - 0.5f)));
+
+            if(vigInten > 0)
+                vigInten -= 0.1f;
+        }
+
         public static void shake(float intensity) {
             if (intensity < 0 && Filters.Scene["PhysicsBoss:Shake"].IsActive())
             {
@@ -145,21 +202,30 @@ namespace PhysicsBoss.Effects
             PhysicsBoss.worldEffect.Parameters["blurInten"].SetValue(intensity);
         }
 
-        public static void centerTwist(float intensity, float radius, float width, Vector2 Center) {
-            if (intensity <= 0 && Filters.Scene["PhysicsBoss:CenterTwist"].IsActive()) {
-                Filters.Scene.Deactivate("PhysicsBoss:CenterTwist");
+        public static void centerTwist(float intensity, float radius, float width, Vector2 Center)
+        {
+            CTInten = intensity;
+            CTRadius = radius;
+            CTWidth = width;
+            CTCenter = Center;
+        }
+
+        public static void Main_applyCenterTwist() {
+            if (CTInten <= 0) {
+                if (Filters.Scene["PhysicsBoss:CenterTwist"].IsActive())
+                    Filters.Scene.Deactivate("PhysicsBoss:CenterTwist");
                 return;
             }
 
-            if (intensity > 0 && !Filters.Scene["PhysicsBoss:CenterTwist"].IsActive())
+            if (CTInten > 0 && !Filters.Scene["PhysicsBoss:CenterTwist"].IsActive())
             {
                 Filters.Scene.Activate("PhysicsBoss:CenterTwist");
             }
 
-            PhysicsBoss.worldEffect.Parameters["twistInten"].SetValue(intensity);
-            PhysicsBoss.worldEffect.Parameters["twistRadius"].SetValue(radius);
-            PhysicsBoss.worldEffect.Parameters["twistWidth"].SetValue(width);
-            PhysicsBoss.worldEffect.Parameters["twistCenter"].SetValue(Center - Main.screenPosition);
+            PhysicsBoss.worldEffect.Parameters["twistInten"].SetValue(CTInten);
+            PhysicsBoss.worldEffect.Parameters["twistRadius"].SetValue(CTRadius);
+            PhysicsBoss.worldEffect.Parameters["twistWidth"].SetValue(CTWidth);
+            PhysicsBoss.worldEffect.Parameters["twistCenter"].SetValue(CTCenter - Main.screenPosition);
             PhysicsBoss.worldEffect.Parameters["texSize"].SetValue(Main.ScreenSize.ToVector2());
         }
 
@@ -167,10 +233,9 @@ namespace PhysicsBoss.Effects
         {
             bloomInten = intensity;
             bloomThreshold = threshold;
-            //applyBloom(intensity, threashold);
         }
 
-        public static void applyBloom()
+        public static void Main_applyBloom()
         {
             /*
             if (bloomInten < 0 && Filters.Scene["PhysicsBoss:Bloom"].IsActive())
@@ -285,6 +350,9 @@ namespace PhysicsBoss.Effects
             spriteBatch.Draw(screenTemp,
                 new Rectangle(0, 0, Main.screenTarget.Width, Main.screenTarget.Height), Color.White);
             spriteBatch.End();
+
+            if (bloomInten > 0)
+                bloomInten -= 0.1f;
         }
 
         public static void flash(float threshold, Vector2 centerPos, int timeLeft, float intensity) {
@@ -294,7 +362,7 @@ namespace PhysicsBoss.Effects
             dispIntensity = intensity;
         }
 
-        public static void applyFlash() {
+        public static void Main_applyFlash() {
             if (flashTimeLeft <= 0)
             {
                 realCenterPoint = Vector2.Zero;

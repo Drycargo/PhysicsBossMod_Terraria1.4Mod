@@ -37,6 +37,9 @@ float dispTimer;
 Texture2D dispMap;
 float dispInten;
 
+float vigStartPercent;
+float vigInten;
+
 sampler2D uDisp = sampler_state
 {
     Texture = <dispMap>;
@@ -45,6 +48,19 @@ sampler2D uDisp = sampler_state
     AddressU = wrap;
     AddressV = wrap;
 };
+
+float4 SimpleVignette(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 c = tex2D(uImage0, coords);
+    float dist = length(coords - float2(0.5, 0.5));
+    if (vigInten <= 0 || 2 * dist <= vigStartPercent)
+        return c;
+
+    float darkFactor = 1 - (2 * dist - vigStartPercent) * vigInten;
+    if (darkFactor <= 0)
+        return float4(0, 0, 0, 0);
+    return darkFactor * c;
+}
 
 float4 Extract(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -252,5 +268,10 @@ technique Technique1
     pass CenterDisplacement
     {
         PixelShader = compile ps_2_0 CenterDisplacement();
+    }
+
+    pass SimpleVignette
+    {
+        PixelShader = compile ps_2_0 SimpleVignette();
     }
 }
