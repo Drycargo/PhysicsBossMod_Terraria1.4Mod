@@ -40,6 +40,9 @@ float dispInten;
 float vigStartPercent;
 float vigInten;
 
+float lum;
+float grayProgress;
+
 sampler2D uDisp = sampler_state
 {
     Texture = <dispMap>;
@@ -48,6 +51,14 @@ sampler2D uDisp = sampler_state
     AddressU = wrap;
     AddressV = wrap;
 };
+
+float4 GrayScaleWithLum(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 rawC = tex2D(uImage0, coords);
+   
+    float c = 0.299 * rawC.r + 0.587 * rawC.g + 0.114 * rawC.b + lum;
+    return lerp(rawC, float4(c, c, c, rawC.a), min(grayProgress, 1));
+}
 
 float4 SimpleVignette(float2 coords : TEXCOORD0) : COLOR0
 {
@@ -274,4 +285,10 @@ technique Technique1
     {
         PixelShader = compile ps_2_0 SimpleVignette();
     }
+
+    pass GrayScaleWithLum
+    {
+        PixelShader = compile ps_2_0 GrayScaleWithLum();
+    }
+
 }

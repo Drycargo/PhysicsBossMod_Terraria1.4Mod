@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
 using PhysicsBoss.NPCs.Boss.ChaosTheory;
 using PhysicsBoss.Projectiles;
@@ -51,10 +52,11 @@ namespace PhysicsBoss.Items
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-
+            SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate");
+            /*
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-
+            */
             /*
             NPC.NewNPC(player.GetSource_FromThis(), (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<ButterflySpiralSink>());
             

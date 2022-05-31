@@ -233,6 +233,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         public override void AI()
         {
+            if (!SkyManager.Instance["PhysicsBoss:OpenTheGate"].IsActive()) {
+                SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate", Vector2.Zero, NPC.whoAmI);
+            }
+
             if (!summoned) {
                 Main.NewText("Hello, Lorentz.", Color.LightGreen);
                 NPC.alpha = 255;
@@ -457,6 +461,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 waterDropController.killAll();
             }
 
+
             CameraPlayer.deActivate();
         }
 
@@ -476,8 +481,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         }
         private void pendulumeOne1()
         {
-            CameraPlayer.activate(NPC.whoAmI);
-            CameraPlayer.setDisplacement(NPC.Center - Main.ScreenSize.ToVector2()/2);
             GlobalEffectController.vignette(1, 0.35f, 0.05f);
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
             if (dimNode == null) {

@@ -1460,3 +1460,236 @@ Message at 2022-05-30 1:24:24 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\M
 Message at 2022-05-30 1:24:24 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
 Message at 2022-05-30 1:24:24 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
 Message at 2022-05-30 1:24:24 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-30 10:45:23 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:45:23 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:45:23 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:45:23 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:45:23 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:45:23 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-30 10:45:23 AM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:45:23 AM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:45:23 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-30 10:45:23 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:45:23 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:45:23 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-30 10:45:23 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:45:23 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:45:23 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-30 10:49:48 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:49:48 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:49:48 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:49:48 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:49:48 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:49:48 AM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(36,35): error X3011: 'dev': default value must be a literal expression
+Message at 2022-05-30 10:53:25 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:53:25 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:53:25 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:53:25 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:53:25 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:53:25 AM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(40,9): error X5608: Compiled shader code uses too many arithmetic instruction slots (72). Max. allowed by the target (ps_2_0) is 64.
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(155,23): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-05-30 10:54:48 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:54:48 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:54:48 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:54:48 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:54:48 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:54:49 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-30 10:54:49 AM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:54:49 AM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:54:49 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-30 10:54:49 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:54:49 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:54:49 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-30 10:54:49 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:54:49 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:54:49 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-30 10:59:49 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:59:49 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:59:49 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:59:49 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:59:49 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:59:49 AM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(40,9): error X5608: Compiled shader code uses too many arithmetic instruction slots (69). Max. allowed by the target (ps_2_0) is 64.
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(155,23): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-05-30 11:20:39 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:20:39 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:20:39 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 11:20:39 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:20:39 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 11:20:39 AM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(155,15): error X4000: variable 'c' used without having been completely initialized
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(190,23): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-05-30 11:21:13 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:21:13 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:21:13 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 11:21:13 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:21:13 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:21:13 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-30 11:21:13 AM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:21:13 AM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:21:13 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-30 11:21:13 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:21:13 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:21:13 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-30 11:21:13 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:21:13 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:21:13 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-30 11:23:26 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:23:26 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:23:26 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 11:23:26 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:23:26 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 11:23:26 AM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(156,12): error X5608: Compiled shader code uses too many arithmetic instruction slots (68). Max. allowed by the target (ps_2_0) is 64.
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(190,23): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-05-30 11:24:05 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:24:05 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:24:05 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 11:24:05 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:24:05 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 11:24:05 AM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(155,12): error X5608: Compiled shader code uses too many arithmetic instruction slots (68). Max. allowed by the target (ps_2_0) is 64.
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(189,23): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-05-30 11:26:05 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:26:05 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:26:05 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 11:26:05 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:26:05 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:26:05 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-30 11:26:05 AM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:26:05 AM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:26:05 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-30 11:26:05 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:26:05 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:26:05 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-30 11:26:05 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:26:05 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:26:05 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-30 10:36:09 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:36:09 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:36:09 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:36:09 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:36:09 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:36:09 PM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(186,23): error X3004: undeclared identifier 'DynamicColor'
+Message at 2022-05-30 10:36:19 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:36:19 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:36:19 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:36:19 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:36:19 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:36:19 PM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(56,28): error X3502: 'dynamicColor': input parameter 'rawC' missing semantics
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(186,23): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-05-30 10:36:51 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:36:51 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:36:51 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:36:51 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:36:51 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:36:51 PM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(186,23): error X3013: 'dynamicColor': function does not take 1 parameter
+Message at 2022-05-30 10:52:00 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:52:00 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:52:00 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:52:00 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:52:00 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:52:00 PM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(217,23): error X3004: undeclared identifier 'DynamicColor'
+Message at 2022-05-30 10:52:47 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:52:47 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:52:47 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:52:47 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:52:47 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 10:52:47 PM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(58,28): error X3502: 'dynamicColor': input parameter 'rawC' missing semantics
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(217,23): ID3DXEffectCompiler::CompileEffect: There was an error compiling expression
+ID3DXEffectCompiler: Compilation failed
+Message at 2022-05-30 10:53:07 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:53:07 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:53:07 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:53:07 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:53:07 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:53:07 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-30 10:53:07 PM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:53:07 PM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:53:07 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-30 10:53:07 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:53:07 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:53:08 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-30 10:53:08 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:53:08 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:53:08 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-30 10:56:04 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:56:04 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:56:04 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 10:56:04 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:56:04 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:56:04 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-30 10:56:04 PM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:56:04 PM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:56:04 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-30 10:56:04 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:56:04 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:56:04 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-30 10:56:04 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 10:56:04 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 10:56:04 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-30 11:09:27 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:09:27 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:09:27 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 11:09:27 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:09:27 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Error at 2022-05-30 11:09:27 PM: Errors compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\input\Mask.fx:
+C:\Users\HTF\OneDrive - UBC\???\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\memory(69,27): error X3000: syntax error: unexpected token 'f'
+Message at 2022-05-30 11:09:48 PM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:09:48 PM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:09:48 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-30 11:09:48 PM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:09:48 PM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:09:48 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-30 11:09:48 PM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:09:48 PM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:09:48 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-30 11:09:48 PM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:09:48 PM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:09:48 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-30 11:09:48 PM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-30 11:09:48 PM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-30 11:09:48 PM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-31 12:07:12 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:07:12 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:07:12 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-31 12:07:12 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:07:12 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:07:12 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-31 12:07:12 AM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:07:12 AM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:07:12 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-31 12:07:12 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:07:12 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:07:12 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-31 12:07:12 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:07:12 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:07:12 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb
+Message at 2022-05-31 12:09:10 AM: Importing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:09:10 AM: Processing Eff.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:09:10 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Eff.xnb
+Message at 2022-05-31 12:09:10 AM: Importing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:09:10 AM: Processing Mask.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:09:10 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Mask.xnb
+Message at 2022-05-31 12:09:10 AM: Importing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:09:10 AM: Processing Shine.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:09:10 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Shine.xnb
+Message at 2022-05-31 12:09:10 AM: Importing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:09:10 AM: Processing Trailing.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:09:10 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\Trailing.xnb
+Message at 2022-05-31 12:09:10 AM: Importing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.EffectImporter
+Message at 2022-05-31 12:09:10 AM: Processing WorldM.fx with Microsoft.Xna.Framework.Content.Pipeline.Processors.EffectProcessor
+Message at 2022-05-31 12:09:10 AM: Compiling C:\Users\HTF\OneDrive - UBC\文档\My Games\Terraria\tModLoader\ModSources\PhysicsBoss\Effects\Content\WorldM.xnb

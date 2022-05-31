@@ -28,8 +28,39 @@ namespace PhysicsBoss.Skies
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
         {
-            spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), 
-                Color.Black);
+            if (minDepth < 0 && maxDepth >= 0)
+            {
+                /*
+                spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(0, 0, Main.screenWidth / 2, Main.screenHeight / 2),
+                    Color.Black);
+                */
+
+                GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
+                RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width, Main.screenTarget.Height);
+
+                Main.spriteBatch.End();
+                graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+                graphicsDevice.Clear(Color.Transparent);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+                Main.spriteBatch.End();
+                graphicsDevice.SetRenderTarget(screenTemp);
+                graphicsDevice.Clear(Color.Transparent);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(0, 0, Main.screenWidth / 2, Main.screenHeight / 2),
+                    Color.White);
+
+                Main.spriteBatch.End();
+                graphicsDevice.SetRenderTarget(Main.screenTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                Main.spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            }
         }
 
         public override bool IsActive()

@@ -28,23 +28,48 @@ namespace PhysicsBoss.Projectiles
 
         public override bool PreDraw(ref Color lightColor)
         {
+            GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
+            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width, Main.screenTarget.Height);
+
+            Main.spriteBatch.End();
+            graphicsDevice.SetRenderTarget(screenTemp);
+            graphicsDevice.Clear(Color.Transparent);
+            Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+
+
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.Clear(Color.Transparent);
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
-                Main.DefaultSamplerState,
-                DepthStencilState.None,
-                RasterizerState.CullNone, null,
-                Main.GameViewMatrix.TransformationMatrix);
+                BlendState.NonPremultiplied);
 
             PhysicsBoss.maskEffect.Parameters["texSize"].SetValue(Main.ScreenSize.ToVector2());
             PhysicsBoss.maskEffect.Parameters["polarizeShrink"].SetValue(2f);
-            PhysicsBoss.maskEffect.Parameters["timer"].SetValue(-(float)Main.time * 0.025f);
+            PhysicsBoss.maskEffect.Parameters["dispTimer"].SetValue(-(float)Main.time * 0.025f);
             PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicPolarize"].Apply();
 
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
 
             Main.spriteBatch.Draw(tex, new Rectangle(0,0,Main.screenWidth, Main.screenHeight), Color.White);
 
+
+            graphicsDevice.SetRenderTarget(Main.screenTarget);
+            graphicsDevice.Clear(Color.Transparent);
+
+            Main.spriteBatch.End();
+            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                BlendState.Additive);
+            Main.spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
+            /*
+            PhysicsBoss.maskEffect.Parameters["phaseTimer1"].SetValue((float)Main.time * 0.025f);
+            PhysicsBoss.maskEffect.Parameters["phaseTimer2"].SetValue((float)Main.time * 0.025f);
+            PhysicsBoss.maskEffect.Parameters["texColorMap"].SetValue(ModContent.Request<Texture2D>("PhysicsBoss/Asset/ColorMap").Value);
+            PhysicsBoss.maskEffect.Parameters["brightThreshold"].SetValue(0.8f);
+            PhysicsBoss.maskEffect.Parameters["darkThreshold"].SetValue(0.3f);
+            PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicColorMap"].Apply();
+            Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+            */
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -52,6 +77,7 @@ namespace PhysicsBoss.Projectiles
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+
             return false;
         }
     }

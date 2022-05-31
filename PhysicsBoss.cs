@@ -84,6 +84,9 @@ namespace PhysicsBoss
             SkyManager.Instance["PhysicsBoss:BlackSky"] = new BlackSky();
             SkyManager.Instance["PhysicsBoss:BlackSky"].Load();
 
+            SkyManager.Instance["PhysicsBoss:OpenTheGate"] = new OpenTheGate();
+            SkyManager.Instance["PhysicsBoss:OpenTheGate"].Load();
+
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
@@ -116,6 +119,19 @@ namespace PhysicsBoss
             trailingEffect = null;
             shineEffect = null;
             worldEffect = null;
+            maskEffect = null;
+
+            Filters.Scene.Deactivate("PhysicsBoss:Inverse");
+            Filters.Scene.Deactivate("PhysicsBoss:Shake");
+            Filters.Scene.Deactivate("PhysicsBoss:Blur");
+            Filters.Scene.Deactivate("PhysicsBoss:Bloom");
+            Filters.Scene.Deactivate("PhysicsBoss:BlurH");
+            Filters.Scene.Deactivate("PhysicsBoss:BlurV");
+            Filters.Scene.Deactivate("PhysicsBoss:CenterTwist");
+            Filters.Scene.Deactivate("PhysicsBoss:Vignette");
+
+            SkyManager.Instance.Deactivate("PhysicsBoss:BlackSky");
+            SkyManager.Instance.Deactivate("PhysicsBoss:OpenTheGate");
 
             On.Terraria.Graphics.Effects.FilterManager.EndCapture -= FilterManager_EndCapture;
             Main.OnResolutionChanged -= Main_OnResolutionChanged;
