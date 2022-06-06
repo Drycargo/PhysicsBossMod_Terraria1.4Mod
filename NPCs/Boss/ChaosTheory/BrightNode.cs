@@ -22,8 +22,16 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
     {
         public const int SINGLE_PENDULUM_DIST = 200;
         public const double SINGLE_PENDULUM_PERIOD = 0.8;
+
+        /*
         public const float HALVORSEN_PERIOD = 5.35f * 60/2.5f;
+        
         public const float HALVORSEN_FINALE_PERIOD = HALVORSEN_PERIOD/2;
+        */
+
+        public const int STAR_POINT_NUM = 9;
+        public const int HALVORSEN_PERIOD = (int)(2.7f * 60);
+        public const float HALVORSEN_FINALE_PERIOD = HALVORSEN_PERIOD / STAR_POINT_NUM;
 
 
         public static readonly int TRAILING_CONST = 15;
@@ -77,7 +85,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.knockBackResist = 0f;
 
             NPC.aiStyle = -1;
-            NPC.value = Item.buyPrice(0, 0, 15, 0);
+            NPC.value = Item.buyPrice(0, 0, 0, 0);
 
             Timer = 0f;
             currentPhase = 0;
@@ -483,7 +491,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         private void halvorsenFinale()
         {
             NPC.velocity *= 0;
-            hyperbolicMotion();
+            //hyperbolicMotion(HALVORSEN_FINALE_PERIOD);
             if ((int)Timer == 0) {
                 trailingStarController.Projectile.Kill();
                 Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
@@ -495,7 +503,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if (trailingStarController!=null)
                 trailingStarController.Projectile.Center = NPC.Center;
 
-            if ((int)Timer == (int)(HALVORSEN_PERIOD) + 29) {
+            if ((int)Timer == (int)(HALVORSEN_PERIOD) + 14)
+            {
                 foreach (Projectile p in Main.projectile)
                 {
                     if (p.type == ModContent.ProjectileType<TrailingStarHalvorsenRaise>())
@@ -508,46 +517,52 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
                 Timer = 0;
                 setPhase((int)phase.DOUBLE_PENDULUM_PREPARATION);
-            } else if ((int)Timer == (int)(HALVORSEN_PERIOD)) {
+            }
+            else if ((int)Timer == (int)(HALVORSEN_PERIOD))
+            {
                 trailingStarController.Projectile.Kill();
                 trailingStarController = null;
-                foreach (Projectile p in Main.projectile){
-                    if (p.type == ModContent.ProjectileType<TrailingStarHalvorsenRaise>()) {
-                        p.timeLeft = 30 + TrailingStarHalvorsenRaise.LASER_PERIOD;
+                foreach (Projectile p in Main.projectile)
+                {
+                    if (p.type == ModContent.ProjectileType<TrailingStarHalvorsenRaise>())
+                    {
+                        p.timeLeft = 15 + TrailingStarHalvorsenRaise.LASER_PERIOD;
                     }
                 }
+                owner.dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_PREPARATION);
+            }
+            else if (Timer < HALVORSEN_PERIOD && (int)Timer % (int)HALVORSEN_FINALE_PERIOD == 0) {
+                int factor = (int)Timer / (int)HALVORSEN_FINALE_PERIOD;
+                Vector2 newPos = target.Center +
+                    (5f * (float)factor / (float)STAR_POINT_NUM * MathHelper.TwoPi).ToRotationVector2() * 500f;
+                float dir = (newPos - NPC.Center).ToRotation();
+
+                for (int i = 0; i < TRAILING_CONST; i++){
+                    NPC.oldPos[i] = Vector2.Lerp(newPos, NPC.Center, (float)i/ (float)TRAILING_CONST);
+                    NPC.oldRot[i] = dir;
+                }
+
+                NPC.Center = newPos;
+                fireWork();
+
+                if (factor % 2 == 0)
+                {
+                    trailingStarController.summonStarBundle<TrailingStarHalvorsenRaise>();
+                }
+                else {
+                    trailingStarController.releaseStarBundle();
+                }
+            }
+            
+            /*
             } else if ((int)Timer < (int)(HALVORSEN_PERIOD) &&
-                (int)Timer % (int)(0.3 * HALVORSEN_PERIOD) == 0)
-            {
+                (int)Timer % (int)(0.3 * HALVORSEN_PERIOD) == 0) {
                 trailingStarController.summonStarBundle<TrailingStarHalvorsenRaise>();
                 trailingStarController.releaseStarBundle(); // CHANGED
             }
+            */
 
             Timer++;
-        }
-
-        private void hyperbolicMotion()
-        {
-            float progress;
-            if (Timer % (2 * HALVORSEN_FINALE_PERIOD) > HALVORSEN_FINALE_PERIOD)
-                progress = 2 * (HALVORSEN_FINALE_PERIOD - (Timer % HALVORSEN_FINALE_PERIOD)) / HALVORSEN_FINALE_PERIOD - 1;
-            else
-                progress = 2 * (Timer % HALVORSEN_FINALE_PERIOD) / HALVORSEN_FINALE_PERIOD - 1;
-
-            float altitude = 500 * progress;
-            float radius = (float)(progress * progress) * 400 + 200;
-            float innerAngle = (float)(MathHelper.TwoPi * ((Timer / (0.2 * HALVORSEN_FINALE_PERIOD)) % 1f));
-
-            Vector3 realPos = new Vector3(
-                radius * (float)Math.Cos(innerAngle),
-                altitude,
-                radius * (float)Math.Sin(innerAngle));
-
-            float adjustment =  (float)Math.Atan(realPos.Z) / (MathHelper.PiOver2) / 400;
-
-            NPC.Center = new Vector2(
-                target.Center.X + realPos.X * (1f + adjustment),
-                target.Center.Y + realPos.Y * (1f + adjustment));
         }
 
         private void doublePendulumOne()

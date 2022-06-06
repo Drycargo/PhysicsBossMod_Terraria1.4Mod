@@ -221,5 +221,28 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             base.OnKill();
         }
 
+        protected void hyperbolicMotion(float totalPeriod)
+        {
+            float progress;
+            if (Timer % (2 * totalPeriod) > totalPeriod)
+                progress = 2 * (totalPeriod - (Timer % totalPeriod)) / totalPeriod - 1;
+            else
+                progress = 2 * (Timer % totalPeriod) / totalPeriod - 1;
+
+            float altitude = 500 * progress;
+            float radius = (float)(progress * progress) * 400 + 200;
+            float innerAngle = (float)(MathHelper.TwoPi * ((Timer / (0.2 * totalPeriod)) % 1f));
+
+            Vector3 realPos = new Vector3(
+                radius * (float)Math.Cos(innerAngle),
+                altitude,
+                radius * (float)Math.Sin(innerAngle));
+
+            float adjustment = (float)Math.Atan(realPos.Z) / (MathHelper.PiOver2) / 400;
+
+            NPC.Center = new Vector2(
+                target.Center.X + realPos.X * (1f + adjustment),
+                target.Center.Y + realPos.Y * (1f + adjustment));
+        }
     }
 }

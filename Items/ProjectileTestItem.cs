@@ -47,16 +47,20 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<TestEffectProjectile>();
+            Item.shoot = ModContent.ProjectileType<StarRetrieve>();
             Item.shootSpeed = 5f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
-            SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate");
-            /*
+            //SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate");
+
+            
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-            */
+            
+
+            
+            
             /*
             NPC.NewNPC(player.GetSource_FromThis(), (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y, ModContent.NPCType<ButterflySpiralSink>());
             

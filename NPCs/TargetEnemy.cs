@@ -93,8 +93,8 @@ namespace PhysicsBoss.NPCs
             SoundEngine.PlaySound(SoundID.Item4, NPC.Center);
         }
 
-        protected void follow(float dist = 500f, float speed = 15f) {
-            if (target == null || !target.active || target.statLife <= 0)
+        protected void follow(float dist = 1000f, float speed = 5f) {
+            if (target == null || !target.active)
                 return;
             if ((target.Center - NPC.Center).Length() > dist)
             {
@@ -102,6 +102,14 @@ namespace PhysicsBoss.NPCs
             }
             else {
                 NPC.velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX) * speed;
+            }
+        }
+
+        protected void ellipseSurround(float semiX, float semiY, float thisAngle, float ellipseAngle, float inertia = 0) {
+            if (target != null && target.active) {
+                inertia = Math.Min(1,Math.Max(0,inertia));
+                Vector2 basicDisp = new Vector2((float)(semiX * Math.Cos(thisAngle)), (float)(semiY * Math.Sin(thisAngle)));
+                NPC.Center = NPC.Center * inertia + (1 - inertia) * (target.Center + basicDisp.RotatedBy(ellipseAngle));
             }
         }
     }

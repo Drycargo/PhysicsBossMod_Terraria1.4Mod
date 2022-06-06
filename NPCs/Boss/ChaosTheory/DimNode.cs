@@ -24,7 +24,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public const double SINGLE_PENDULUM_PERIOD = 21/4;
         public const float CHUA_STAR_POINT = 9;
 
-        public const float CHUA_ORBIT_PERIOD = 1.75f * 60 / CHUA_STAR_POINT;
+        //public const float CHUA_ORBIT_PERIOD = 1.75f * 60 / CHUA_STAR_POINT;
+        public const float CHUA_ORBIT_PERIOD = 1.5f * 60;
 
         private float bloomIntensity;
 
@@ -131,7 +132,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                                 drawTrail = trail.SHADOW;
 
                             hover(owner.NPC.Center - 0.5f * ChaosTheory.DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY, 20, 0.3f, 60);
-                            fireCircularStar();
                             Timer++;
                             break;
                         }
@@ -258,15 +258,16 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
 
+            int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
+            Vector2 currentCenter = target.Center + Vector2.UnitY * 100 + (posIndex * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 500f;
             // movement
             if (factor == 0) {
                 fireWork();
-                int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
-                NPC.Center = target.Center + Vector2.UnitY * 100 + (posIndex * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 550f;
+                NPC.Center = currentCenter;
                 fireWork();
             }
 
-            hover(target.Center + Vector2.UnitY * 100, 550f, 0.1f, 2400f, inertia: 0.2f);
+            hover(currentCenter, 20f, 0.1f, 2400f, inertia: 0.99f);
             trailingStarController.Projectile.Center = NPC.Center;
 
 
@@ -284,6 +285,20 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void chuaCircuitFinale()
         {
+            hyperbolicMotion(CHUA_ORBIT_PERIOD);
+            if (Timer >= CHUA_ORBIT_PERIOD)
+            {
+                trailingStarController.Projectile.Kill();
+                trailingStarController = null;
+                setPhase((int)phase.ORBIT);
+            }else if ((int)Timer % (int)(0.1f * CHUA_ORBIT_PERIOD) == 0) {
+                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX * (target.Center.X - NPC.Center.X),
+                    ModContent.ProjectileType<StarRetrieve>(), 0, 0);
+                SoundEngine.PlaySound(SoundID.Item25, NPC.position);
+            }
+            Timer++;
+            #region oldImplementation
+            /*
             if (trailingStarController != null)
             {
                 int factor = ((int)Timer / (int)(CHUA_ORBIT_PERIOD/2));
@@ -311,10 +326,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     trailingStarController.releaseStarBundle(target);
                 }
             }
-            Timer++;
+            */
+            #endregion
 
-
-            // THE FOLLOWING IS AN ABANDONED IMPLEMENTATION, IN WHICH DIMNODE ROTATES A SPIRAL AROUND A FIXE POINT
+            // THE FOLLOWING IS AN ABANDONED IMPLEMENTATION, IN WHICH DIMNODE ROTATES A SPIRAL AROUND A FIXED POINT
             #region spiral_star
             /*
             if (trailingStarController != null)
@@ -364,17 +379,17 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void fireCircularStar()
         {
-            if (Timer % 12 == 0)
+            if (Timer % 8 == 0)
             {
-                Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
+                Vector2 dir = Vector2.UnitY; //(target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
                 for (int i = 0; i < 2; i++)
                 {
                     int reverse = (i == 0) ? 1 : -1;
                     Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 5),
+                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 4.5),
                         ModContent.ProjectileType<TrailingStarCircular>(), 75, 0);
                     TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
-                    tsc.setRadius(1300f);
+                    tsc.setRadius(1500f);
                     if (reverse > 0)
                     {
                         tsc.changeClockWise();

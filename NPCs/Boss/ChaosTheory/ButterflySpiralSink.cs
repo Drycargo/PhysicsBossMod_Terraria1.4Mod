@@ -62,7 +62,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.HitSound = SoundID.NPCHit5;
             NPC.DeathSound = SoundID.NPCHit5;
 
-            NPC.lifeMax = 300;
+            NPC.lifeMax = 150;
             NPC.defense = 20;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
@@ -102,9 +102,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 float y = NPC.Center.Y - origin.NPC.Center.Y;
 
                 NPC.velocity = new Vector2(amplitude * sign * y,
-                    -amplitude * sign * x - y)/16;
-                if (NPC.velocity.Length() > 25f)
-                    NPC.velocity = NPC.velocity.SafeNormalize(Vector2.Zero) * 25f;
+                    -amplitude * sign * x - y)/18;
+                if (NPC.velocity.Length() > 18f)
+                    NPC.velocity = NPC.velocity.SafeNormalize(Vector2.Zero) * 18f;
             }
             else {
                 if (Timer > 120) {

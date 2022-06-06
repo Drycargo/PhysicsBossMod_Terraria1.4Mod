@@ -57,7 +57,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 float progress = ((float)LASER_PERIOD - (float)Projectile.timeLeft) / (float)LASER_PERIOD;
                 angle = -MathHelper.PiOver2 +
                     clockwise * 5 * MathHelper.PiOver4
-                    * (float)Math.Pow(progress, 3);
+                    * progress * progress * progress;
 
                 if (laser != null)
                 {

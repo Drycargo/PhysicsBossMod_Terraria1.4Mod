@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.GameContent;
+using Terraria.GameContent.Drawing;
 using Terraria.Graphics.Effects;
 using Terraria.ModLoader;
 
@@ -77,7 +78,7 @@ namespace PhysicsBoss.Skies
 
                 PhysicsBoss.worldEffect.Parameters["lum"].SetValue(0.15f);
                 PhysicsBoss.worldEffect.Parameters["grayProgress"].SetValue(progress * 10f);
-                PhysicsBoss.maskEffect.CurrentTechnique.Passes["GrayScaleWithLum"].Apply();
+                PhysicsBoss.worldEffect.CurrentTechnique.Passes["GrayScaleWithLum"].Apply();
                 Main.spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
 
                 /*
@@ -107,12 +108,27 @@ namespace PhysicsBoss.Skies
                 
 
                 Main.spriteBatch.End();
+
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                     BlendState.AlphaBlend,
                     Main.DefaultSamplerState,
                     DepthStencilState.None,
                     RasterizerState.CullNone, null,
                     Main.GameViewMatrix.TransformationMatrix);
+                
+
+                if (progress < 0) {
+                    Vector2 pos = Main.rand.NextVector2FromRectangle(rec);
+                    //Vector2 pos = new Vector2(Main.rand.NextBool() ? rec.Left : rec.Right, Main.rand.NextFloat() * Main.screenHeight);
+                    Vector2 vel = (pos - Main.ScreenSize.ToVector2()/2).SafeNormalize(Vector2.UnitX) * 16f;
+                    ParticleOrchestraSettings settings = new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = pos + Main.screenPosition,
+                        MovementVector = vel
+                    };
+
+                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.RainbowRodHit, settings);
+                }
             }
         }
 

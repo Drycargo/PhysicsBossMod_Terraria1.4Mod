@@ -25,15 +25,14 @@ namespace PhysicsBoss.Projectiles
         {
             DisplayName.SetDefault("Trailing Star Plain");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "拖尾星白板");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             base.SetStaticDefaults();
         }
 
         public override void SetDefaults()
         {
             setBasicDefaults();
-
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
         }
 
         protected virtual void setBasicDefaults()
@@ -59,11 +58,11 @@ namespace PhysicsBoss.Projectiles
         }
 
         protected virtual float widthFun(float progress){
-            return (1f-progress) * tex.Width* 0.2f;
+            return (1f-progress) * tex.Width* 0.35f;
         }
 
         protected virtual Color colorFun(float progress) {
-            return drawColor * 0.8f;
+            return drawColor;
         }
 
         public override bool PreDraw(ref Color lightColor)

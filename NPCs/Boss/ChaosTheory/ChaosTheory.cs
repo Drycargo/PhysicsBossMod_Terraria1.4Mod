@@ -79,7 +79,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             60 + 20.85f,
             60 + 23.2f,
             60 + 32.85f,
-            60 + 41.63f,
+            60 + 41.53f,
             60 + 43.25f, // 44.63
             60 * 2 + 3f,
             60 * 2 + 12.9f,
@@ -233,10 +233,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         public override void AI()
         {
-            if (!SkyManager.Instance["PhysicsBoss:OpenTheGate"].IsActive()) {
-                SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate", Vector2.Zero, NPC.whoAmI);
-            }
-
             if (!summoned) {
                 Main.NewText("Hello, Lorentz.", Color.LightGreen);
                 NPC.alpha = 255;
@@ -461,6 +457,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 waterDropController.killAll();
             }
 
+            if (lorenzController != null) {
+                lorenzController.Projectile.Kill();
+                lorenzController = null;
+            }
 
             CameraPlayer.deActivate();
         }
@@ -598,7 +598,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
 
             //hover(target.Center + (-MathHelper.Pi/6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.9f * Math.Min(1, Timer/SinLaser.TRANSIT));
-            hover(target.Center + 450f * Vector2.UnitY, 10f, 0.3f, 1200, 10, 500, 0.25f * Math.Min(1, Timer / SinLaser.TRANSIT));
+            hover(target.Center + 450f * Vector2.UnitY, 10f, 0.3f, 1200, 10, 500, 0.8f * Math.Min(1, Timer / SinLaser.TRANSIT));
             Timer++;
         }
 
@@ -670,7 +670,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             summonMaintainFractalRing();
 
             // restrict player
-            attractPlayer(FractalRing.RADIUS);
+            if (fractalRing != null)
+                attractPlayer(FractalRing.RADIUS, fractalRing.Center);
 
             doublePendulumMotion();
 
@@ -686,7 +687,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             // brightNode Laser
             if (fac < DOUBLE_PENDULUM_PERIOD)
             {
-                if (fac > 0.05 * DOUBLE_PENDULUM_PERIOD && fac < 0.65 * DOUBLE_PENDULUM_PERIOD)
+                if (fac > 0.05 * DOUBLE_PENDULUM_PERIOD && fac < 0.5 * DOUBLE_PENDULUM_PERIOD)
                 {
                     if ((int)Timer % 4 == 0)
                     {
@@ -767,7 +768,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             summonMaintainFractalRing();
 
-            attractPlayer(FractalRing.RADIUS);
+            if (fractalRing != null)
+                attractPlayer(FractalRing.RADIUS, fractalRing.Center);
 
             doublePendulumMotion();
 
@@ -816,7 +818,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             {
                 float dist = Vector2.Distance(p.Center, center);
                 if (p.active && dist > restrictionDist)
-                    p.velocity += (float)Math.Min(15, 1f * dist) * (center - p.Center).SafeNormalize(Vector2.Zero);
+                    p.velocity += (float)Math.Min(15, 0.35f * dist) * (center - p.Center).SafeNormalize(Vector2.Zero);
             }
         }
 
@@ -1033,8 +1035,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if (targetPos == NPC.Center)
                 return;
 
-            if (NPC.Center == startPos)
-                SoundEngine.PlaySound(SoundID.Roar);
+            if (progress < 0.1f)
+                SoundEngine.PlaySound(SoundID.Thunder);
 
             Vector2 finalPos;
             if (Vector2.Distance(targetPos, startPos) < 300)
@@ -1090,14 +1092,15 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     threeBodyController.Projectile.Kill();
                     threeBodyController = null;
                 }
-
-                if (waterDropController != null) {
-                    waterDropController.aimAll(target.Center);
-                    SoundEngine.PlaySound(SoundID.Item12);
-                }
             }
 
-            if (Timer == 60) {
+            if (Timer < 90) {
+                if (waterDropController != null)
+                {
+                    waterDropController.aimAll(target.Center);
+                    waterDropController.updateAll((GeneralTimer / 1800) * MathHelper.TwoPi);
+                }
+            } else if (Timer == 90) {
                 if (waterDropController != null)
                 {
                     waterDropController.launchAll();
@@ -1141,7 +1144,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
             }
             else {
-                if ((int)Timer % 15 == 0) {
+                if ((int)Timer % 12 == 0) {
                     for (int i = 0; i < 2; i++) {
                         ButterflySpiralSink b = (ButterflySpiralSink)(NPC.NewNPCDirect(NPC.GetSource_FromAI(),
                             (i % 2 == 0 ? dimNode.NPC : brightNode.NPC).Center, ModContent.NPCType<ButterflySpiralSink>()).ModNPC);
@@ -1151,9 +1154,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
                 NPC.velocity *= 0;
                 attractPlayer(SPIRAL_SINK_RADIUS * 0.75f, NPC.Center);
-                for (int i = 0; i < 5; i++) {
-                    Dust.NewDustDirect(NPC.Center + 0.75f * SPIRAL_SINK_RADIUS * Main.rand.NextVector2Unit(),
-                        0,0, DustID.RainbowTorch).noGravity = true;
+                for (int i = 0; i < 10; i++) {
+                    Vector2 pos = NPC.Center + 0.75f * SPIRAL_SINK_RADIUS * Main.rand.NextVector2Unit();
+                    Dust d = Dust.NewDustDirect(pos,0,0, DustID.RainbowRod);
+                    d.noGravity = true;
+                    d.velocity = 10f * (NPC.Center - pos).SafeNormalize(Vector2.Zero);
+                    d.noLightEmittence = false;
+                    d.noLight = false;
                 }
             }
 
@@ -1215,12 +1222,46 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void lorenzTwo17()
         {
-            follow();
+            if (!SkyManager.Instance["PhysicsBoss:OpenTheGate"].IsActive())
+            {
+                SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate", Vector2.Zero, NPC.whoAmI);
+            }
+
+            float speed = NPC.velocity.Length();
+            Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
+            if (Timer % (2 * LORENZ_PERIOD) < LORENZ_PERIOD)
+            {
+                if (speed < 5f)
+                {
+                    if (speed == 0)
+                        NPC.velocity = dir;
+                    else
+                        NPC.velocity = speed * dir;
+                }
+
+                if (speed < 25f)
+                {
+                    NPC.velocity *= 1.06f;
+                }
+            }
+            else {
+                NPC.velocity *= 0.8f;
+                if (speed < 10f)
+                    NPC.velocity += 0.5f * dir;
+            }
+
             if (lorenzController != null)
             {
                 lorenzController.Projectile.Center = NPC.Center;
                 lorenzController.Projectile.timeLeft++;
+
+                if ((int)Timer % (int)(2 * LORENZ_PERIOD) == (int)LORENZ_PERIOD) {
+                    lorenzController.summonStarBundle<TrailingStarLorenz>();
+                    lorenzController.releaseStarBundle(target);
+                }
             }
+
+
 
             Timer++;
         }

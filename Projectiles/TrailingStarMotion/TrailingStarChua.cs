@@ -121,7 +121,26 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public override void setColor(int colorIndex)
         {
-            drawColor = colors[colorIndex % colors.Length];
+            //drawColor = colors[colorIndex % colors.Length];
+
+            float factor = Main.rand.NextFloat() * (255 + 155);
+
+            drawColor = getColorOnFactor(factor);
+        }
+
+        protected override Color colorFun(float progress)
+        {
+            if (released)
+                return Color.Lerp(drawColor, Color.White, progress) * 2f;
+
+            float factor = (255 + 155) * progress;
+
+            return getColorOnFactor(factor);
+        }
+
+        private static Color getColorOnFactor(float factor)
+        {
+            return new Color(factor < 255 ? 0 : (factor - 255), factor < 255 ? (255 - factor) : 0, 255) * 0.8f;
         }
     }
 }

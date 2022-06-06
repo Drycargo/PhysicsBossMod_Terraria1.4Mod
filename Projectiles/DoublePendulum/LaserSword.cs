@@ -123,11 +123,11 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
 
         public override bool PreDraw(ref Color lightColor)
         {
-            if (Timer < TRANSIT * 1.25) {
+            if (Timer < TRANSIT *1.5) {
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
                     Projectile.Center + Projectile.rotation.ToRotationVector2(),
-                    drawColor * 0.6f * (float)Math.Min(Math.Min(1, (TRANSIT * 1.25 - Timer)/((float)TRANSIT * 0.25)), 
-                    Timer / ((float)TRANSIT * 0.25)), 8);
+                    drawColor * 0.6f * (float)Math.Min(Math.Min(1, (TRANSIT * 1.5 - Timer)/((float)TRANSIT * 0.5)), 
+                    Timer / ((float)TRANSIT * 0.5)), 8);
             }
             return false;
         }

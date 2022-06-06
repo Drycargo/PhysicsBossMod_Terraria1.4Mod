@@ -13,18 +13,26 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class WaterDropController
     {
         public const int TOTAL = 10;
-        public const float RADIUS = 800;
+        public const float RADIUS = 900;
+        public const float CHARGE_TOT = 90f;
+        public const float CHARGE_PERIOD = 8f;
+        public const float CHARGE_TIMES = 6;
 
         private float angle;
         private WaterDrop[] waterDrops;
         private int count;
         private Vector2 center;
 
+        private bool aiming;
+        private float aimProgress;
+
         public WaterDropController(Vector2 c, float angle) {
             this.angle = angle;
             waterDrops = new WaterDrop[TOTAL];
             count = 0;
             center = c;
+            aiming = false;
+            aimProgress = 0;
         }
 
         public void summonAll(NPC owner) {
@@ -43,7 +51,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             try
             {
                 waterDrops[count] = (WaterDrop)(Projectile.NewProjectileDirect(
-                    o.GetSource_FromAI(), getPosition(count) - getRotationAngle(count).ToRotationVector2() * 800f,
+                    o == null? null: o.GetSource_FromAI(), getPosition(count) - getRotationAngle(count).ToRotationVector2() * 800f,
                     Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 80, 10).ModProjectile);
                 waterDrops[count].Projectile.rotation = getRotationAngle(count);
                 count++;
@@ -57,6 +65,9 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
         public void updateAll(float newAngle) {
             angle = newAngle;
+
+            if (aiming && aimProgress < 1f)
+                aimProgress += 1f / CHARGE_TOT;
             for (int i = 0; i < count; i++) {
                 updatePosition(i);
             }
@@ -66,18 +77,51 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             if (index >= count)
                 return;
 
-            Vector2 targetPos = getPosition(index);
-            if ((targetPos - waterDrops[index].Projectile.Center).Length() > 20f)
+            if (aiming)
             {
-                waterDrops[index].Projectile.Center = Vector2.Lerp(waterDrops[index].Projectile.Center,
-                    targetPos, 0.085f);
-            }
-            else {
-                waterDrops[index].Projectile.Center = targetPos;
-            }
 
-            waterDrops[index].Projectile.rotation = getRotationAngle(index);
-            waterDrops[index].Projectile.timeLeft++;
+                if (aimProgress <= CHARGE_PERIOD / CHARGE_TOT * CHARGE_TIMES)
+                {
+                    float currProgress = (aimProgress % (CHARGE_PERIOD / CHARGE_TOT)) / (CHARGE_PERIOD / CHARGE_TOT);
+                    int factor = (int)(aimProgress / (CHARGE_PERIOD / CHARGE_TOT));
+
+                    Vector2 targetPos = getTargetPos(index, factor);
+
+                    waterDrops[index].Projectile.Center = Vector2.Lerp(getTargetPos(index, factor - 1), targetPos, currProgress);
+
+                    waterDrops[index].Projectile.rotation = (targetPos - waterDrops[index].Projectile.Center).ToRotation();
+                }
+                else {
+                    float rotation = (float)index / (float)TOTAL * MathHelper.TwoPi + angle;
+                    Vector2 disp = (650f + 150f * (aimProgress - CHARGE_PERIOD / CHARGE_TOT * CHARGE_TIMES) /
+                        (1 - CHARGE_PERIOD / CHARGE_TOT * CHARGE_TIMES)) * rotation.ToRotationVector2();
+
+                    waterDrops[index].Projectile.Center = disp + center;
+                    waterDrops[index].Projectile.rotation = rotation + MathHelper.Pi;
+                }
+            }
+            else
+            {
+                Vector2 targetPos = getPosition(index);
+                if ((targetPos - waterDrops[index].Projectile.Center).Length() > 20f)
+                {
+                    waterDrops[index].Projectile.Center = Vector2.Lerp(waterDrops[index].Projectile.Center,
+                        targetPos, 0.085f);
+                }
+                else
+                {
+                    waterDrops[index].Projectile.Center = targetPos;
+                }
+
+                waterDrops[index].Projectile.rotation = getRotationAngle(index);
+                waterDrops[index].Projectile.timeLeft++;
+            }
+        }
+
+        private Vector2 getTargetPos(int index, int factor)
+        {
+            return center +(Vector2.UnitX * 650f).RotatedBy((MathHelper.TwoPi * 3f/10f + angle) * factor
+                  + (float)index / (float)TOTAL * MathHelper.TwoPi);
         }
 
         private Vector2 getPosition(int index) {
@@ -104,8 +148,11 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         }
 
         public void aimAll(Vector2 aimPos) {
+            if(!aiming)
+                aiming = true;
             for (int i = 0; i < count; i++)
                 waterDrops[i].setStateAim(aimPos);
+            center = aimPos;
         }
 
         public void launchAll()

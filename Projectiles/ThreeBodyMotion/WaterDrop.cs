@@ -27,6 +27,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         private Texture2D trailTex;
 
         private Vector2 aim;
+
+        private float tailColorProgress;
         public enum state {
             STATIC = 0,
             AIM = 1,
@@ -73,6 +75,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             currState = state.STATIC;
 
             aim = Vector2.Zero;
+            tailColorProgress = 0;
         }
 
         public override void AI()
@@ -90,17 +93,15 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                         break;
                     }
                 case state.AIM: {
-                        if (Projectile.velocity == Vector2.Zero)
-                        {
-                            Projectile.velocity = 5f * Projectile.rotation.ToRotationVector2();
-                        }
-                        else {
-                            Projectile.velocity *= 1.05f;
+                        if (tailColorProgress < 1) {
+                            tailColorProgress += 1 / 180f;
                         }
                         break;
                     }
                 case state.LAUNCHED:
                     {
+                        if (Projectile.velocity.Length() < 60f)
+                            Projectile.velocity *= 1.08f;
                         break;
                     }
                 default: break;
@@ -126,7 +127,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         {
             if (currState == state.AIM)
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
-                    aim, Color.Lerp(Color.Blue, Color.White, 0.5f) * Math.Min(1f, Timer / 30f), 7.5f);
+                    aim, Color.Lerp(Color.Blue, Color.White, 0.5f) * Math.Min(1f, Timer / 90f), 7.5f);
 
             #region drawtail
             Main.spriteBatch.End();
@@ -144,7 +145,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
             Main.graphics.GraphicsDevice.Textures[0] = trailTex;
 
-            PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(2.5f * Color.Blue.ToVector4());
+            PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(
+                2.5f * Color.Lerp(Color.Blue , Color.Indigo, tailColorProgress).ToVector4());
             PhysicsBoss.shineEffect.Parameters["threashold"].SetValue(0.9f);
             PhysicsBoss.shineEffect.CurrentTechnique.Passes["Beam"].Apply();
 
@@ -183,9 +185,10 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         public void setStateAim(Vector2 aimPos) {
             if (currState == state.STATIC) {
                 Timer = 0;
-                aim = aimPos;
                 currState = state.AIM;
             }
+
+            aim = aimPos;
         }
 
         public void launch() {
@@ -193,7 +196,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             {
                 currState = state.LAUNCHED;
                 if (aim != Vector2.Zero)
-                    Projectile.velocity = (aim - Projectile.Center).SafeNormalize(Vector2.UnitX) * 50f;
+                    Projectile.velocity = (aim - Projectile.Center).SafeNormalize(Vector2.UnitX) * 10f;
             }
         }
     }
