@@ -47,7 +47,7 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<StarRetrieve>();
+            Item.shoot = ModContent.ProjectileType<ThreeScrollController>();
             Item.shootSpeed = 5f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

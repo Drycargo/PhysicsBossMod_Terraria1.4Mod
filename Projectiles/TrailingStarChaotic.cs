@@ -119,7 +119,7 @@ namespace PhysicsBoss.Projectiles
 
         protected virtual void releaseAction() { }
 
-        public void releaseProj(Player t) {
+        public virtual void releaseProj(Player t) {
             if (!released) {
                 released = true;
                 target = t;

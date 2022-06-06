@@ -23,6 +23,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         private Projectile laser;
         private int clockwise;
         private float angle;
+        private float initialAngle;
 
         public override void SetStaticDefaults()
         {
@@ -37,7 +38,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             laser = null;
             clockwise = 1;
             Projectile.timeLeft = 3 * (LASER_PERIOD + 60);
-            angle = -MathHelper.PiOver2;
+            initialAngle = -MathHelper.PiOver2;
+            angle = initialAngle;
             drawRayLine = true;
         }
 
@@ -55,8 +57,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 }
                 
                 float progress = ((float)LASER_PERIOD - (float)Projectile.timeLeft) / (float)LASER_PERIOD;
-                angle = -MathHelper.PiOver2 +
-                    clockwise * 5 * MathHelper.PiOver4
+                angle = initialAngle +
+                    clockwise * (MathHelper.TwoPi * 5f/6f)
                     * progress * progress * progress;
 
                 if (laser != null)
@@ -80,6 +82,17 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public void changeClockWise() {
             clockwise *= -1;
+        }
+
+
+        public override void releaseProj(Player target)
+        {
+            if (target != null)
+            {
+                initialAngle = (target.Center - Projectile.Center).ToRotation() + MathHelper.Pi * 15 / 180;
+                angle = initialAngle;
+            }
+            base.releaseProj(target);
         }
     }
 }

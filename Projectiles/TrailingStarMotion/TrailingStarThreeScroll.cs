@@ -67,5 +67,15 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             drawColor = colors[colorIndex % colors.Length];
         }
+
+        protected override void releaseAction()
+        {
+            if (Projectile.velocity == Vector2.Zero)
+            {
+                Projectile.velocity = 0.35f * SPEED_LIMIT *
+                    (Projectile.position - Projectile.oldPos[0]).SafeNormalize(Main.rand.NextVector2Unit());
+            }
+            base.releaseAction();
+        }
     }
 }

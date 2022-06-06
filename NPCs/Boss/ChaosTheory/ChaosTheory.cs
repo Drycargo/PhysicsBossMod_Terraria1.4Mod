@@ -1227,6 +1227,21 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate", Vector2.Zero, NPC.whoAmI);
             }
 
+            if ((int)Timer % (int)LORENZ_PERIOD == 0)
+            {
+                NPC.velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX) * 30f;
+                for (int i = 0; i < 4; i++)
+                {
+                    ((TrailingStarLorenz)Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center,
+                        10f * (NPC.velocity.ToRotation() + MathHelper.PiOver2 * (0.5f + i)).ToRotationVector2(),
+                        ModContent.ProjectileType<TrailingStarLorenz>(), 25, 0).ModProjectile).releaseProj(target);
+                }
+            }
+            else {
+                NPC.velocity *= 0.95f;
+            }
+
+            /*
             float speed = NPC.velocity.Length();
             Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
             if (Timer % (2 * LORENZ_PERIOD) < LORENZ_PERIOD)
@@ -1249,20 +1264,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 if (speed < 10f)
                     NPC.velocity += 0.5f * dir;
             }
+            */
 
             if (lorenzController != null)
             {
                 lorenzController.Projectile.Center = NPC.Center;
                 lorenzController.Projectile.timeLeft++;
-
-                if ((int)Timer % (int)(2 * LORENZ_PERIOD) == (int)LORENZ_PERIOD) {
-                    lorenzController.summonStarBundle<TrailingStarLorenz>();
-                    lorenzController.releaseStarBundle(target);
-                }
             }
-
-
-
+            
             Timer++;
         }
 

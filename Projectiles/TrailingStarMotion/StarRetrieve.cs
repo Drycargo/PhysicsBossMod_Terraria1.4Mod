@@ -55,11 +55,11 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             if (Timer == 0) {
                 dir = Projectile.velocity.SafeNormalize(Vector2.UnitX);
-                Projectile.velocity = -15 * dir;
+                Projectile.velocity = -12 * dir;
             }
 
             if (Projectile.velocity.Length() < 20f) {
-                Projectile.velocity += 0.3f * dir;
+                Projectile.velocity += 0.45f * dir;
             }
 
             if (Projectile.velocity.X * dir.X + Projectile.velocity.Y * dir.Y > 0)

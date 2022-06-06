@@ -211,9 +211,24 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         }
 
-        public override void setColor(int colorIndex)
+        public override void setColor(int colorIndex = 0)
         {
             drawColor = colors[colorIndex % colors.Length] * 2;
+            /*
+            float factor = Main.rand.NextFloat() * (255 + 85);
+
+            drawColor = getColorOnFactor(factor);
+            */
+        }
+
+        protected override Color colorFun(float progress)
+        {
+            if (released)
+                return Color.Lerp(drawColor, Color.White, progress) * 2f;
+
+            float factor = (255 + 85) * progress;
+
+            return getColorOnFactor(factor);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
@@ -224,6 +239,11 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override void Kill(int timeLeft)
         {
             //base.Kill(timeLeft);
+        }
+
+        private static Color getColorOnFactor(float factor)
+        {
+            return new Color(255, factor < 255 ? 255 - factor : 0, factor < 255 ? 0 : factor - 255) * 0.8f;
         }
     }
 }

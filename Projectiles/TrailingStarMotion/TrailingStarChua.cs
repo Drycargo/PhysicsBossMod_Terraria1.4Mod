@@ -110,7 +110,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 return;
 
             Vector2 disp = target.Center - Projectile.Center;
-            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.4 || disp.Length() < 180f)
+            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.35 || disp.Length() < 250f)
                 stopAcc = true;
             else if (target.active)
             {

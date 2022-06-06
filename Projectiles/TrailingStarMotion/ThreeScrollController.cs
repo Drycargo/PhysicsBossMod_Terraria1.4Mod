@@ -21,7 +21,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
     public class ThreeScrollController: TrailingStarController
     {
         public const int TRAILING_CONST = 30;
-        public const float SPEED = 50f;
+        public const float SPEED = 20f;
         private VertexStrip tail = new VertexStrip();
 
         private Vector2 dir;
@@ -41,7 +41,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             base.SetDefaults();
             Projectile.damage = 30;
-            dir = Vector2.Zero;
+            dir = Vector2.UnitX;
 
             ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
             ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
@@ -68,15 +68,18 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 }
                 else
                 {
+                    /*
                     if (Projectile.velocity.Length() < SPEED) {
                         Projectile.velocity += 5f * dir.SafeNormalize(Vector2.UnitX);
                     }
-                    /*
-                    if (Projectile.velocity == Vector2.Zero)
-                    {
-                        Projectile.velocity = SPEED * (dir - Projectile.Center).SafeNormalize(Vector2.UnitX);
-                    }
                     */
+
+                    Projectile.velocity *= 0.97f;
+
+                    if (Projectile.velocity.Length() < 1f) {
+                        releaseStarBundle();
+                        Projectile.Kill();
+                    }
                 }
             }
 
@@ -91,7 +94,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             {
                 Player p = owner.getTarget();
                 float dTime = (p.Center - Projectile.Center).Length() / (SPEED/2);
-                dir = Vector2.Lerp(dir, p.Center + 1.5f * p.velocity * dTime - Projectile.Center, 0.05f);
+                dir = Vector2.Lerp(dir, p.Center + 1.5f * p.velocity * dTime - Projectile.Center, 0.05f).SafeNormalize(Vector2.UnitX);
             }
         }
 
@@ -154,6 +157,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public void release()
         {
             activated = true;
+            Projectile.velocity = SPEED * dir;
             SoundEngine.PlaySound(SoundID.Item12, Projectile.Center);
         }
 

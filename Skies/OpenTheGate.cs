@@ -76,7 +76,7 @@ namespace PhysicsBoss.Skies
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate,
                     BlendState.Additive);
 
-                PhysicsBoss.worldEffect.Parameters["lum"].SetValue(0.15f);
+                PhysicsBoss.worldEffect.Parameters["lum"].SetValue(-0.15f);
                 PhysicsBoss.worldEffect.Parameters["grayProgress"].SetValue(progress * 10f);
                 PhysicsBoss.worldEffect.CurrentTechnique.Passes["GrayScaleWithLum"].Apply();
                 Main.spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
