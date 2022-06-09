@@ -34,6 +34,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             DisplayName.SetDefault("ThreeScroll Controller");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "三轴托尾星控制");
+
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             base.SetStaticDefaults();
         }
 
@@ -43,8 +46,6 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Projectile.damage = 30;
             dir = Vector2.UnitX;
 
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
             activated = false;
@@ -74,9 +75,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     }
                     */
 
-                    Projectile.velocity *= 0.97f;
+                    Projectile.velocity *= 0.95f;
 
-                    if (Projectile.velocity.Length() < 1f) {
+                    if (Projectile.velocity.Length() < 2f) {
                         releaseStarBundle();
                         Projectile.Kill();
                     }

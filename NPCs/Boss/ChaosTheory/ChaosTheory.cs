@@ -61,6 +61,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             SpiralSink15 = 15,
             LorenzOne16 = 16,
             LorenzTwo17 = 17,
+            TornadoPreparation18 = 18,
+            Tornado19 = 19,
         }
 
         
@@ -83,6 +85,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             60 + 43.25f, // 44.63
             60 * 2 + 3f,
             60 * 2 + 12.9f,
+            60 * 2 + 22.3f,
+            60 * 2 + 23.85f,
         };
         
         /*
@@ -150,6 +154,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         // for Lorentz
         private TrailingStarController lorenzController = null;
+
+        // for ButterFlyEffect
+        private Tornado tornado = null;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -361,6 +368,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     case phase.LorenzTwo17:
                         {
                             lorenzTwo17();
+                            break;
+                        }
+                    case phase.TornadoPreparation18: {
+                            tornadoPreparation18();
+                            break;
+                        }
+                    case phase.Tornado19: {
+                            tornado19();
                             break;
                         }
                     default: break;
@@ -917,6 +932,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             else
                 CameraPlayer.setDisplacement(NPC.Center - Main.ScreenSize.ToVector2() / 2);
 
+            attractPlayer(WaterDropController.RADIUS, NPC.Center);
+
             NPC.velocity *= 0;
 
             if (threeBodyController != null)
@@ -966,7 +983,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             if (waterDropController != null)
             {
-                if (Timer >= 25 && (int)Timer % 5 == 0 && waterDropController.getCount() < WaterDropController.TOTAL)
+                if (Timer >= 25 && (int)Timer % 3 == 0 && waterDropController.getCount() < WaterDropController.TOTAL)
                 {
                     waterDropController.summonWaterDrop(NPC);
                 }
@@ -1153,10 +1170,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
 
                 NPC.velocity *= 0;
+
                 attractPlayer(SPIRAL_SINK_RADIUS * 0.75f, NPC.Center);
-                for (int i = 0; i < 10; i++) {
+
+                for (int i = 0; i < 20; i++) {
                     Vector2 pos = NPC.Center + 0.75f * SPIRAL_SINK_RADIUS * Main.rand.NextVector2Unit();
-                    Dust d = Dust.NewDustDirect(pos,0,0, DustID.RainbowRod);
+                    Dust d = Dust.NewDustDirect(pos,0,0, i % 2 == 0 ? DustID.XenonMoss : DustID.ArgonMoss);
                     d.noGravity = true;
                     d.velocity = 10f * (NPC.Center - pos).SafeNormalize(Vector2.Zero);
                     d.noLightEmittence = false;
@@ -1222,58 +1241,110 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void lorenzTwo17()
         {
-            if (!SkyManager.Instance["PhysicsBoss:OpenTheGate"].IsActive())
-            {
-                SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate", Vector2.Zero, NPC.whoAmI);
-            }
-
-            if ((int)Timer % (int)LORENZ_PERIOD == 0)
-            {
-                NPC.velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX) * 30f;
-                for (int i = 0; i < 4; i++)
+            if ((int)Timer == 0) {
+                if (lorenzController != null)
                 {
-                    ((TrailingStarLorenz)Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center,
-                        10f * (NPC.velocity.ToRotation() + MathHelper.PiOver2 * (0.5f + i)).ToRotationVector2(),
-                        ModContent.ProjectileType<TrailingStarLorenz>(), 25, 0).ModProjectile).releaseProj(target);
+                    lorenzController.Projectile.Kill();
+                    lorenzController = null;
+                }
+
+                if (tornado == null)
+                {
+                    tornado = (Tornado)Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero,
+                        ModContent.ProjectileType<Tornado>(), 0, 0).ModProjectile;
                 }
             }
-            else {
+
+            if (Timer > 4.5 * 60) {
+                if (!SkyManager.Instance["PhysicsBoss:OpenTheGate"].IsActive())
+                {
+                    SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate", Vector2.Zero, NPC.whoAmI);
+                }
+            }
+
+            if ((int)Timer % (int)(LORENZ_PERIOD * 0.95f) == 0)
+            {
+                NPC.velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX) * 20f;
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        ((TrailingStarLorenz)Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center,
+                            10f * (NPC.velocity.ToRotation() + MathHelper.PiOver2 * (0.5f + i)).ToRotationVector2().
+                            RotatedByRandom(5f/180f*MathHelper.Pi),
+                            ModContent.ProjectileType<TrailingStarLorenz>(), 25, 0).ModProjectile).releaseProj(target);
+                        SoundEngine.PlaySound(SoundID.Item25, NPC.Center);
+                    }
+                }
+            } else {
                 NPC.velocity *= 0.95f;
             }
 
-            /*
-            float speed = NPC.velocity.Length();
-            Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
-            if (Timer % (2 * LORENZ_PERIOD) < LORENZ_PERIOD)
+            if (tornado != null)
             {
-                if (speed < 5f)
-                {
-                    if (speed == 0)
-                        NPC.velocity = dir;
-                    else
-                        NPC.velocity = speed * dir;
-                }
+                tornado.Projectile.Center = NPC.Center;
+                tornado.Projectile.timeLeft++;
+            }
 
-                if (speed < 25f)
-                {
-                    NPC.velocity *= 1.06f;
-                }
-            }
-            else {
-                NPC.velocity *= 0.8f;
-                if (speed < 10f)
-                    NPC.velocity += 0.5f * dir;
-            }
-            */
-
-            if (lorenzController != null)
-            {
-                lorenzController.Projectile.Center = NPC.Center;
-                lorenzController.Projectile.timeLeft++;
-            }
-            
             Timer++;
         }
+
+        private void tornadoPreparation18()
+        {
+            if ((int)Timer == 0 && SkyManager.Instance["PhysicsBoss:OpenTheGate"].IsActive())
+            {
+                SkyManager.Instance.Deactivate("PhysicsBoss:OpenTheGate");
+            }
+
+            if (tornado != null) {
+                tornado.Projectile.Center = NPC.Center;
+                tornado.Projectile.timeLeft++;
+
+                if (Timer < 85) {
+                    float factor = Timer / 90f;
+                    GlobalEffectController.bloom(factor * 1.5f, 0.1f);
+                    GlobalEffectController.vignette(factor, 0.35f * factor, 0.05f);
+                }else if ((int)Timer == 85) {
+                    GlobalEffectController.bloom(-1, 0.1f);
+                    GlobalEffectController.vignette(-1, 0);
+                    tornado.spawn();
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        Sandstorm.StartSandstorm();
+                        Main.StartRain();
+                        Main.windSpeedCurrent = 0.9f;
+                    }
+                }
+            }
+
+            follow(speed: 1f);
+
+
+            /*
+            if (Timer % 6 == 0)
+            {
+                Dust.QuickDustLine(new Vector2(NPC.Center.X - 0.75f * TornadoPlate.WIDTH, NPC.Center.Y - 1000),
+                    new Vector2(NPC.Center.X - 0.75f * TornadoPlate.WIDTH, NPC.Center.Y + 1000), 100, Color.LightBlue);
+                Dust.QuickDustLine(new Vector2(NPC.Center.X + 0.75f * TornadoPlate.WIDTH, NPC.Center.Y - 1000),
+                    new Vector2(NPC.Center.X + 0.75f * TornadoPlate.WIDTH, NPC.Center.Y + 1000), 100, Color.LightBlue);
+            }*/
+
+            Timer++;
+        }
+
+        private void tornado19()
+        {
+            NPC.Center = new Vector2(NPC.Center.X, 0.25f * target.Center.Y + 0.75f * NPC.Center.Y);
+            if (tornado != null) {
+                tornado.Projectile.Center = NPC.Center;
+                tornado.Projectile.timeLeft++;
+            }
+            
+            follow(speed: 7.5f);
+
+            Timer++;
+        }
+
 
         #endregion
 
@@ -1299,7 +1370,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void createDimNode()
         {
-            int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),
+            int id = NPC.NewNPC(NPC.GetSource_FromAI(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<DimNode>());
             dimNode = (DimNode)Main.npc[id].ModNPC;
             dimNode.NPC.dontTakeDamage = true;
@@ -1310,7 +1381,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void createBrightNode()
         {
-            int id = Terraria.NPC.NewNPC(NPC.GetSource_FromAI(),
+            int id = NPC.NewNPC(NPC.GetSource_FromAI(),
                     (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<BrightNode>());
             brightNode = (BrightNode)Main.npc[id].ModNPC;
             brightNode.NPC.dontTakeDamage = true;

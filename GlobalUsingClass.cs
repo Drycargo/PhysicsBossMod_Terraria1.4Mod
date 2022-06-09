@@ -16,3 +16,6 @@ global using Terraria.ModLoader;
 global using Terraria.DataStructures;
 global using Terraria.Graphics;
 global using PhysicsBoss.Projectiles.TrailingStarMotion;
+global using PhysicsBoss.Projectiles.ButterflyEffect;
+global using PhysicsBoss.Effects;
+global using Terraria.GameContent.Events;

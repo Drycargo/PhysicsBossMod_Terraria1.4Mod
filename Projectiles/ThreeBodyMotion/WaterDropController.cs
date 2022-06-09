@@ -13,10 +13,10 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class WaterDropController
     {
         public const int TOTAL = 10;
-        public const float RADIUS = 900;
+        public const float RADIUS = 800;
         public const float CHARGE_TOT = 90f;
-        public const float CHARGE_PERIOD = 8f;
-        public const float CHARGE_TIMES = 6;
+        public const float CHARGE_PERIOD = 16f;
+        public const float CHARGE_TIMES = 3;
 
         private float angle;
         private WaterDrop[] waterDrops;
@@ -93,7 +93,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 }
                 else {
                     float rotation = (float)index / (float)TOTAL * MathHelper.TwoPi + angle;
-                    Vector2 disp = (650f + 150f * (aimProgress - CHARGE_PERIOD / CHARGE_TOT * CHARGE_TIMES) /
+                    Vector2 disp = (650f + 450f * (aimProgress - CHARGE_PERIOD / CHARGE_TOT * CHARGE_TIMES) /
                         (1 - CHARGE_PERIOD / CHARGE_TOT * CHARGE_TIMES)) * rotation.ToRotationVector2();
 
                     waterDrops[index].Projectile.Center = disp + center;

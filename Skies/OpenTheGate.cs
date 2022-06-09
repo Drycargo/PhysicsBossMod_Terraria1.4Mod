@@ -16,14 +16,14 @@ namespace PhysicsBoss.Skies
 {
     public class OpenTheGate : CustomSky
     {
-        public const float PERIOD = 12 * 60;
+        public const float PERIOD = 5 * 60;
         private float progress = 0f;
         private bool active;
         private int bossIndex = -1;
 
         private Texture2D tex = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNMotionSymmetric").Value;
         private Texture2D colorMap = ModContent.Request<Texture2D>("PhysicsBoss/Asset/ColorMap").Value;
-        private Texture2D bg = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Galaxy").Value;
+        //private Texture2D bg = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Galaxy").Value;
         private float timer = 0;
         public override void Activate(Vector2 position, params object[] args)
         {
@@ -34,8 +34,8 @@ namespace PhysicsBoss.Skies
 
         public override void Deactivate(params object[] args)
         {
-            progress = 0f;
             bossIndex = -1;
+            active = false;
         }
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
@@ -76,7 +76,7 @@ namespace PhysicsBoss.Skies
                 Main.spriteBatch.Begin(SpriteSortMode.Immediate,
                     BlendState.Additive);
 
-                PhysicsBoss.worldEffect.Parameters["lum"].SetValue(-0.15f);
+                PhysicsBoss.worldEffect.Parameters["lum"].SetValue(0.1f);
                 PhysicsBoss.worldEffect.Parameters["grayProgress"].SetValue(progress * 10f);
                 PhysicsBoss.worldEffect.CurrentTechnique.Passes["GrayScaleWithLum"].Apply();
                 Main.spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
@@ -149,8 +149,7 @@ namespace PhysicsBoss.Skies
             {
                 if (bossInactive())
                 {
-                    active = false;
-                    bossIndex = -1;
+                    Deactivate();
                 }
             }
 

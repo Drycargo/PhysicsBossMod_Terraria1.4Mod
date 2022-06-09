@@ -37,6 +37,8 @@ namespace PhysicsBoss.Projectiles
         {
             DisplayName.SetDefault("Lightning Bolt Advance");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "高级闪电");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             base.SetStaticDefaults();
         }
 
@@ -52,12 +54,11 @@ namespace PhysicsBoss.Projectiles
             Projectile.damage = 10;
 
             //tex = ModContent.Request<Texture2D>(Texture).Value;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+
             Timer = 0;
 
-            Projectile.width = 10;//tex.Width;
-            Projectile.height = 10;//tex.Height;
+            Projectile.width = 15;//tex.Width;
+            Projectile.height = 15;//tex.Height;
 
             dir = Vector2.Zero;
             origin = Vector2.Zero;
@@ -112,16 +113,17 @@ namespace PhysicsBoss.Projectiles
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.Additive,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
-            Main.graphics.GraphicsDevice.Textures[0] = ModContent.Request<Texture2D>(Texture).Value;
+            Main.graphics.GraphicsDevice.Textures[0] = 
+                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvanceTransparent").Value;
 
-            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Cyan *3f,
-                progress => Projectile.width / 2, - Main.screenPosition, TRAILING_CONST);
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Cyan,
+                progress => Projectile.width, - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
             Main.spriteBatch.End();

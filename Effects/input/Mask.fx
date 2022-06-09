@@ -20,6 +20,9 @@ float brightThreshold;
 float range;
 float transparency;
 
+float4 tint;
+float fadeThreshold;
+
 sampler2D uMask = sampler_state
 {
     Texture = <texMask>;
@@ -92,6 +95,48 @@ float4 DynamicColorRange(float2 coords : TEXCOORD0) : COLOR0
     rawC.a = min(transparency, 1);
     
     return rawC;
+}
+
+float4 DynamicColor(float2 coords : TEXCOORD0) : COLOR0
+{
+
+    float4 rawC = tex2D(uImage0, coords);
+
+    float4 c = dynamicColor(rawC, timer);
+    c.a = min(rawC.a, 0.299 * c.r + 0.587 * c.g + 0.114 * c.b);
+    
+    return c;
+}
+
+float4 DynamicColorTint(float2 coords : TEXCOORD0) : COLOR0
+{
+
+    float4 rawC = tex2D(uImage0, coords);
+
+    float4 c = dynamicColor(rawC, timer);
+    c.a = min(rawC.a, 0.299 * c.r + 0.587 * c.g + 0.114 * c.b);
+    
+    return c * tint;
+}
+
+float4 DynamicColorTintHFade(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 c = DynamicColorTint(coords);
+    float factor = 0.5 - abs(0.5 - coords.x);
+    if (factor < fadeThreshold)
+        return factor / fadeThreshold * c;
+    
+    return c;
+}
+
+float4 DynamicColorTintVFade(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 c = DynamicColorTint(coords);
+    float factor = 0.5 - abs(0.5 - coords.y);
+    if (factor < fadeThreshold)
+        return factor / fadeThreshold * c;
+    
+    return c;
 }
 
 float4 DynamicMask(float2 coords : TEXCOORD0) : COLOR0
@@ -217,5 +262,26 @@ technique Technique1
     pass DynamicColorRange
     {
         PixelShader = compile ps_2_0 DynamicColorRange();
+    }
+
+    pass DynamicColor
+    {
+        PixelShader = compile ps_2_0 DynamicColor();
+    }
+
+    pass DynamicColorTint
+    {
+        PixelShader = compile ps_2_0 DynamicColorTint();
+    }
+
+
+    pass DynamicColorTintHFade
+    {
+        PixelShader = compile ps_2_0 DynamicColorTintHFade();
+    }
+
+    pass DynamicColorTintVFade
+    {
+        PixelShader = compile ps_2_0 DynamicColorTintVFade();
     }
 }

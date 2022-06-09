@@ -83,6 +83,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             } else
                 chase();
 
+            Projectile.rotation = Projectile.velocity.ToRotation();
+
             AccTimer++;
         }
 

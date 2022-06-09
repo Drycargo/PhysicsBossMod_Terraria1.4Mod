@@ -505,6 +505,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             if ((int)Timer == (int)(HALVORSEN_PERIOD) + 14)
             {
+                /*
                 foreach (Projectile p in Main.projectile)
                 {
                     if (p.type == ModContent.ProjectileType<TrailingStarHalvorsenRaise>())
@@ -514,7 +515,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             ((TrailingStarHalvorsenRaise)p.ModProjectile).changeClockWise();
                         }
                     }
-                }
+                }*/
+
                 Timer = 0;
                 setPhase((int)phase.DOUBLE_PENDULUM_PREPARATION);
             }
@@ -545,13 +547,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 NPC.Center = newPos;
                 fireWork();
 
-                TrailingStarHalvorsenRaise tshr = (TrailingStarHalvorsenRaise)(Projectile.NewProjectileDirect(
-                    NPC.GetSource_FromAI(), NPC.Center, (NPC.Center - target.Center).SafeNormalize(Vector2.Zero) * 20f,
-                    ModContent.ProjectileType<TrailingStarHalvorsenRaise>(),0,0).ModProjectile);
-                tshr.releaseProj(target);
-                tshr.setColor(factor);
+                for (int i = 0; i < 2; i++) {
+                    TrailingStarHalvorsenRaise tshr = (TrailingStarHalvorsenRaise)(Projectile.NewProjectileDirect(
+                        NPC.GetSource_FromAI(), NPC.Center, (NPC.Center - target.Center).SafeNormalize(Vector2.Zero) * 20f,
+                        ModContent.ProjectileType<TrailingStarHalvorsenRaise>(), 0, 0).ModProjectile);
+                    tshr.releaseProj(target);
+                    tshr.setColor(factor);
 
-                for (int i = 0; i < 1; i++) {
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center,
                         (target.Center - NPC.Center).RotatedBy((i % 2 == 0 ? -1 : 1) * 
                         MathHelper.Pi * 25f/180f).SafeNormalize(Vector2.UnitX) * 20f, ModContent.ProjectileType<LightningBolt>(), 30,0);

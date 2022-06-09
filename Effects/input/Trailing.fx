@@ -90,6 +90,11 @@ float4 DynamicTrailSimple(float2 coords : TEXCOORD0) : COLOR0
     return origC * transparency * lerp(tailStart, tailEnd, coords.x);
 }
 
+float4 DynamicContentX(float2 coords : TEXCOORD0) : COLOR0
+{
+    return tex2D(uImage0, float2(coords.x + uTime, coords.y));
+}
+
 float4 DynamicTrailSimpleFade(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = DynamicTrailSimple(coords);
@@ -175,4 +180,8 @@ technique Technique1 {
         PixelShader = compile ps_2_0 BladeTrail();
     }
 
+    Pass DynamicContentX
+    {
+        PixelShader = compile ps_2_0 DynamicContentX();
+    }
 }

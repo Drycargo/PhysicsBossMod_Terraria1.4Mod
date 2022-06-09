@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using PhysicsBoss.Effects;
 using PhysicsBoss.NPCs.Boss.ChaosTheory;
 using PhysicsBoss.Projectiles;
+using PhysicsBoss.Projectiles.ButterflyEffect;
 using PhysicsBoss.Projectiles.ConwayGame;
 using PhysicsBoss.Projectiles.DoublePendulum;
 using PhysicsBoss.Projectiles.ThreeBodyMotion;
@@ -47,7 +48,7 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<ThreeScrollController>();
+            Item.shoot = ModContent.ProjectileType<Tornado>();
             Item.shootSpeed = 5f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -55,10 +56,10 @@ namespace PhysicsBoss.Items
             //SkyManager.Instance.Activate("PhysicsBoss:OpenTheGate");
 
             
-            Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
-                type, damage, knockback, player.whoAmI);
-            
+            Tornado t = (Tornado)(Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
+                type, damage, knockback, player.whoAmI).ModProjectile);
 
+            t.spawn();
             
             
             /*

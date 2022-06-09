@@ -29,6 +29,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         private Color drawColor = Color.Yellow;
 
         protected Texture2D tex;
+        protected Texture2D coverTex;
 
         public float Timer
         {
@@ -55,6 +56,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.damage = 100;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
+            coverTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/ThreeBodyMotion/SolarLaserCover").Value;
 
             Projectile.width = tex.Width;
             Projectile.height = (int)WIDTH;
@@ -80,8 +82,10 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             if (Timer < TRANSIT)
             {
                 GlobalEffectController.blur(1f * (1 - (Timer / TRANSIT)));
-                GlobalEffectController.shake(7.5f * (1 - (Timer / TRANSIT)));
+                GlobalEffectController.shake(12f * (1 - (Timer / TRANSIT)));
             }
+
+            GlobalEffectController.bloom(Math.Max(2f * (1 - (Timer / (3 * TRANSIT))), 0), 0.3f);
 
             if (Timer < TRANSIT || Timer % 10 == 0)
             {
@@ -94,7 +98,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                         Dust d = Dust.NewDustDirect(pos, 0, 0, DustID.SolarFlare);
                         d.color = drawColor;
                         d.noGravity = true;
-                        d.velocity = ((float)j+1f)/50f * 15f * (Projectile.rotation +
+                        d.velocity = ((float)j+1f)/50f * 35f * (Projectile.rotation +
                             (i % 2 == 0 ? 1 : -1) * MathHelper.PiOver2).ToRotationVector2();
                     }
                 }
@@ -136,6 +140,19 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 progress => WIDTH * prog * (float)Math.Sqrt(progress) + 10f,
                 -Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
+
+
+            PhysicsBoss.maskEffect.Parameters["timer"].SetValue((float)Main.time * 0.03f);
+            PhysicsBoss.maskEffect.Parameters["tint"].SetValue(Color.Orange.ToVector4() * 0.8f);
+            PhysicsBoss.maskEffect.Parameters["fadeThreshold"].SetValue(0.1f);
+            PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicColorTintVFade"].Apply();
+
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
+                progress => Color.White,
+                progress => 1.15f * WIDTH * prog * (float)Math.Sqrt(progress) + 10f,
+                -Main.screenPosition, TRAILING_CONST);
+            tail.DrawTrail();
+
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,

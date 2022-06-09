@@ -46,11 +46,12 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<ThreeBodyController>();
+            Item.shoot = ModContent.ProjectileType<LargeLightningBolt>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            /*
             int tot = Enum.GetNames(typeof(ParticleOrchestraType)).Length;
             for (int i = 0; i < tot; i++) {
                 ParticleOrchestraSettings settings = new ParticleOrchestraSettings
@@ -68,7 +69,10 @@ namespace PhysicsBoss.Items
                 Main.StartRain();
                 Main.windSpeedCurrent = 1f;
             }
+            */
 
+            Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
+                type, damage, knockback, player.whoAmI);
 
             //Main.stop
             //GlobalEffectController.flash(0.35f, Main.MouseScreen, 60, 15f);
