@@ -10,9 +10,9 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
     {
         public const int TRAILING_CONST = 20;
         public const float WIDTH = 150f;
-        public const float LENGTH = 2000f;
+        public const float LENGTH = 4000f;
         public const float DEV = 0.2f * WIDTH;
-        public const int TRANSIT = 15;
+        public const int TRANSIT = 10;
 
         public float Timer
         {
@@ -38,7 +38,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(5 * 60);
+            Projectile.timeLeft = (int)(1.25 * 60);
             Projectile.damage = 60;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -57,6 +57,8 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             if (Timer < TRANSIT) {
                 if (Timer == 0)
                 {
+                    SoundEngine.PlaySound(SoundID.Thunder, Projectile.Center);
+
                     Projectile.rotation = Projectile.velocity.ToRotation();
 
                     for (int i = 0; i < TRAILING_CONST; i++)
@@ -65,6 +67,12 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
                     }
 
                     Projectile.velocity *= 0;
+
+                    for (int j = 0; j < 100; j++) {
+                        Dust.NewDust(Vector2.Lerp(Projectile.Center - Projectile.rotation.ToRotationVector2() * 0.5f * LENGTH,
+                            Projectile.Center + Projectile.rotation.ToRotationVector2() * 0.5f * LENGTH, (float)j/100),
+                            (int)(LENGTH / 100f), (int)WIDTH, DustID.YellowStarDust);
+                    }
                 }
 
                 GlobalEffectController.shake(((float)TRANSIT - Timer)/ (float)TRANSIT * 5f);
@@ -129,6 +137,11 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             }
 
             return false;
+        }
+
+        public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+        {
+            behindProjectiles.Add(index);
         }
     }
 }

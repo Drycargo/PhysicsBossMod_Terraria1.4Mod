@@ -267,7 +267,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 fireWork();
             }
 
-            hover(currentCenter, 20f, 0.1f, 2400f, inertia: 0.99f);
+            follow(2000f, 1f);
+            //hover(currentCenter, 20f, 0.1f, 2400f, inertia: 0.99f);
             trailingStarController.Projectile.Center = NPC.Center;
 
 
@@ -286,10 +287,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         private void chuaCircuitFinale()
         {
             hyperbolicMotion(CHUA_ORBIT_PERIOD);
-            if (Timer >= CHUA_ORBIT_PERIOD)
-            {
+
+            if (trailingStarController != null) {
                 trailingStarController.Projectile.Kill();
                 trailingStarController = null;
+            }
+
+            if (Timer >= CHUA_ORBIT_PERIOD)
+            {
                 setPhase((int)phase.ORBIT);
             }else if ((int)Timer % (int)(0.1f * CHUA_ORBIT_PERIOD) == 0) {
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX * (target.Center.X - NPC.Center.X),

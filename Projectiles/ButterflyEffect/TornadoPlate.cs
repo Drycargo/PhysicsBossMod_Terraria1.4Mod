@@ -45,6 +45,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             Projectile.damage = 80;
             Projectile.friendly = false;
             Projectile.hostile = true;
+            Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -78,11 +79,11 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
                 Projectile.timeLeft++;
             }
             else {
-                if (Projectile.velocity.Length() < 25)
-                    Projectile.velocity *= 1.05f;
+                if (Projectile.velocity.Length() < 45)
+                    Projectile.velocity *= 1.025f;
             }
 
-            tiltAngle = (float)(Math.Sin(Timer / PERIOD * MathHelper.Pi) * TILT_ANGLE);
+            
 
             Projectile.frameCounter++;
             if (Projectile.frameCounter % 3 == 0) {
@@ -113,6 +114,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             dispX = factor * x - factor * WIDTH * 0.5f;
             dispY = -factor * HEIGHT * 0.5f;
 
+            tiltAngle = (float)(Math.Sin(Timer / PERIOD * MathHelper.Pi) * TILT_ANGLE);
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -135,12 +137,19 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
 
         public void release(Vector2 dir) {
             released = true;
-            Projectile.velocity = (dir == Vector2.Zero ? Vector2.UnitX : dir);
+            Projectile.velocity = (dir == Vector2.Zero ? Vector2.UnitX : dir) * 5f;
         }
 
+        
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
         {
             behindNPCs.Add(index);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < 50; i++)
+                summonDust();
         }
     }
 }

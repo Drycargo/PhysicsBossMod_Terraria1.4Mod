@@ -63,30 +63,35 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             LorenzTwo17 = 17,
             TornadoPreparation18 = 18,
             Tornado19 = 19,
+            Lightning20 = 20,
+            RainFall21 = 21,
         }
 
         
         public static readonly float[] phaseTiming = new float[] {
-            0,
-            2.25f,
-            12.25f,//11.75f,
-            23.25f,
-            31.5f,//33
-            42.3f,
-            49.65f,
-            52f,
-            56.8f,
-            60 + 1.15f, // 1.65 -> 10
-            60 + 11.125f,
-            60 + 20.85f,
-            60 + 23.2f,
-            60 + 32.85f,
-            60 + 41.53f,
-            60 + 43.25f, // 44.63
-            60 * 2 + 3f,
-            60 * 2 + 12.9f,
-            60 * 2 + 22.3f,
-            60 * 2 + 23.85f,
+            0, // Init
+            2.25f, // PendulumOne1
+            12.25f,// PendulumOnePhaseTwo2, 11.75f
+            23.25f, // ElectricCharge3
+            31.5f, // ConwayGame4, 33
+            42.3f, // ChuaCircuit5
+            49.65f, // ChuaCircuitFinale6
+            52f, // Halvorsen7
+            56.8f, // HalvorsenFinale8
+            60 + 1.15f, // DoublePendulumOne9, 1.65 -> 10
+            60 + 11.125f, // DoublePendulumTwo10
+            60 + 20.85f, // ThreeBodyPreparation11
+            60 + 23.2f, // ThreeBodyMotionOne12
+            60 + 32.85f, // ThreeBodyMotionTwo13
+            60 + 41.53f, // ThreeBodyMotionFinale14
+            60 + 43.25f, // SpiralSink15, 44.63
+            60 * 2 + 3f, // LorenzOne16
+            60 * 2 + 12.9f, // LorenzTwo17
+            60 * 2 + 22.3f, // TornadoPreparation18
+            60 * 2 + 23.85f, // Tornado19
+            60 * 2 + 25f, // Lightning20
+            60 * 2 + 28.25f,// RainFall21
+            60 * 2 + 31f,
         };
         
         /*
@@ -157,6 +162,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         // for ButterFlyEffect
         private Tornado tornado = null;
+        private Vector2 targetOriginalPos = Vector2.Zero;
+        private float rainProgress;
+
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -236,6 +244,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             circleColor = Color.White;
             dashTarget = Vector2.Zero;
             aimLineTransparency = 0;
+
+            rainProgress = 0;
         }
 
         public override void AI()
@@ -378,6 +388,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             tornado19();
                             break;
                         }
+                    case phase.Lightning20: {
+                            lightningStorm20();
+                            break;
+                        }
+                    case phase.RainFall21: {
+                            rainFall21();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -480,6 +498,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             CameraPlayer.deActivate();
         }
 
+        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+        {
+            if (projectile.type == ProjectileID.FallingStar) {
+                projectile.Kill();
+            }
+        }
 
         #region private methods
         private void init()
@@ -494,6 +518,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
             Timer++;
         }
+
         private void pendulumeOne1()
         {
             GlobalEffectController.vignette(1, 0.35f, 0.05f);
@@ -1053,13 +1078,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 return;
 
             if (progress < 0.1f)
-                SoundEngine.PlaySound(SoundID.Thunder);
+                SoundEngine.PlaySound(SoundID.Thunder, NPC.Center);
 
             Vector2 finalPos;
-            if (Vector2.Distance(targetPos, startPos) < 300)
-                finalPos = startPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 300f;
+            if (Vector2.Distance(targetPos, startPos) < 800)
+                finalPos = startPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 800f;
             else
-                finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 120f;
+                finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 50f;
 
             NPC.Center = Vector2.Lerp(startPos, finalPos, (float)Math.Sin(MathHelper.Pi * progress - MathHelper.PiOver2) * 0.5f + 0.5f);
             GlobalEffectController.shake(12f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/1000)));
@@ -1114,7 +1139,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if (Timer < 90) {
                 if (waterDropController != null)
                 {
-                    waterDropController.aimAll(target.Center);
+                    if (Timer < WaterDropController.CHARGE_TIMES * WaterDropController.CHARGE_PERIOD)
+                        waterDropController.aimAll(target.Center);
                     waterDropController.updateAll((GeneralTimer / 1800) * MathHelper.TwoPi);
                 }
             } else if (Timer == 90) {
@@ -1133,6 +1159,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         {
             if (Timer < 75)
             {
+                if (Timer == 0) {
+                    if (!SkyManager.Instance["PhysicsBoss:BlackSky"].IsActive())
+                    {
+                        SkyManager.Instance.Activate("PhysicsBoss:BlackSky");
+                    }
+                }
+
                 hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
                 if (Timer < 30)
                 {
@@ -1196,6 +1229,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         private void lorenzOne16()
         {
             if ((int)Timer == 0) {
+                if (SkyManager.Instance["PhysicsBoss:BlackSky"].IsActive())
+                {
+                    SkyManager.Instance.Deactivate("PhysicsBoss:BlackSky");
+                }
+
+
                 NPC.dontTakeDamage = false;
                 dimNode.setPhase((int)DimNode.phase.ORBIT);
                 dimNode.NPC.dontTakeDamage = false;
@@ -1302,8 +1341,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
                 if (Timer < 85) {
                     float factor = Timer / 90f;
-                    GlobalEffectController.bloom(factor * 1.5f, 0.1f);
-                    GlobalEffectController.vignette(factor, 0.35f * factor, 0.05f);
+                    GlobalEffectController.bloom(factor * 1.75f, 0.1f);
+                    GlobalEffectController.vignette(0.5f * factor, 0.5f * factor);
                 }else if ((int)Timer == 85) {
                     GlobalEffectController.bloom(-1, 0.1f);
                     GlobalEffectController.vignette(-1, 0);
@@ -1334,17 +1373,86 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void tornado19()
         {
-            NPC.Center = new Vector2(NPC.Center.X, 0.25f * target.Center.Y + 0.75f * NPC.Center.Y);
-            if (tornado != null) {
+            horizontalFollow(5f);
+            if (tornado != null)
+            {
                 tornado.Projectile.Center = NPC.Center;
                 tornado.Projectile.timeLeft++;
             }
-            
-            follow(speed: 7.5f);
+            Timer++;
+        }
+
+        private void horizontalFollow(float v)
+        {
+            NPC.Center = new Vector2(NPC.Center.X, 0.25f * target.Center.Y + 0.75f * NPC.Center.Y);
+            follow(speed: v);
+        }
+
+        private void lightningStorm20()
+        {
+            horizontalFollow(5f);
+            if (tornado != null)
+            {
+                tornado.Projectile.Center = NPC.Center;
+                tornado.Projectile.timeLeft++;
+            }
+
+            int factor = (int)Timer % 105;
+
+            if (factor == 0 || factor == 15 || factor == 30) {
+                if (factor == 0) {
+                    targetOriginalPos = target.Center;
+                }
+                //float dispX = 0.25f * LargeLightningBolt.LENGTH * (targetOriginalPos.X < NPC.Center.X ? -1 : 1);
+                float dispY = LargeLightningBolt.WIDTH * ((2 - factor / 15) + 2.5f);
+
+                for (int i = 0; i < 2; i++) {
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), targetOriginalPos + new Vector2(0, 
+                        (i % 2 == 0 ? 1f : -1f) * dispY), (((int)(Timer / 105) % 2 == 0 ? 1 : -1) 
+                        * MathHelper.Pi/6).ToRotationVector2(),
+                        ModContent.ProjectileType<LargeLightningBolt>(), 60, 0);
+                }
+            }
 
             Timer++;
         }
 
+
+        private void rainFall21()
+        {
+            horizontalFollow(5f);
+            if (tornado != null)
+            {
+                if ((int)Timer == 90)
+                {
+                    tornado.setKill();
+                }
+                else if (Timer < 90)
+                {
+                    tornado.Projectile.Center = NPC.Center;
+                    tornado.Projectile.timeLeft++;
+                }
+
+            }
+
+            for (int i = 0; i < 6; i++) {
+                float devX = 200 + 600 * (1 - rainProgress * Main.rand.NextFloat());
+
+                int relPos = target.Center.X < NPC.Center.X ? -1 : 1;
+
+                if (Main.netMode != NetmodeID.MultiplayerClient) {
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(
+                        NPC.Center.X + 1000 * relPos + (i % 2 == 0 ? -1 : 1) * devX,
+                        NPC.Center.Y - 1200), Vector2.UnitY.RotatedBy(relPos * MathHelper.Pi/12) * 60f, 
+                        ModContent.ProjectileType<RainDrop>(), 15, 0);
+                }
+            }
+
+            if (rainProgress < 1f)
+                rainProgress += 1 / 60f;           
+
+            Timer++;
+        }
 
         #endregion
 

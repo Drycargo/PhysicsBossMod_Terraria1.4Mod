@@ -71,8 +71,14 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         
         public override bool PreDraw(ref Color lightColor)
         {
+            return false;
+        }
+
+        public override void PostDraw(Color lightColor)
+        {
             Color c = Color.Lerp(Color.Orange, Color.White, 0.5f);
-            return base.PreDraw(ref c);
+            Main.spriteBatch.Draw(ModContent.Request<Texture2D>(Texture).Value, Projectile.position - Main.screenPosition, null, 
+                c, Projectile.rotation, Vector2.Zero, 1f, SpriteEffects.None, 0);
         }
 
 
@@ -86,7 +92,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         {
             for (int i = -1; i <= 1; i++)
                 Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center,
-                    (MathHelper.Pi/12 * (float)i + Projectile.rotation).ToRotationVector2() * 15f,
+                    (MathHelper.Pi/12 * (float)i + Projectile.rotation).ToRotationVector2() * 20f,
                     ModContent.ProjectileType<SolarFlame>(), 20, 0);
         }
     }

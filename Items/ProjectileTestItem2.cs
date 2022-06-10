@@ -46,7 +46,7 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<LargeLightningBolt>();
+            Item.shoot = ModContent.ProjectileType<TestEffectProjectile>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -71,8 +71,17 @@ namespace PhysicsBoss.Items
             }
             */
 
+            /*
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
+            */
+            Projectile p = Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
+                ProjectileID.RainbowRodBullet, damage, knockback, player.whoAmI);
+
+            p.friendly = false;
+            p.hostile = true;
+            p.aiStyle = 48;
+           
 
             //Main.stop
             //GlobalEffectController.flash(0.35f, Main.MouseScreen, 60, 15f);

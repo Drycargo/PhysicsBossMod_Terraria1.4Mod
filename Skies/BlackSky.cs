@@ -30,11 +30,12 @@ namespace PhysicsBoss.Skies
         {
             if (minDepth < 0 && maxDepth >= 0)
             {
-                /*
-                spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(0, 0, Main.screenWidth / 2, Main.screenHeight / 2),
-                    Color.Black);
-                */
+                
+                spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
+                    Color.Black * progress);
+                
 
+                /*
                 GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
                 RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width, Main.screenTarget.Height);
 
@@ -60,6 +61,7 @@ namespace PhysicsBoss.Skies
 
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                */
             }
         }
 
@@ -75,7 +77,7 @@ namespace PhysicsBoss.Skies
 
         public override void Update(GameTime gameTime)
         {
-            Main.NewText("Updated");
+            //Main.NewText("Updated");
             if (active && progress < 1f)
                 progress += 1f / 60f;
             else if (!active && progress > 0)

@@ -14,7 +14,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
         public const float FOCAL = 160;
         public const int KERNEL_WIDTH = 80;
         public const int PLATE_COUNT = 15;
-        public const int RELEASE_INTERVAL = 15;
+        public const int RELEASE_INTERVAL = 45;
 
         public enum phase: int {
             PREPARATION,
@@ -58,6 +58,9 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
 
         public override void AI()
         {
+            if (Projectile.timeLeft == 1 && currPhase != phase.KILLED)
+                setKill();
+
             switch (currPhase)
             {
                 case phase.PREPARATION:
@@ -88,9 +91,38 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
 
                         break;
                     }
+                case phase.KILLED: {
+                        if (Projectile.timeLeft % RELEASE_INTERVAL == 0)
+                        {
+                            int topIndex = Projectile.timeLeft / RELEASE_INTERVAL - 1 + PLATE_COUNT / 2;
+                            int bottomIndex = PLATE_COUNT - topIndex - 1;
+
+                            Vector2 dir = (Projectile.position - Projectile.oldPosition).SafeNormalize(Vector2.UnitX);
+
+                            try
+                            {
+                                if (topIndex == bottomIndex)
+                                {
+                                    plates[topIndex].release(dir);
+                                }
+                                else
+                                {
+                                    plates[topIndex].release(dir);
+                                    plates[bottomIndex].release(dir);
+                                }
+                            }
+                            catch (NullReferenceException e)
+                            {
+
+                            }
+                        }
+                        break;
+                    }
             }
             Projectile.velocity *= 0;
-            
+
+            Projectile.oldPosition = Projectile.position;
+
             Timer++;
         }
 
@@ -124,34 +156,11 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
                         break;
                     }
                 case phase.KILLED: {
-                        if (Projectile.timeLeft % RELEASE_INTERVAL == 0) {
-                            int topIndex = Projectile.timeLeft / RELEASE_INTERVAL - 1 + PLATE_COUNT/2;
-                            int bottomIndex = PLATE_COUNT - topIndex - 1;
-
-                            Vector2 dir = (Projectile.position - Projectile.oldPosition).SafeNormalize(Vector2.UnitX);
-
-                            try
-                            {
-                                if (topIndex == bottomIndex)
-                                {
-                                    plates[topIndex].release(dir);
-                                }
-                                else
-                                {
-                                    plates[topIndex].release(dir);
-                                    plates[bottomIndex].release(dir);
-                                }
-                            }
-                            catch (NullReferenceException e) {
-
-                            }
-                        }
                         break;
                     }
                 default: break;
             }
 
-            Projectile.oldPosition = Projectile.position;
 
             return false;
         }
@@ -190,14 +199,6 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             if (currPhase != phase.KILLED) {
                 currPhase = phase.KILLED;
                 Projectile.timeLeft = (PLATE_COUNT + 1) / 2 * RELEASE_INTERVAL + 1;
-            }
-        }
-
-        public override void Kill(int timeLeft)
-        {
-            for (int i = 0; i < plateCount; i++) {
-                if (plates[i] != null)
-                    plates[i].Projectile.Kill();
             }
         }
     }

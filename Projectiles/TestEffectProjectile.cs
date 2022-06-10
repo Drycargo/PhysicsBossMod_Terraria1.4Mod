@@ -14,14 +14,20 @@ namespace PhysicsBoss.Projectiles
     public class TestEffectProjectile:ModProjectile
     {
         private Texture2D tex;
-
-        WaterDropController wdc = null;
+        private Vector2 targetOriginalPos;
+        private WaterDropController wdc = null;
+        private float rainProgress;
         public override void SetDefaults()
         {
             base.SetDefaults();
-            Projectile.timeLeft = 90;
+            Projectile.timeLeft = 180;
             tex = ModContent.Request<Texture2D>(Texture).Value;
-
+            rainProgress = 0;
+        }
+        public float Timer
+        {
+            get { return Projectile.ai[0]; }
+            set { Projectile.ai[0] = value; }
         }
 
         public override void AI()
@@ -29,6 +35,22 @@ namespace PhysicsBoss.Projectiles
             base.AI();
             Projectile.velocity *= 0;
 
+            for (int i = 0; i < 2; i++)
+            {
+                float devX = 100 + 600 * (1 - rainProgress * Main.rand.NextFloat());
+
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), new Vector2(
+                        Projectile.Center.X + 500 + (i % 2 == 0 ? -1 : 1) * devX, Projectile.Center.Y - 1200),
+                        Vector2.UnitY.RotatedBy(MathHelper.Pi / 12) * 35f, ModContent.ProjectileType<RainDrop>(), 15, 0);
+                }
+            }
+
+            if (rainProgress < 1f)
+                rainProgress += 1 / 60f;
+
+            Timer++;
             /*
             if (wdc == null) {
                 wdc = new WaterDropController(Projectile.Center, 0);

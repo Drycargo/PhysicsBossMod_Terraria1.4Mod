@@ -75,9 +75,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     }
                     */
 
-                    Projectile.velocity *= 0.95f;
+                    Projectile.velocity *= 0.97f;
 
-                    if (Projectile.velocity.Length() < 2f) {
+                    if (Projectile.velocity.Length() < 1f) {
                         releaseStarBundle();
                         Projectile.Kill();
                     }

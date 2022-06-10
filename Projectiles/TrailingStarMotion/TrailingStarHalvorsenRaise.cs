@@ -47,7 +47,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             if (Projectile.timeLeft <= LASER_PERIOD)
             {
-                if (Projectile.timeLeft == (int)(LASER_PERIOD * 0.5))
+                if (Projectile.timeLeft == (int)(LASER_PERIOD * 0.75))
                 {
                     drawRayLine = false;
                     laser = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(),

@@ -46,6 +46,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private bool drawTriLasers;
         private float triLaserAngle;
+        private float aimLineTransparency;
         public enum phase
         {
             SIGNLE_PENDULUM_TWO = 0,
@@ -105,6 +106,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             triLasers = new Projectile[3];
             drawTriLasers = false;
             triLaserAngle = MathHelper.PiOver2;
+            aimLineTransparency = 0;
         }
 
         public override void AI()
@@ -213,6 +215,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     l.Center = NPC.Center;
                 }
             }
+
+            if (drawTriLasers && aimLineTransparency < 1f) {
+                aimLineTransparency += 1 / 90f;
+            }
         }
 
         public void summonTriLasers() {
@@ -221,6 +227,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     NPC.Center, Vector2.Zero, ModContent.ProjectileType<BlockFractalLaser>(),100,0);
                 triLasers[i].rotation = triLaserAngle + MathHelper.TwoPi / 3 * (float)i;
             }
+
+            aimLineTransparency = -0.5f;
         }
 
         public override void FindFrame(int frameHeight)
@@ -248,7 +256,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 for (int i = 0; i < 3; i++) {
                     GlobalEffectController.drawRayLine(spriteBatch, NPC.Center,
                         NPC.Center + (triLaserAngle + (float)i * MathHelper.TwoPi/3).ToRotationVector2(),
-                        Color.Red*0.6f, 20f);
+                        Color.Red*0.7f * Math.Max(aimLineTransparency, 0), 30f);
                 }
             }
 
@@ -606,7 +614,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 ModContent.ProjectileType<LaserSword>(), 25, 0).ModProjectile);
 
             float progress = (Timer % ChaosTheory.DOUBLE_PENDULUM_PERIOD)/ChaosTheory.DOUBLE_PENDULUM_PERIOD;
-            Color c = Color.Lerp(Color.Red, Color.Gold, progress);
+            Color c = Color.Lerp(Color.Purple, Color.Yellow, progress) * 2f;
 
             a.setColor(c);
             LaserSword b = (LaserSword)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center - dir * 10f, -dir,

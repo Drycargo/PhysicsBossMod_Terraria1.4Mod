@@ -221,6 +221,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             base.OnKill();
         }
 
+        public override void OnHitByProjectile(Projectile projectile, int damage, float knockback, bool crit)
+        {
+            if (projectile.type == ProjectileID.FallingStar)
+            {
+                projectile.Kill();
+            }
+        }
+
         protected void hyperbolicMotion(float totalPeriod)
         {
             float progress;

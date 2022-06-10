@@ -111,6 +111,7 @@ namespace PhysicsBoss.Projectiles
         public override bool PreDraw(ref Color lightColor)
         {
             #region drawtail
+            
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
                 BlendState.NonPremultiplied,
@@ -118,6 +119,7 @@ namespace PhysicsBoss.Projectiles
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+            
 
             Main.graphics.GraphicsDevice.Textures[0] = 
                 ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvanceTransparent").Value;
@@ -126,6 +128,7 @@ namespace PhysicsBoss.Projectiles
                 progress => Projectile.width, - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
+            
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -133,6 +136,7 @@ namespace PhysicsBoss.Projectiles
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
+            
             #endregion
 
             return false;

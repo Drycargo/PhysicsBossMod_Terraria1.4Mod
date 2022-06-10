@@ -62,8 +62,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.HitSound = SoundID.NPCHit5;
             NPC.DeathSound = SoundID.NPCHit5;
 
-            NPC.lifeMax = 150;
-            NPC.defense = 20;
+            NPC.lifeMax = 100;
+            NPC.defense = 15;
             NPC.noGravity = true;
             NPC.noTileCollide = true;
 
