@@ -38,7 +38,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(1.25 * 60);
+            Projectile.timeLeft = (int)(50);
             Projectile.damage = 60;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -57,7 +57,8 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             if (Timer < TRANSIT) {
                 if (Timer == 0)
                 {
-                    SoundEngine.PlaySound(SoundID.Thunder, Projectile.Center);
+                    if (Main.rand.NextBool())
+                        SoundEngine.PlaySound(SoundID.Thunder, Projectile.Center);
 
                     Projectile.rotation = Projectile.velocity.ToRotation();
 

@@ -47,7 +47,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         private bool drawTriLasers;
         private float triLaserAngle;
         private float aimLineTransparency;
-        public enum phase
+        public enum phase:int
         {
             SIGNLE_PENDULUM_TWO = 0,
             ORBIT = 1,
@@ -60,6 +60,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             DOUBLE_PENDULUM_TWO = 8,
             THREEBODY_MOTION = 9,
             SPIRAL_SINK = 10,
+            H_SHIFT = 11,
         }
         public override void SetStaticDefaults()
         {
@@ -202,6 +203,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             orbit((owner.GeneralTimer / (ORBIT_PERIOD * 0.5f) + 0.5f) * MathHelper.TwoPi, ChaosTheory.SPIRAL_SINK_RADIUS);
                             break;
                         }
+                    case (int)phase.H_SHIFT: {
+                            if (drawTrail != trail.SHADOW)
+                                drawTrail = trail.SHADOW;
+                            horizontalShift(false);
+                            Timer++;
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -217,7 +225,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
 
             if (drawTriLasers && aimLineTransparency < 1f) {
-                aimLineTransparency += 1 / 90f;
+                aimLineTransparency += 1 / 60f;
             }
         }
 
@@ -256,7 +264,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 for (int i = 0; i < 3; i++) {
                     GlobalEffectController.drawRayLine(spriteBatch, NPC.Center,
                         NPC.Center + (triLaserAngle + (float)i * MathHelper.TwoPi/3).ToRotationVector2(),
-                        Color.Red*0.7f * Math.Max(aimLineTransparency, 0), 30f);
+                        Color.Red*0.85f * Math.Max(aimLineTransparency, 0), 30f);
                 }
             }
 
@@ -614,7 +622,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 ModContent.ProjectileType<LaserSword>(), 25, 0).ModProjectile);
 
             float progress = (Timer % ChaosTheory.DOUBLE_PENDULUM_PERIOD)/ChaosTheory.DOUBLE_PENDULUM_PERIOD;
-            Color c = Color.Lerp(Color.Purple, Color.Yellow, progress) * 2f;
+            Color c = Color.Lerp(Color.Red, Color.Yellow, progress);
 
             a.setColor(c);
             LaserSword b = (LaserSword)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center - dir * 10f, -dir,

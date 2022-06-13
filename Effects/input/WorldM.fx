@@ -76,7 +76,7 @@ float4 SimpleVignette(float2 coords : TEXCOORD0) : COLOR0
 float4 Extract(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 c = tex2D(uImage0, coords);
-    if (c.r * 0.4 + c.g * 0.4 + c.b * 0.2 >= extractThreshold)
+    if ((c.r * 0.4 + c.g * 0.4 + c.b * 0.2) >= extractThreshold)
         return c;
     return float4(0, 0, 0, 0);
 }
@@ -184,35 +184,36 @@ float4 BlurOnThreshold(float2 coords : TEXCOORD0) : COLOR0
 float4 BlurThresholdH(float2 coords : TEXCOORD0) : COLOR0
 {
     float dx = 1 / targetRes.x;
-    float4 color = float4(0, 0, 0, 0);
+    float4 color = float4(0, 0, 0, 1);
     
     for (int i = -2; i <= 2; i++)
     {
-            float4 addColor = tex2D(uImage0, float2(coords.x + dx * i, coords.y));
-            if (addColor.r * 0.4 + addColor.g * 0.4 + addColor.b * 0.2 >= blurThreshold)
-                color += gaussOneD[i + 2] * addColor;
+        float4 addColor = tex2D(uImage0, float2(coords.x + dx * i, coords.y));
+        if (addColor.r * 0.4 + addColor.g * 0.4 + addColor.b * 0.2 >= blurThreshold)
+            color.rgb += gaussOneD[i + 2] * addColor.rgb;
+        
     }
     
     
-    color *= bloomInten;
-    color.a = 1;
+    color.rgb *= bloomInten;
+    //color.a = 1;
     return color;
 }
 
 float4 BlurThresholdV(float2 coords : TEXCOORD0) : COLOR0
 {
     float dy = 1 / targetRes.y;
-    float4 color = float4(0, 0, 0, 0);
+    float4 color = float4(0, 0, 0, 1);
     
     for (int i = -2; i <= 2; i++)
     {
         float4 addColor = tex2D(uImage0, float2(coords.x, coords.y + dy * i));
         if (addColor.r * 0.4 + addColor.g * 0.4 + addColor.b * 0.2 >= blurThreshold)
-            color += gaussOneD[i + 2] * addColor;
+            color.rgb += gaussOneD[i + 2] * addColor.rgb;
     }
     
-    color *= bloomInten;
-    color.a = 1;
+    color.rgb *= bloomInten;
+    //color.a = 1;
     return color;
 }
 

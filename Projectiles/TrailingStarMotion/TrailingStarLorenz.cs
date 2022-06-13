@@ -19,8 +19,11 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
     {
         public const int FRAME_COUNT = 3;
 
-        private float zoom;
+        protected float zoom;
         public override float STEP => 2;
+
+        protected virtual int fps => 60;
+
         public override Matrix Transform =>
             Matrix.CreateRotationX(MathHelper.PiOver2)
             * Matrix.CreateTranslation(0, 25, 0)
@@ -50,17 +53,24 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override void AI()
         {
             base.AI();
-            if ((int)Timer % 5 == 0) {
+            if ((int)Timer % 5 == 0)
+            {
                 Projectile.frameCounter++;
                 Projectile.frameCounter %= FRAME_COUNT;
             }
 
-            if (Main.rand.NextFloat() < 0.25f) {
+            if (Main.rand.NextFloat() < 0.25f)
+            {
                 Dust d = Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.RainbowMk2);
                 d.color = drawColor;
                 d.noGravity = true;
             }
 
+            updateZoom();
+        }
+
+        protected virtual void updateZoom()
+        {
             if (zoom < 1.5)
                 zoom += 1.5f / 180f;
         }
@@ -72,7 +82,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Vector3 realVel = new Vector3(
                s * (y - x),
                x * (p - z) - y,
-               x * y - b * z) / 60;
+               x * y - b * z) / fps;
 
             float speed = realVel.Length() * SHRINK_CONST;
 
@@ -109,7 +119,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         protected override Color colorFun(float progress)
         {
-            return Main.hslToRgb(progress, 0.8f, 0.75f, (byte)(255 * (1 - progress)));
+            return Main.hslToRgb(progress, 0.9f, 0.7f, (byte)(255 * (1 - progress)));
         }
 
         protected override float widthFun(float progress)
@@ -129,7 +139,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
             Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition,
                 new Rectangle(0, Projectile.frameCounter * Projectile.height, Projectile.width, Projectile.height),
-                drawColor, 0, Projectile.Size / 2, 1f, (Projectile.velocity.X < 0 ? SpriteEffects.None: SpriteEffects.FlipVertically), 0);
+                drawColor, 0, Projectile.Size / 2, 1f, ((Projectile.position.X < Projectile.oldPos[1].X) ? SpriteEffects.None: SpriteEffects.FlipHorizontally), 0);
 
             Lighting.AddLight(Projectile.Center, drawColor.ToVector3());
 
@@ -149,7 +159,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 ParticleOrchestraSettings settings = new ParticleOrchestraSettings
                 {
                     PositionInWorld = Projectile.Center,
-                    MovementVector = Main.rand.NextVector2Unit() * 16f
+                    MovementVector = Main.rand.NextVector2Unit() * 5f
                 };
 
                 ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.RainbowRodHit, settings);

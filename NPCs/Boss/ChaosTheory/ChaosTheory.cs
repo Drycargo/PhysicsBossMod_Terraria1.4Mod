@@ -40,8 +40,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public const float SPIRAL_SINK_RADIUS = 800f;
         public const float LORENZ_PERIOD = 9.9f / 8f * 60;
         public const float G = 7f;
+        public const int BLIZZARD_PERIOD = (int)(2.5f * 60);
+        public const int LOGISTIC_INITIALIZE_PEIOD = 10;
+        public const int LOGISTIC_SPAWN_PERIOD = 25;
+        public const int LOGISTIC_SPAWN_START = 300 - LOGISTIC_SPAWN_PERIOD * 8;
 
-        public enum phase
+        public enum phase:int
         {
             INIT = 0,
             PendulumOne1 = 1,
@@ -65,6 +69,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             Tornado19 = 19,
             Lightning20 = 20,
             RainFall21 = 21,
+            Blizzard22 = 22,
+            Logistic23 = 23,
+            LorenzFinale24 = 24,
         }
 
         
@@ -91,7 +98,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             60 * 2 + 23.85f, // Tornado19
             60 * 2 + 25f, // Lightning20
             60 * 2 + 28.25f,// RainFall21
-            60 * 2 + 31f,
+            60 * 2 + 32f, // Blizzard22
+            60 * 2 + 36.85f, // Logistic23
+            60 * 2 + 41.85f, // LorenzFinale24
         };
         
         /*
@@ -163,8 +172,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         // for ButterFlyEffect
         private Tornado tornado = null;
         private Vector2 targetOriginalPos = Vector2.Zero;
+        private float lightningProgress;
         private float rainProgress;
+        private TrailingStarController[] sprottControllers;
 
+        // for Logistic Map
+        private LogisticMap[] maps;
 
         private int lastLife;
         public override string BossHeadTexture => base.BossHeadTexture;
@@ -245,7 +258,11 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             dashTarget = Vector2.Zero;
             aimLineTransparency = 0;
 
+            lightningProgress = 0;
             rainProgress = 0;
+            sprottControllers = new TrailingStarController[3];
+
+            maps = new LogisticMap[8];
         }
 
         public override void AI()
@@ -396,6 +413,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             rainFall21();
                             break;
                         }
+                    case phase.Blizzard22: {
+                            blizzard22();
+                            break;
+                        }
+                    case phase.Logistic23: {
+                            logistic23();
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -466,7 +491,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             base.OnKill();
         }
-
         private void deActivate()
         {
             if (conwayGameController != null)
@@ -493,6 +517,18 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if (lorenzController != null) {
                 lorenzController.Projectile.Kill();
                 lorenzController = null;
+            }
+
+            if (tornado != null) {
+                tornado.setKill(Vector2.Zero);
+                tornado = null;
+            }
+
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                Sandstorm.StopSandstorm();
+                Main.StopRain();
+                Main.windSpeedCurrent = 0f;
             }
 
             CameraPlayer.deActivate();
@@ -1021,7 +1057,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if (threeBodyController != null) {
                 threeBodyController.Projectile.Center = NPC.Center;
                 threeBodyController.Projectile.timeLeft++;
-
+                /*
                 if ((int)Timer % (int)THREE_BODY_PERIOD1 == 0) {
                     for (int i = 0; i < 3; i++) {
                         SolarRadiation sr = (SolarRadiation)(Projectile.NewProjectileDirect(
@@ -1030,7 +1066,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             ModContent.ProjectileType<SolarRadiation>(), 30, 0).ModProjectile);
                         sr.setTarget(target);
                     }
-                }
+                }*/
             }
 
             // dash
@@ -1040,6 +1076,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 aimLineTransparency = (float)(0.7f * Math.Max(0, (THREE_BODY_PERIOD1 * 0.55f - factor) / (0.1 * THREE_BODY_PERIOD1)));
                 NPC.velocity *= 0;
                 dash(dashStart, dashTarget, (factor - THREE_BODY_PERIOD1 * 0.45f) / (0.35f * THREE_BODY_PERIOD1));
+                if (Timer % 8 == 0)
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero,
+                        ModContent.ProjectileType<SolarExplosion>(), 50, 0);
             }
             else {
                 if (factor < THREE_BODY_PERIOD1 * 0.45f)
@@ -1087,7 +1126,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 finalPos = targetPos + (targetPos - startPos).SafeNormalize(Vector2.UnitX) * 50f;
 
             NPC.Center = Vector2.Lerp(startPos, finalPos, (float)Math.Sin(MathHelper.Pi * progress - MathHelper.PiOver2) * 0.5f + 0.5f);
-            GlobalEffectController.shake(12f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/1000)));
+            GlobalEffectController.shake(18f * (1f - Math.Min(1f, Vector2.Distance(NPC.Center, target.Center)/1000)));
         }
 
         private void threeBodyMotionTwo13()
@@ -1108,6 +1147,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
                 threeBodyController.Projectile.timeLeft++;
             }
+
 
             if (waterDropController != null)
             {
@@ -1187,14 +1227,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     {
                         PositionInWorld = Main.screenPosition + new Vector2(Main.screenWidth * Main.rand.NextFloat(),
                             Main.screenHeight * Main.rand.NextFloat()),
-                        MovementVector = Main.rand.NextVector2Unit() * 5f
+                        MovementVector = Main.rand.NextVector2Unit() * 16f
                     };
 
                     ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.RainbowRodHit, settings, NPC.whoAmI);
                 }
-            }
-            else {
-                if ((int)Timer % 12 == 0) {
+            } else {
+                if ((int)Timer % 19 == 0) {
                     for (int i = 0; i < 2; i++) {
                         ButterflySpiralSink b = (ButterflySpiralSink)(NPC.NewNPCDirect(NPC.GetSource_FromAI(),
                             (i % 2 == 0 ? dimNode.NPC : brightNode.NPC).Center, ModContent.NPCType<ButterflySpiralSink>()).ModNPC);
@@ -1202,12 +1241,28 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     }
                 }
 
+                if (Timer > 65 && (int)(Timer - 65) % (int)(19f * 60 / 8) == 0) {
+                    for (int i = -1; i <= 1; i++)
+                    {
+                        Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
+                        Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                            NPC.Center + 10f * (i * dir.RotatedBy(MathHelper.PiOver2)), 9f * dir,
+                            ProjectileID.RainbowRodBullet, 25, 0, NPC.whoAmI);
+
+                        p.friendly = false;
+                        p.hostile = true;
+                        p.aiStyle = 48;
+
+                        SoundEngine.PlaySound(SoundID.Item43, NPC.Center);
+                    }
+                }
+
                 NPC.velocity *= 0;
 
-                attractPlayer(SPIRAL_SINK_RADIUS * 0.75f, NPC.Center);
+                attractPlayer(SPIRAL_SINK_RADIUS * 0.9f, NPC.Center);
 
                 for (int i = 0; i < 20; i++) {
-                    Vector2 pos = NPC.Center + 0.75f * SPIRAL_SINK_RADIUS * Main.rand.NextVector2Unit();
+                    Vector2 pos = NPC.Center + 0.9f * SPIRAL_SINK_RADIUS * Main.rand.NextVector2Unit();
                     Dust d = Dust.NewDustDirect(pos,0,0, i % 2 == 0 ? DustID.XenonMoss : DustID.ArgonMoss);
                     d.noGravity = true;
                     d.velocity = 10f * (NPC.Center - pos).SafeNormalize(Vector2.Zero);
@@ -1303,7 +1358,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             if ((int)Timer % (int)(LORENZ_PERIOD * 0.95f) == 0)
             {
-                NPC.velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX) * 20f;
+                NPC.velocity = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX) * 12f;
                 for (int i = 0; i < 4; i++)
                 {
                     for (int j = 0; j < 3; j++)
@@ -1316,7 +1371,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     }
                 }
             } else {
-                NPC.velocity *= 0.95f;
+                NPC.velocity *= 0.98f;
             }
 
             if (tornado != null)
@@ -1356,7 +1411,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
             }
 
-            follow(speed: 1f);
+            follow(450f, 1f);
 
 
             /*
@@ -1373,7 +1428,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void tornado19()
         {
-            horizontalFollow(5f);
+            horizontalFollow(7f);
             if (tornado != null)
             {
                 tornado.Projectile.Center = NPC.Center;
@@ -1385,61 +1440,86 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         private void horizontalFollow(float v)
         {
             NPC.Center = new Vector2(NPC.Center.X, 0.25f * target.Center.Y + 0.75f * NPC.Center.Y);
-            follow(speed: v);
+            follow(dist:750f,speed: v);
         }
 
         private void lightningStorm20()
         {
-            horizontalFollow(5f);
+            // 3.25s
+            horizontalFollow(7.5f);
             if (tornado != null)
             {
                 tornado.Projectile.Center = NPC.Center;
                 tornado.Projectile.timeLeft++;
             }
 
-            int factor = (int)Timer % 105;
+            /*
+            int factor = (int)Timer % 100;
 
             if (factor == 0 || factor == 15 || factor == 30) {
                 if (factor == 0) {
                     targetOriginalPos = target.Center;
                 }
                 //float dispX = 0.25f * LargeLightningBolt.LENGTH * (targetOriginalPos.X < NPC.Center.X ? -1 : 1);
-                float dispY = LargeLightningBolt.WIDTH * ((2 - factor / 15) + 2.5f);
+                float dispY = LargeLightningBolt.WIDTH * ((2 - factor / 15) + 2.25f);
 
                 for (int i = 0; i < 2; i++) {
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), targetOriginalPos + new Vector2(0, 
-                        (i % 2 == 0 ? 1f : -1f) * dispY), (((int)(Timer / 105) % 2 == 0 ? 1 : -1) 
+                        (i % 2 == 0 ? 1f : -1f) * dispY), (((int)(Timer / 100) % 2 == 0 ? 1 : -1) 
                         * MathHelper.Pi/6).ToRotationVector2(),
                         ModContent.ProjectileType<LargeLightningBolt>(), 60, 0);
                 }
             }
+            */
+
+            if (lightningProgress < 1f)
+                lightningProgress += 1 / (3.25f * 60);
+
+            if ((int)Timer % 10 == 0)
+            {
+                float dispY = LargeLightningBolt.WIDTH * (4.25f - lightningProgress * 2.5f);
+                for (int i = 0; i < 2; i++)
+                {
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), target.Center + new Vector2(0,
+                        (i % 2 == 0 ? 1f : -1f) * dispY), (MathHelper.Lerp(1, -1, Timer / (3.25f * 60)) * MathHelper.Pi / 6).ToRotationVector2(),
+                        ModContent.ProjectileType<LargeLightningBolt>(), 60, 0);
+                }
+            }
+
+            summonLightning();
 
             Timer++;
         }
 
+        private static void summonLightning()
+        {
+            if (Main.rand.NextFloat() < 1f / 180f)
+            {
+                Main.NewLightning();
+            }
+        }
 
         private void rainFall21()
         {
-            horizontalFollow(5f);
+            horizontalFollow(7f);
+            summonLightning();
+
             if (tornado != null)
             {
-                if ((int)Timer == 90)
+                if ((int)Timer == 15)
                 {
-                    tornado.setKill();
+                    tornado.setKill(target.Center);
                 }
-                else if (Timer < 90)
+                else if (Timer < 15 + 30)
                 {
                     tornado.Projectile.Center = NPC.Center;
                     tornado.Projectile.timeLeft++;
                 }
-
             }
 
-            for (int i = 0; i < 6; i++) {
-                float devX = 200 + 600 * (1 - rainProgress * Main.rand.NextFloat());
-
-                int relPos = target.Center.X < NPC.Center.X ? -1 : 1;
-
+            float devX = 200 + 600 * (1 - rainProgress * Main.rand.NextFloat());
+            int relPos = target.Center.X < NPC.Center.X ? -1 : 1;
+            for (int i = 0; i < 8; i++) {
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(
                         NPC.Center.X + 1000 * relPos + (i % 2 == 0 ? -1 : 1) * devX,
@@ -1449,10 +1529,166 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
 
             if (rainProgress < 1f)
-                rainProgress += 1 / 60f;           
+                rainProgress += 1 / 90f;           
 
             Timer++;
         }
+
+        private void blizzard22()
+        {
+            hover(target.Center - Vector2.UnitY * 500f, 20f, 0.1f, 600);
+
+            if (dimNode != null && brightNode != null)
+            {
+                if ((int)Timer == 0)
+                {
+                    dimNode.setPhase((int)DimNode.phase.H_SHIFT);
+                    brightNode.setPhase((int)BrightNode.phase.H_SHIFT);
+                    minionPendulumFirework();
+                }
+
+
+                if ((int)Timer % 8 == 0)
+                {
+                    for (int i = 0; i < 2; i++)
+                    {
+                        Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                            (i % 2 == 0 ? dimNode.NPC : brightNode.NPC).Center, Vector2.UnitY * 10,
+                            ProjectileID.CoolWhipProj, 20, 0, NPC.whoAmI);
+
+                        p.friendly = false;
+                        p.hostile = true;
+                        p.aiStyle = 1;
+                    }
+                }
+            }
+
+            if ((int)Timer == 0) {
+                for (int i = 0; i < 3; i++)
+                    sprottControllers[i] = (TrailingStarController)(Projectile.NewProjectileDirect(
+                        NPC.GetSource_FromAI(), target.Center, Vector2.Zero, 
+                        ModContent.ProjectileType<TrailingStarController>(), 0, 0).ModProjectile);
+
+                fireWork(Color.LightBlue);
+                minionPendulumFirework();
+            }
+
+
+            int factor = (int)Timer % BLIZZARD_PERIOD;
+            for (int i = 0; i < 3; i++)
+            {
+                if (sprottControllers[i] != null)
+                {
+                    sprottControllers[i].Projectile.Center = target.Center +
+                        ((Timer/600 + (float)i/3f) * MathHelper.TwoPi).ToRotationVector2() * 200f;
+
+                    if (factor == 0)
+                    {
+                        sprottControllers[i].summonStarBundle<TrailingStarSprott>();
+                    }
+                    else if (factor == 45)
+                    {
+                        sprottControllers[i].releaseStarBundle();
+                    }
+                }
+            }
+
+            Timer++;
+        }
+
+        private void logistic23()
+        {
+            if (Timer == 0) {
+                if (dimNode != null && brightNode != null)
+                {
+                    if ((int)Timer == 0)
+                    {
+                        dimNode.setPhase((int)DimNode.phase.ORBIT);
+                        brightNode.setPhase((int)BrightNode.phase.ORBIT);
+                        minionPendulumFirework();
+                    }
+                }
+
+
+                for (int i = 0; i < 3; i++)
+                {
+                    if (sprottControllers[i] != null)
+                    {
+                        sprottControllers[i].Projectile.Kill();
+                        sprottControllers[i] = null;
+                    }
+                }
+
+                for (int i = 0; i < 8; i++)
+                    maps[i] = (LogisticMap)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
+                        NPC.Center, Vector2.Zero, ModContent.ProjectileType<LogisticMap>(), 20, 0).ModProjectile);
+                fireWork(Color.Crimson);
+            }
+
+            if (Timer < LOGISTIC_INITIALIZE_PEIOD * 8)
+            {
+                hover(target.Center + new Vector2(-LogisticMap.TOT_WIDTH * 0.5f, -50), 20f, 0.1f, 600, inertia: 0.7f);
+                if ((int)Timer % LOGISTIC_INITIALIZE_PEIOD == 0)
+                {
+                    int ind = (int)(Timer / LOGISTIC_INITIALIZE_PEIOD);
+                    if (ind < 8)
+                    {
+                        if (ind == 0)
+                            maps[ind].initialize();
+                        else
+                            maps[ind].initialize(maps[ind - 1]);
+                    }
+                }
+
+                for (int i = 0; i < 8; i++)
+                {
+                    maps[i].Projectile.Center = NPC.Center;
+                }
+            } else if (Timer >= LOGISTIC_INITIALIZE_PEIOD * 8) {
+                hover(target.Center + new Vector2(-LogisticMap.TOT_WIDTH * 0.5f, -50), 20f, 0.1f, 600, inertia: 0.95f);
+
+                if ((Timer - LOGISTIC_INITIALIZE_PEIOD * 8) % LOGISTIC_SPAWN_PERIOD == 0)
+                {
+                    int ind = (int)((Timer - LOGISTIC_INITIALIZE_PEIOD * 8) / LOGISTIC_SPAWN_PERIOD);
+                    if (ind < 8) {
+                        maps[ind].materialize();
+                        maps[ind].setFall();
+                        //maps[ind].swing();
+                    }
+
+                    for (int i = ind + 1; i < 8; i++)
+                        maps[i].Projectile.Center = NPC.Center;
+                }
+            }
+            #region oldImp
+            /*
+            else if (Timer < LOGISTIC_SPAWN_START)
+            {
+                hover(target.Center - 300 * Vector2.UnitY, 20f, 0.1f, 600);
+            }
+            else if (Timer < 270)
+            {
+                hover(target.Center - 300 * Vector2.UnitY, 20f, 0.1f, 600, inertia: 0.98f);
+
+                int ind = (int)((Timer - LOGISTIC_SPAWN_START) / LOGISTIC_SPAWN_PERIOD);
+
+                for (int i = ind + 1; i < 8; i++)
+                {
+                    maps[i].Projectile.rotation += (float)(MathHelper.Pi) / (8f * LOGISTIC_SPAWN_PERIOD);
+                }
+            } else if (Timer == 270) {
+                for (int i = 0; i < 8; i++)
+                {
+                    maps[i].materialize();
+                    maps[i].setFall();
+                }
+            }
+            */
+            #endregion
+
+            Timer++;
+        }
+
 
         #endregion
 

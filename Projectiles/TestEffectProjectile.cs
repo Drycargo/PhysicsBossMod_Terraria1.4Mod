@@ -17,10 +17,14 @@ namespace PhysicsBoss.Projectiles
         private Vector2 targetOriginalPos;
         private WaterDropController wdc = null;
         private float rainProgress;
+
+        private LogisticMap.LogisticMap[] maps = new LogisticMap.LogisticMap[10];
+        private float lightningProgress = 0;
+
         public override void SetDefaults()
         {
             base.SetDefaults();
-            Projectile.timeLeft = 180;
+            Projectile.timeLeft = 600;
             tex = ModContent.Request<Texture2D>(Texture).Value;
             rainProgress = 0;
         }
@@ -33,8 +37,47 @@ namespace PhysicsBoss.Projectiles
         public override void AI()
         {
             base.AI();
-            Projectile.velocity *= 0;
 
+            Dust.NewDust(Projectile.Center, 0,0, ModContent.DustType<BlockDust>());
+            //Projectile.velocity *= 0;
+
+            /*
+            if (lightningProgress < 1f)
+                lightningProgress += 1 / 90f;
+
+            if ((int)Timer % 10 == 0)
+            {
+                float dispY = LargeLightningBolt.WIDTH * (4.25f - lightningProgress * 3.25f);
+                for (int i = 0; i < 2; i++)
+                {
+                    Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + new Vector2(0,
+                        (i % 2 == 0 ? 1f : -1f) * dispY), (MathHelper.Lerp(1, -1, Timer / (600)) * MathHelper.Pi / 6).ToRotationVector2(),
+                        ModContent.ProjectileType<LargeLightningBolt>(), 60, 0);
+                }
+            }*/
+
+            /*
+            if (Timer < 120) {
+                if ((int)Timer % 12 == 0) {
+                    int ind = (int)(Timer / 12);
+                    maps[ind] = (LogisticMap.LogisticMap)(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(),
+                        Projectile.Center,Vector2.Zero, ModContent.ProjectileType<LogisticMap.LogisticMap>(), 20,0).ModProjectile);
+                    if (ind == 0)
+                        maps[ind].initialize();
+                    else
+                        maps[ind].initialize(maps[ind - 1]);
+                }
+            } else if ((Timer - 120) % 8 == 0) {
+                int ind = (int)((Timer - 120) / 8);
+                if (ind < 10)
+                {
+                    maps[ind].materialize();
+                    maps[ind].swing();
+                }
+            }
+            */
+
+            /*
             for (int i = 0; i < 2; i++)
             {
                 float devX = 100 + 600 * (1 - rainProgress * Main.rand.NextFloat());
@@ -49,8 +92,8 @@ namespace PhysicsBoss.Projectiles
 
             if (rainProgress < 1f)
                 rainProgress += 1 / 60f;
+            */
 
-            Timer++;
             /*
             if (wdc == null) {
                 wdc = new WaterDropController(Projectile.Center, 0);
@@ -61,7 +104,7 @@ namespace PhysicsBoss.Projectiles
                 wdc.aimAll(Projectile.Center);
                 wdc.updateAll(Projectile.timeLeft * 0.01f);
             }*/
-
+            Timer++;
         }
 
         public override bool PreDraw(ref Color lightColor)

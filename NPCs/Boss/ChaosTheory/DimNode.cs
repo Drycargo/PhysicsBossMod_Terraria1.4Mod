@@ -26,7 +26,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         //public const float CHUA_ORBIT_PERIOD = 1.75f * 60 / CHUA_STAR_POINT;
         public const float CHUA_ORBIT_PERIOD = 1.5f * 60;
-
+        public const int TRAILING_CONST = 15;
         private float bloomIntensity;
 
         public enum phase {
@@ -41,6 +41,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             DOUBLE_PENDULUM_TWO = 8,
             THREEBODY_MOTION = 9,
             SPIRAL_SINK = 10,
+            H_SHIFT = 11,
         }
         public override void SetStaticDefaults()
         {
@@ -72,7 +73,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             currentPhase = 0;
 
             NPCID.Sets.TrailingMode[NPC.type] = 0;
-            NPCID.Sets.TrailCacheLength[NPC.type] = 15;
+            NPCID.Sets.TrailCacheLength[NPC.type] = TRAILING_CONST;
 
             trailingStarController = null;
 
@@ -108,6 +109,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                         }
                     case (int)phase.CHUA_CIRCUIT: 
                         {
+                            if (drawTrail != trail.TAIL)
+                                drawTrail = trail.TAIL;
                             chuaCircuit();
                             break;
                         }
@@ -165,6 +168,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             if (!NPC.dontTakeDamage)
                                 NPC.dontTakeDamage = true;
                             orbit(owner.GeneralTimer / (ORBIT_PERIOD * 0.5f) * MathHelper.TwoPi, ChaosTheory.SPIRAL_SINK_RADIUS);
+                            break;
+                        }
+                    case (int)phase.H_SHIFT:
+                        {
+                            if (drawTrail != trail.SHADOW)
+                                drawTrail = trail.SHADOW;
+                            horizontalShift();
+                            Timer++;
                             break;
                         }
                     default: break;
@@ -259,12 +270,42 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             int factor = (int)Timer % (int)ChaosTheory.CHAOTIC_DURATION;
 
             int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
-            Vector2 currentCenter = target.Center + Vector2.UnitY * 100 + (posIndex * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 500f;
+
             // movement
-            if (factor == 0) {
+            if (factor == 0)
+            {
                 fireWork();
-                NPC.Center = currentCenter;
+                Vector2 newPos = getChuaPosition(posIndex);
+
+                Vector2 dispStart = NPC.Center - target.Center;
+                Vector2 dispEnd = newPos - target.Center;
+                for (int i = 0; i < TRAILING_CONST; i++) {
+                    
+                    float length = MathHelper.Lerp(dispStart.Length(), dispEnd.Length(), (float)i/TRAILING_CONST);
+                    float angle = MathHelper.Lerp(dispStart.ToRotation(), dispEnd.ToRotation(), (float)i / TRAILING_CONST);
+
+                    NPC.oldPos[i] = length * angle.ToRotationVector2() + target.Center - NPC.Size/2;
+                    NPC.oldRot[i] = angle + MathHelper.PiOver2;
+                }
+
+                NPC.Center = newPos;
                 fireWork();
+            }
+            else {
+                if (posIndex < 2)
+                {
+                    Vector2 pos = getChuaPosition(posIndex + 1);
+                    for (int i = 0; i < 5; i++)
+                    {
+                        ParticleOrchestraSettings settings = new ParticleOrchestraSettings
+                        {
+                            PositionInWorld = pos,
+                            MovementVector = Main.rand.NextVector2Unit() * 4f
+                        };
+
+                        ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.StardustPunch, settings);
+                    }
+                }
             }
 
             follow(2000f, 1f);
@@ -282,6 +323,11 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             trailingStarController.Projectile.timeLeft++;
 
             Timer++;
+        }
+
+        private Vector2 getChuaPosition(int posIndex)
+        {
+            return target.Center + Vector2.UnitY * 100 + (posIndex * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 500f;
         }
 
         private void chuaCircuitFinale()

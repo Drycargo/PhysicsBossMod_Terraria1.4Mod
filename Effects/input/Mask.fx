@@ -153,6 +153,19 @@ float4 DynamicMask(float2 coords : TEXCOORD0) : COLOR0
     return rawC * threshold + tex2D(uImage0, coords) * (1 - threshold);
 }
 
+float4 MaskTint(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 color = tex2D(uImage0, coords);
+    if (!any(color))
+        return tex2D(uImage0, coords);
+    if (color.r < threshold || color.a < threshold)
+        return color * ordinaryTint;
+
+    float4 rawC = tex2D(uContent, coords);
+
+    return rawC * contentTint;
+}
+
 float4 DynamicMaskTint(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 color = tex2D(uImage0, coords);
@@ -242,6 +255,11 @@ technique Technique1
     pass DynamicMaskTint
     {
         PixelShader = compile ps_2_0 DynamicMaskTint();
+    }
+
+    pass MaskTint
+    {
+        PixelShader = compile ps_2_0 MaskTint();
     }
 
     pass Polarize

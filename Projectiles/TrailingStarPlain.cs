@@ -18,7 +18,7 @@ namespace PhysicsBoss.Projectiles
     {
         protected VertexStrip tail = new VertexStrip();
         public const int TRAILING_CONST = 25;
-        protected Color drawColor = Color.Green;
+        protected Color drawColor = Color.Lerp(Color.Green, Color.White, 0.5f);
 
         protected Texture2D tex;
         public override void SetStaticDefaults()

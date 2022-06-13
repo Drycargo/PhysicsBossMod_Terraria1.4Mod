@@ -27,6 +27,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         private float aimLineTransparency;
         private bool released;
         private Vector2 vel;
+        private float bloomInten;
 
         //private 
         public float Timer
@@ -38,6 +39,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         {
             DisplayName.SetDefault("Solar Spike");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "太阳刺");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             base.SetStaticDefaults();
         }
 
@@ -52,8 +55,6 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.damage = 50;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             Timer = 0;
 
             Projectile.width = tex.Width;
@@ -62,6 +63,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             aimLineTransparency = 0;
             released = false;
             vel = Vector2.Zero;
+
+            bloomInten = 0;
         }
 
         public override void AI()
@@ -88,11 +91,22 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 if (Timer == TRANSIT + 1)
                 {
                     Projectile.velocity = vel.SafeNormalize(Vector2.UnitX) * 100f;
+                    bloomInten = 1.15f;
                     SoundEngine.PlaySound(SoundID.Item74);
                 }
                 else
                     Projectile.velocity *= 0.95f;
                 Dust.NewDust(Projectile.Center, 0,0,DustID.GoldFlame);
+
+                if (bloomInten > 0)
+                {
+                    GlobalEffectController.bloom(bloomInten, 0.3f);
+                    bloomInten -= 1 / 20f;
+                    if (bloomInten <= 0)
+                    {
+                        GlobalEffectController.bloom(-1, 0.3f);
+                    }
+                }
             }
 
             Timer++;
@@ -108,13 +122,13 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             if (released)
             {
                 Main.spriteBatch.End();
-                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
 
                 Main.graphics.GraphicsDevice.Textures[0] = tex;
                 Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
                 PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(3 * Color.White.ToVector4());
-                PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(3 * Color.Orange.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(3f * Color.Orange.ToVector4());
                 PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue((float)Main.time * 0.01f);
                 PhysicsBoss.trailingEffect.CurrentTechnique.Passes["DynamicTrailSimpleFade"].Apply();
 

@@ -85,7 +85,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 GlobalEffectController.shake(12f * (1 - (Timer / TRANSIT)));
             }
 
-            GlobalEffectController.bloom(Math.Max(2f * (1 - (Timer / (3 * TRANSIT))), 0), 0.3f);
+            if (Timer < 3 * TRANSIT)
+                GlobalEffectController.bloom(Math.Max(2f * (1 - (Timer / (3 * TRANSIT))), 0), 0.3f);
 
             if (Timer < TRANSIT || Timer % 10 == 0)
             {
@@ -130,8 +131,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Main.graphics.GraphicsDevice.Textures[0] = tex;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
-            PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(3 * Color.White.ToVector4());
-            PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(3 * Color.Yellow.ToVector4());
+            PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(2 * Color.White.ToVector4());
+            PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(2 * Color.Yellow.ToVector4());
             PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
             PhysicsBoss.trailingEffect.CurrentTechnique.Passes["DynamicTrailSimple"].Apply();
 

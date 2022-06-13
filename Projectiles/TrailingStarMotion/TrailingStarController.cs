@@ -70,8 +70,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         private void summonStar<TSC>(int colorIndex) where TSC : TrailingStarChaotic
         {
-            int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),Projectile.Center, 
-                Vector2.Zero, ModContent.ProjectileType<TSC>(), 30, 0);
+            int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),Projectile.Center 
+                + Main.rand.NextVector2Circular(100, 100), 
+                Vector2.Zero, ModContent.ProjectileType<TSC>(), 25, 0);
             TrailingStarChaotic tsc = (TrailingStarChaotic)Main.projectile[id].ModProjectile;
             tsc.setOwner(this);
             tsc.setColor(colorIndex);

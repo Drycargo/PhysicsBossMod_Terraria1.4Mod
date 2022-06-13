@@ -13,7 +13,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
     public class WaterDropController
     {
         public const int TOTAL = 10;
-        public const float RADIUS = 800;
+        public const float RADIUS = 850;
         public const float CHARGE_TOT = 90f;
         public const float CHARGE_PERIOD = 16f;
         public const float CHARGE_TIMES = 3;

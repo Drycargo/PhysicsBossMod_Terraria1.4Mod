@@ -29,7 +29,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override float STEP => 1;
 
         public override Matrix Transform =>
-            Matrix.CreateScale(0.65f)
+            Matrix.CreateScale(0.45f)
             * Matrix.CreateTranslation(-40f, 5f, 0)
             * Matrix.CreateRotationY(MathHelper.Pi/3);
 

@@ -55,6 +55,8 @@ namespace PhysicsBoss.Projectiles
         {
             DisplayName.SetDefault("Trailing Star Chaotic");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "拖尾星混沌");
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
             base.SetStaticDefaults();
         }
 
@@ -64,9 +66,6 @@ namespace PhysicsBoss.Projectiles
 
             oldRealPos = new Vector3[TRAILING_CONST];
 
-            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
-            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
-            //Projectile.oldPos = new Vector2[TRAILING_CONST];
             for (int i = 0; i < TRAILING_CONST; i++) {
                 oldRealPos[i] = Vector3.Zero;
             }
@@ -90,14 +89,16 @@ namespace PhysicsBoss.Projectiles
                 Projectile.timeLeft++;
                 if ((int)Timer == 0)
                 {
-                    /*
+                    
                     if (controller != null && controller.Projectile.active)
                     {
                         realCenter.X = (Projectile.Center.X - controller.Projectile.Center.X) / SHRINK_CONST;
                         realCenter.Y = (Projectile.Center.Y - controller.Projectile.Center.Y) / SHRINK_CONST;
-                    }*/
+                    }
+                    /*
                     realCenter.X = 50 / SHRINK_CONST * (Main.rand.NextFloat() - 0.5f);
-                    realCenter.Y = 50 / SHRINK_CONST * (Main.rand.NextFloat() - 0.5f);
+                    realCenter.Y = 50 / SHRINK_CONST * (Main.rand.NextFloat() - 0.5f);*
+                    */
                 }
 
                 for (int i = TRAILING_CONST - 1; i > 0; i--)

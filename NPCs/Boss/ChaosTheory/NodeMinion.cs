@@ -252,5 +252,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 target.Center.X + realPos.X * (1f + adjustment),
                 target.Center.Y + realPos.Y * (1f + adjustment));
         }
+
+        protected void horizontalShift(bool left = true, float startDist = 450f, float range = 600f, float period = 60f) {
+            float dispX = (float)(startDist + (Math.Sin(Timer / period * MathHelper.TwoPi) + 1)* 0.5f * range);
+            NPC.Center = new Vector2(owner.NPC.Center.X + (left ? -1: 1) * dispX, owner.NPC.Center.Y);
+        }
     }
 }

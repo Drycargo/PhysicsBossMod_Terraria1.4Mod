@@ -188,7 +188,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             */
             spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height),
                 color * 2f, 0, NPC.Size / 2, 1,
-                (NPC.velocity.X > 0 ? SpriteEffects.FlipVertically : SpriteEffects.None), 0);
+                (NPC.velocity.X > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None), 0);
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred,

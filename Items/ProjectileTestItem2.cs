@@ -46,11 +46,20 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<TestEffectProjectile>();
+            Item.shoot = ModContent.ProjectileType<BlockMap>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+
+            BlockMap l = (BlockMap)
+                Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
+                type, damage, knockback, player.whoAmI).ModProjectile;
+
+            l.initialize();
+            l.materialize();
+
+
             /*
             int tot = Enum.GetNames(typeof(ParticleOrchestraType)).Length;
             for (int i = 0; i < tot; i++) {
@@ -69,23 +78,22 @@ namespace PhysicsBoss.Items
                 Main.StartRain();
                 Main.windSpeedCurrent = 1f;
             }
-            */
-
-            /*
+            
+            
+            
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI);
-            */
-            Projectile p = Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
-                ProjectileID.RainbowRodBullet, damage, knockback, player.whoAmI);
+            
 
+            
+            Projectile p = Projectile.NewProjectileDirect(source, Main.MouseWorld, Vector2.Zero,
+                ProjectileID.CoolWhipProj, damage, knockback, player.whoAmI);
+            
             p.friendly = false;
             p.hostile = true;
-            p.aiStyle = 48;
+            p.aiStyle = 1;
            
-
-            //Main.stop
-            //GlobalEffectController.flash(0.35f, Main.MouseScreen, 60, 15f);
-            /*
+            
             ThreeBodyController tbc = (ThreeBodyController) (Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI).ModProjectile);
             */

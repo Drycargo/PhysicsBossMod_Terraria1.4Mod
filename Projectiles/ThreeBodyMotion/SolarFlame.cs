@@ -32,7 +32,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.tileCollide = false;
             Projectile.penetrate = 1;
 
-            Projectile.timeLeft = (int)(2 * 60);
+            Projectile.timeLeft = (int)(1.5 * 60);
             Projectile.damage = 20;
 
             Projectile.width = 15;
@@ -41,12 +41,14 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
         public override void AI()
         {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 5; i++) {
                 Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
                 d.velocity *= 0.5f;
                 d.scale *= 2f;
                 d.noGravity = true;
             }
+
+            Projectile.velocity += 0.2f * Vector2.UnitY;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -57,8 +59,18 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
         public override void OnHitPlayer(Player target, int damage, bool crit)
         {
-            Projectile.Kill();
             target.AddBuff(BuffID.OnFire, 5 * 60);
+            Projectile.Kill();
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+
+            for (int i = 0; i < 20; i++)
+            {
+                Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.FlameBurst).velocity *= 2f;
+            }
         }
     }
 }

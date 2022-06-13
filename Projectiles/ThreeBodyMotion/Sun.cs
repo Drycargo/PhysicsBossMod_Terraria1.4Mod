@@ -35,11 +35,12 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         private float aimLineTransparency;
         private Vector2 target;
 
+        private float bloomInten;
+
         public Vector2 RealPos {
             get { return realPos; }
             set { realPos = value; }
         }
-
 
         public float Mass {
             get { return mass; }
@@ -84,6 +85,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             laser = null;
             aimLineTransparency = 0;
             target = new Vector2(-1, -1);
+
+            bloomInten = 0;
         }
 
         public override void AI() {
@@ -113,6 +116,16 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 laser.rotation = (target - Projectile.Center).ToRotation();
                 laser.timeLeft++;
             }
+            /*
+            if (bloomInten > 0)
+            {
+                GlobalEffectController.bloom(bloomInten, 0.3f);
+                bloomInten -= 1 / 20f;
+                if (bloomInten <= 0) {
+                    GlobalEffectController.bloom(-1, 0.3f);
+                }
+            }
+            */
 
             Timer++;
         }
@@ -133,7 +146,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
 
             Main.graphics.GraphicsDevice.Textures[0] =
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/Smoke").Value;
+                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ThickSmoke").Value;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
             PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(3 * Color.Red.ToVector4());
@@ -143,7 +156,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
                 progress => Color.White,
-                progress => Projectile.width * 0.35f * (1 - progress),
+                progress => Projectile.width * 0.3f * (1 - progress),
                 tex.Size() / 2 - Main.screenPosition, TRAILING_CONST);
 
             tail.DrawTrail();
@@ -178,6 +191,11 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, ((float)i/8f * MathHelper.TwoPi).ToRotationVector2(),
                     ModContent.ProjectileType<SolarSpike>(), 50, 0);
             }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            return Vector2.Distance(Projectile.Center, targetHitbox.Center.ToVector2()) < tex.Width * 0.5f;
         }
     }
 }

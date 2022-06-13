@@ -91,7 +91,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 star.Center = Projectile.Center + ((indicator * Timer / (float)ROTATION_PERIOD
                     + (indicator > 0 ? 0 : 0.5f)) * MathHelper.TwoPi).ToRotationVector2() * RADIUS;
                 star.timeLeft++;
-                ((TrailingStarPlain)star.ModProjectile).setColor(Color.Lerp(Color.Green, Color.Blue, (Timer % (2 * ROTATION_PERIOD)) / (float)(2 * ROTATION_PERIOD)));
+                ((TrailingStarPlain)star.ModProjectile).setColor(
+                    Color.Lerp(Color.Green, Color.Blue, (Timer % (2 * ROTATION_PERIOD)) / (float)(2 * ROTATION_PERIOD)) * 2f);
             }
 
             Timer++;

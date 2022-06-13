@@ -13,7 +13,7 @@ using Terraria.ModLoader;
 
 namespace PhysicsBoss.Projectiles
 {
-    public class LightningBoltAdvance: ModProjectile
+    public class LightningBoltAdvance : ModProjectile
     {
         public const int TRAILING_CONST = 18;
         public const float DEV_ANGLE = 45f / 180f * MathHelper.Pi;
@@ -31,7 +31,7 @@ namespace PhysicsBoss.Projectiles
             set { Projectile.ai[0] = value; }
         }
 
-       // private Texture2D tex;
+        // private Texture2D tex;
         private Vector2 dir;
         public override void SetStaticDefaults()
         {
@@ -99,7 +99,8 @@ namespace PhysicsBoss.Projectiles
                 Timer = 0;
             }
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++)
+            {
                 Dust d = Dust.NewDustDirect(Projectile.position - Vector2.One * 15f, 30, 30, DustID.Electric);
                 d.noGravity = true;
                 d.scale *= 0.5f;
@@ -111,24 +112,28 @@ namespace PhysicsBoss.Projectiles
         public override bool PreDraw(ref Color lightColor)
         {
             #region drawtail
-            
+
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
+                BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
-            
 
-            Main.graphics.GraphicsDevice.Textures[0] = 
+
+            Main.graphics.GraphicsDevice.Textures[0] =
                 ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvanceTransparent").Value;
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Cyan,
-                progress => Projectile.width, - Main.screenPosition, TRAILING_CONST);
+                progress => Projectile.width * 0.5f, -Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
-            
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Cyan * 0.75f,
+                progress => Projectile.width, -Main.screenPosition, TRAILING_CONST);
+            tail.DrawTrail();
+
+
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -136,7 +141,7 @@ namespace PhysicsBoss.Projectiles
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
-            
+
             #endregion
 
             return false;
@@ -147,14 +152,24 @@ namespace PhysicsBoss.Projectiles
             if (origin == Vector2.Zero || Projectile.oldPos[TRAILING_CONST - 1] == Vector2.Zero)
                 return base.Colliding(projHitbox, targetHitbox);
 
-            for (int i = 0; i < TRAILING_CONST-1; i++) {
+            for (int i = 0; i < TRAILING_CONST - 1; i++)
+            {
                 float point = 0f;
                 if (Collision.CheckAABBvLineCollision(targetHitbox.TopLeft(), targetHitbox.Size(),
-                    Projectile.oldPos[i] + Projectile.Size/2, Projectile.oldPos[i + 1] + Projectile.Size / 2, Projectile.width / 2, ref point))
+                    Projectile.oldPos[i] + Projectile.Size / 2, Projectile.oldPos[i + 1] + Projectile.Size / 2, Projectile.width / 2, ref point))
                     return true;
             }
 
             return base.Colliding(projHitbox, targetHitbox);
+        }
+
+        public override void OnSpawn(IEntitySource source)
+        {
+            for (int i = 0; i < TRAILING_CONST; i++)
+            {
+                Projectile.oldPos[i] = Projectile.position;
+                Projectile.oldRot[i] = Projectile.rotation;
+            }
         }
     }
 }
