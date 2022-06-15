@@ -34,7 +34,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public const float HALVORSEN_FINALE_PERIOD = HALVORSEN_PERIOD / STAR_POINT_NUM;
 
 
-        public static readonly int TRAILING_CONST = 15;
+        public static readonly int TRAILING_CONST = 25;
         private VertexStrip tail = new VertexStrip();
         private Texture2D backTex;
         private Texture2D luminanceTex;
@@ -61,13 +61,15 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             THREEBODY_MOTION = 9,
             SPIRAL_SINK = 10,
             H_SHIFT = 11,
+            LORENZ_FINALE = 12,
         }
         public override void SetStaticDefaults()
         {
             base.SetDefaults();
             DisplayName.SetDefault("Bright Node");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "明节点");
-
+            NPCID.Sets.TrailingMode[NPC.type] = 0;
+            NPCID.Sets.TrailCacheLength[NPC.type] = TRAILING_CONST;
             Main.npcFrameCount[NPC.type] = 1;
         }
         public override void SetDefaults()
@@ -92,8 +94,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             Timer = 0f;
             currentPhase = 0;
 
-            NPCID.Sets.TrailingMode[NPC.type] = 0;
-            NPCID.Sets.TrailCacheLength[NPC.type] = TRAILING_CONST;
+
 
             backTex =
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNMotion").Value;
@@ -108,6 +109,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             drawTriLasers = false;
             triLaserAngle = MathHelper.PiOver2;
             aimLineTransparency = 0;
+
+            baseColor = Color.White;
+            contourColor = Color.Red;
+            trailTex = ModContent.Request<Texture2D>("PhysicsBoss/NPCs/Boss/ChaosTheory/BrightNodeTrail").Value;
         }
 
         public override void AI()
@@ -118,6 +123,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 {
                     case (int)phase.SIGNLE_PENDULUM_TWO:
                         {
+                            if (drawTrail != trail.DEFAULT)
+                                drawTrail = trail.DEFAULT;
                             singlePendulum();
                             break;
                         }
@@ -143,6 +150,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             break;
                         }
                     case (int)phase.HALVORSEN: {
+                            if (drawTrail != trail.TAIL)
+                                drawTrail = trail.TAIL;
                             halvorsen();
                             break;
                         }
@@ -208,6 +217,15 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                                 drawTrail = trail.SHADOW;
                             horizontalShift(false);
                             Timer++;
+                            break;
+                        }
+                    case (int)phase.LORENZ_FINALE:
+                        {
+                            if (drawTrail != trail.TAIL)
+                                drawTrail = trail.TAIL;
+                            if (!NPC.dontTakeDamage)
+                                NPC.dontTakeDamage = true;
+                            orbit(owner.GeneralTimer / ((ORBIT_PERIOD * 0.5f) + 0.5f) * MathHelper.TwoPi, ChaosTheory.FINALE_RADIUS);
                             break;
                         }
                     default: break;
@@ -285,7 +303,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
         }
 
-        public void summonBareLightning(float vel) {
+        public void summonBareLightning(float vel, Vector2 disp) {
             if (target != null)
             {
                 for (int i = 0; i < 120; i++)
@@ -295,9 +313,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     d.noGravity = true;
                 }
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
-                Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, 
-                    (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX)*vel,
-                    ModContent.ProjectileType<LightningBolt>(), 50, 0);
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + disp,
+                        (target.Center - (NPC.Center + disp)).SafeNormalize(Vector2.UnitX) * vel,
+                        ModContent.ProjectileType<LightningBolt>(), 15, 0);
+                }
             }
         }
 
@@ -308,7 +329,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 for (int i = 0; i < 120; i++)
                 {
                     Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RedTorch);
-                    d.velocity = Main.rand.NextVector2Unit() * 10;
+                    d.velocity = Main.rand.NextVector2Unit() * 5;
                     d.noGravity = true;
                 }
                 SoundEngine.PlaySound(SoundID.DD2_LightningAuraZap);
@@ -316,6 +337,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     velocity, ModContent.ProjectileType<LightningBolt>(), 50, 0);
             }
         }
+
 
         private void singlePendulum()
         {
@@ -410,6 +432,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     sinlasers[i] = null;
                 }
             }
+
+            fireWork();
             base.OnKill();
         }
 
@@ -481,6 +505,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if (factor == 0) {
                 fireWork();
                 NPC.Center = new Vector2(target.Center.X + (posIndex % 2 == 0 ? -1 : 1) * 450f, target.Center.Y - 600f);
+                for (int i = 0; i < TRAILING_CONST; i++)
+                {
+                    NPC.oldPos[i] = NPC.Center - tex.Size()/2;
+                }
                 fireWork();
             }
 

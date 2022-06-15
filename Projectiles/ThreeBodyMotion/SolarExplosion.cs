@@ -40,9 +40,9 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         public override void AI()
         {
             if (Projectile.frame == 2 && Projectile.frameCounter % 3 == 0) {
-                for (int i = 0; i < 3; i++) {
+                for (int i = 0; i < 2; i++) {
                     Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center,
-                        Main.rand.NextVector2Unit() * 8f, ModContent.ProjectileType<SolarFlame>(), 20,0);
+                        Main.rand.NextVector2Unit() * 8f, ModContent.ProjectileType<SolarFlame>(), 15,0);
                 }
             }
 
@@ -54,7 +54,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
             for (int i = 0; i < Projectile.timeLeft * 0.25f; i++)
                 Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.SolarFlare).velocity = 
-                    10 * Main.rand.NextVector2Unit();
+                    8 * Main.rand.NextVector2Unit();
         }
 
         public override void OnSpawn(IEntitySource source)

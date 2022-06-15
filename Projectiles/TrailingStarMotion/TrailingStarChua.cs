@@ -30,7 +30,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public override Matrix Transform =>
             Matrix.CreateScale(0.45f)
-            * Matrix.CreateTranslation(-40f, 5f, 0)
+            * Matrix.CreateTranslation(-20f, 5f, 0)
             * Matrix.CreateRotationY(MathHelper.Pi/3);
 
         public override void SetStaticDefaults()

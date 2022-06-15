@@ -17,6 +17,8 @@ namespace PhysicsBoss.Effects
 {
     public static class GlobalEffectController
     {
+        public const int SHRINK_CONST = 2;
+
         public static Texture2D beamTex  = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
         public static Texture2D ColorGradient  = ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ColorGradient").Value;
         public static Texture2D circleTex  = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Circle").Value;
@@ -119,7 +121,7 @@ namespace PhysicsBoss.Effects
 
             
             spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred,
+            spriteBatch.Begin(SpriteSortMode.Immediate,
                 BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
@@ -427,6 +429,69 @@ namespace PhysicsBoss.Effects
             if (flashTimeLeft > 0)
                 flashTimeLeft--;
             
+        }
+
+        public static void drawSpecialDusts() {
+            if (BlockDust.count > 0 || TwistedDust.count > 0)
+            {
+                GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
+                RenderTarget2D screenTemp = null;
+                RenderTarget2D screenTemp2 = null;
+
+                graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+                graphicsDevice.Clear(Color.Transparent);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                Main.spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
+                Main.spriteBatch.End();
+
+                if (BlockDust.count > 0)
+                {
+                    screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width/SHRINK_CONST, Main.screenTarget.Height / SHRINK_CONST);
+                    graphicsDevice.SetRenderTarget(screenTemp);
+                    graphicsDevice.Clear(Color.Transparent);
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                    BlockDust.drawAll(Main.spriteBatch, SHRINK_CONST);
+                    Main.spriteBatch.End();
+                }
+
+                if (TwistedDust.count > 0) {
+                    screenTemp2 = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width / SHRINK_CONST, Main.screenTarget.Height / SHRINK_CONST);
+                    graphicsDevice.SetRenderTarget(screenTemp2);
+                    graphicsDevice.Clear(Color.Transparent);
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                    TwistedDust.drawAll(Main.spriteBatch, SHRINK_CONST);
+                    Main.spriteBatch.End();
+                }
+
+                graphicsDevice.SetRenderTarget(Main.screenTarget);
+                graphicsDevice.Clear(Color.Transparent);
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+                Main.spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+                if (BlockDust.count > 0)
+                {
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+                    PhysicsBoss.maskEffect.Parameters["threshold"].SetValue(0.99f);
+                    PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(PhysicsBoss.galaxyTex);
+                    PhysicsBoss.maskEffect.Parameters["ordinaryTint"].SetValue(Color.LightBlue.ToVector4());
+                    PhysicsBoss.maskEffect.Parameters["contentTint"].SetValue(Color.White.ToVector4());
+                    PhysicsBoss.maskEffect.CurrentTechnique.Passes["MaskTint"].Apply();
+                    Main.spriteBatch.Draw(screenTemp, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight), Color.White);
+                }
+
+                if (TwistedDust.count > 0) {
+                    Main.spriteBatch.End();
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied);
+                    PhysicsBoss.maskEffect.Parameters["threshold"].SetValue(0.8f);
+                    PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(PhysicsBoss.fractalTex);
+                    PhysicsBoss.maskEffect.Parameters["ordinaryTint"].SetValue(Color.Purple.ToVector4());
+                    PhysicsBoss.maskEffect.Parameters["contentTint"].SetValue(Color.White.ToVector4());
+                    PhysicsBoss.maskEffect.CurrentTechnique.Passes["MaskTint"].Apply();
+                    Main.spriteBatch.Draw(screenTemp2, new Rectangle(0,0,Main.screenWidth, Main.screenHeight), Color.White);
+                }
+
+                Main.spriteBatch.End();
+            }
         }
     }
 }

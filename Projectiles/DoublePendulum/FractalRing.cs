@@ -19,6 +19,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         public const int TRAILING_CONST = 45;
         public const int RADIUS = 800;
         public const int TRANSIT = 60;
+        public const float SHRINK = 2f;
 
         private Texture2D tex;
         private Texture2D contentTex;
@@ -68,7 +69,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         {
             for (int i = 0; i < TRAILING_CONST; i++)
             {
-                Projectile.oldPos[i] = prog * RADIUS * (Projectile.oldRot[i] - MathHelper.PiOver2).ToRotationVector2();
+                Projectile.oldPos[i] = (prog * RADIUS * (Projectile.oldRot[i] - MathHelper.PiOver2).ToRotationVector2())/SHRINK;
             }
         }
 
@@ -92,17 +93,17 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         {
 
             GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
-            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenWidth, Main.screenHeight);
+            RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, (int)(Main.screenWidth/SHRINK), (int)(Main.screenHeight / SHRINK));
             SpriteBatch spriteBatch = Main.spriteBatch;
             spriteBatch.End();
 
-            graphicsDevice.SetRenderTarget(screenTemp);
+            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
             graphicsDevice.Clear(Color.Transparent);
             spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
             spriteBatch.Draw(Main.screenTarget, Vector2.Zero, Color.White);
 
             #region drawtail
-            graphicsDevice.SetRenderTarget(Main.screenTargetSwap);
+            graphicsDevice.SetRenderTarget(screenTemp);
             graphicsDevice.Clear(Color.Transparent);
 
             drawRing();
@@ -116,16 +117,16 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
 
             PhysicsBoss.maskEffect.Parameters["timer"].SetValue((float)(Main.time * 0.005));
             PhysicsBoss.maskEffect.Parameters["threshold"].SetValue(prog);
-            PhysicsBoss.maskEffect.Parameters["texMask"].SetValue(Main.screenTargetSwap);
+            PhysicsBoss.maskEffect.Parameters["texMask"].SetValue(screenTemp);
             PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(contentTex);
 
             
-            Main.graphics.GraphicsDevice.Textures[0] = screenTemp;
+            Main.graphics.GraphicsDevice.Textures[0] = Main.screenTargetSwap;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
             
 
             PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicMask"].Apply();
-            spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
+            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred,
@@ -151,8 +152,8 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             Main.graphics.GraphicsDevice.Textures[0] = tex;
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
-                progress => Color.White * prog, progress => Projectile.width * prog,
-                Projectile.Center - Main.screenPosition, TRAILING_CONST);
+                progress => Color.White * prog, progress => Projectile.width * prog/SHRINK,
+                (Projectile.Center - Main.screenPosition) / SHRINK, TRAILING_CONST);
             tail.DrawTrail();
         }
 

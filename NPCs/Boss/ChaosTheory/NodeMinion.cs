@@ -30,6 +30,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         protected bool drawConnection;
         protected ModNPC connectionTarget;
         protected Texture2D beamTex;
+        protected Texture2D trailTex;
+        protected Color contourColor;
+        protected Color baseColor;
 
         protected bool onSummon;
 
@@ -64,6 +67,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             onSummon = false;
 
             beamTex = ModContent.Request<Texture2D>("PhysicsBoss/Asset/Beam").Value;
+            trailTex = tex;
+
+            contourColor = baseColor = Color.White;
         }
 
         public void setOwner(ChaosTheory o) { 
@@ -158,23 +164,38 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         protected void drawTail(SpriteBatch spriteBatch, Color tint)
         {
+            Dust d = Dust.NewDustDirect(NPC.position, tex.Width, tex.Height, DustID.RainbowMk2);
+            d.noGravity = true;
+            d.color = baseColor;
+
             VertexStrip tail = new VertexStrip();
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.Additive,
+                BlendState.NonPremultiplied,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
-            Main.graphics.GraphicsDevice.Textures[0] =
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
-
+            Main.graphics.GraphicsDevice.Textures[0] = trailTex;
+            //ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
             tail.PrepareStrip(NPC.oldPos, NPC.oldRot,
-                progress => tint,progress => tex.Width * 0.5f * (1f-progress),
+                progress => Color.White, progress => tex.Width * (1f - progress),
                 tex.Size() / 2 - Main.screenPosition, NPC.oldPos.Length);
+
+            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.3f);
+            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.95f);
+            PhysicsBoss.worldEffect.Parameters["extractTint"].SetValue(contourColor.ToVector4());
+            PhysicsBoss.worldEffect.CurrentTechnique.Passes["ExtractRangeTint"].Apply();
             tail.DrawTrail();
 
+            
+            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.45f);
+            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.8f);
+            PhysicsBoss.worldEffect.Parameters["extractTint"].SetValue(baseColor.ToVector4());
+            PhysicsBoss.worldEffect.CurrentTechnique.Passes["ExtractRangeTint"].Apply();
+            tail.DrawTrail();
+            
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -218,6 +239,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 trailingStarController.Projectile.Kill();
                 trailingStarController = null;
             }
+
             base.OnKill();
         }
 

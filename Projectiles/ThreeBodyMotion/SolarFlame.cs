@@ -32,7 +32,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.tileCollide = false;
             Projectile.penetrate = 1;
 
-            Projectile.timeLeft = (int)(1.5 * 60);
+            Projectile.timeLeft = (int)(1.3 * 60);
             Projectile.damage = 20;
 
             Projectile.width = 15;
@@ -69,7 +69,9 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
 
             for (int i = 0; i < 20; i++)
             {
-                Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.FlameBurst).velocity *= 2f;
+                Dust d = Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.FlameBurst);
+                d.velocity = 5 * Main.rand.NextVector2Unit();
+                d.noGravity = true;
             }
         }
     }

@@ -29,6 +29,8 @@ float2 twistCenter;
 float2 texSize;
 
 float extractThreshold;
+float extractMin;
+float4 extractTint;
 
 float4 fillColor;
 
@@ -78,6 +80,15 @@ float4 Extract(float2 coords : TEXCOORD0) : COLOR0
     float4 c = tex2D(uImage0, coords);
     if ((c.r * 0.4 + c.g * 0.4 + c.b * 0.2) >= extractThreshold)
         return c;
+    return float4(0, 0, 0, 0);
+}
+
+float4 ExtractRangeTint(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 c = tex2D(uImage0, coords);
+    float brightness = c.r * 0.4 + c.g * 0.4 + c.b * 0.2;
+    if (brightness >= extractThreshold)
+        return extractTint * lerp(extractMin, 1, (brightness - extractThreshold) / (1 - extractThreshold));
     return float4(0, 0, 0, 0);
 }
 
@@ -270,6 +281,12 @@ technique Technique1
     pass Extract
     {
         PixelShader = compile ps_2_0 Extract();
+    }
+
+    pass ExtractRangeTint
+    {
+        PixelShader = compile ps_2_0 ExtractRangeTint();
+
     }
 
     pass FillOnThreshold

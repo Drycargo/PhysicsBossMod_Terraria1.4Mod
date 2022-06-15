@@ -10,14 +10,16 @@ namespace PhysicsBoss.Projectiles.LogisticMap
     {
         public const float SPAN = 4.0f;
         public const int STEP = 25;
-        public const float HEIGHT = 450f;
-        public const float LASER_WIDTH = 35f;
+
         public const int PERIOD = 60;
         public const int FADE_TRANSIT = 15;
         public const int SWING_PERIOD = 120;
-        public const float TOT_WIDTH = 750f;
-        
+        public const float TOT_WIDTH = 750f; 
+        public const float TOT_HEIGHT = 450f;
+
+        public virtual float LASER_WIDTH => 35f;
         public virtual float WIDTH => TOT_WIDTH;
+        public virtual float HEIGHT => TOT_WIDTH;
 
         public enum phase: int {
             UNINITIALIZED = 0,
@@ -138,18 +140,23 @@ namespace PhysicsBoss.Projectiles.LogisticMap
             }
 
             if (currPhase == phase.UNINITIALIZED)
+            {
                 currPhase = phase.INITIALZIED;
 
-            SoundEngine.PlaySound(SoundID.Item29, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item29, Projectile.Center);
+            }
         }
 
         public void materialize() {
-            currPhase = phase.MATERIALIZED;
+            if (currPhase != phase.MATERIALIZED)
+            {
+                currPhase = phase.MATERIALIZED;
 
-            for (int i = 0; i < 50; i++)
-                summonDust();
+                for (int i = 0; i < 50; i++)
+                    summonDust();
 
-            SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
+                SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
+            }
         }
 
         public void setFall() {

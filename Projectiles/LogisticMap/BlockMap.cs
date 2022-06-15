@@ -8,7 +8,9 @@ namespace PhysicsBoss.Projectiles.LogisticMap
 {
     public class BlockMap: LogisticMap
     {
+        public override float LASER_WIDTH => 50f;
         public override float WIDTH => 1250f;
+        public override float HEIGHT => 700f;
 
         public override void SetStaticDefaults()
         {
@@ -27,7 +29,7 @@ namespace PhysicsBoss.Projectiles.LogisticMap
             base.AI();
             if (currPhase != phase.INITIALZIED && currPhase != phase.UNINITIALIZED)
             {
-                if (Timer % 3 == 0)
+                if (Timer % 2 == 0)
                 {
                     for (int i = 0; i < STEP - 1; i++)
                     {
@@ -54,6 +56,8 @@ namespace PhysicsBoss.Projectiles.LogisticMap
                     }
                 default:
                     {
+                        drawEdges();
+                        /*
                         Main.spriteBatch.End();
 
                         GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
@@ -92,8 +96,9 @@ namespace PhysicsBoss.Projectiles.LogisticMap
                             DepthStencilState.None,
                             RasterizerState.CullNone, null,
                             Main.GameViewMatrix.TransformationMatrix);
-
+                        */
                         break;
+                        
                     }
             }
             

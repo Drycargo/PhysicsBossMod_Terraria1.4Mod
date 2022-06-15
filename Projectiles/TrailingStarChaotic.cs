@@ -89,16 +89,16 @@ namespace PhysicsBoss.Projectiles
                 Projectile.timeLeft++;
                 if ((int)Timer == 0)
                 {
-                    
+                    /*
                     if (controller != null && controller.Projectile.active)
                     {
                         realCenter.X = (Projectile.Center.X - controller.Projectile.Center.X) / SHRINK_CONST;
                         realCenter.Y = (Projectile.Center.Y - controller.Projectile.Center.Y) / SHRINK_CONST;
                     }
-                    /*
-                    realCenter.X = 50 / SHRINK_CONST * (Main.rand.NextFloat() - 0.5f);
-                    realCenter.Y = 50 / SHRINK_CONST * (Main.rand.NextFloat() - 0.5f);*
                     */
+                    realCenter.X = 50 / SHRINK_CONST * (Main.rand.NextFloat() - 0.5f);
+                    realCenter.Y = 50 / SHRINK_CONST * (Main.rand.NextFloat() - 0.5f);
+                    
                 }
 
                 for (int i = TRAILING_CONST - 1; i > 0; i--)

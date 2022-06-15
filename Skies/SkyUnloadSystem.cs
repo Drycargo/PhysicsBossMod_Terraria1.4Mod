@@ -22,12 +22,14 @@ namespace PhysicsBoss.Skies
             SkyManager.Instance.Reset();
             SkyManager.Instance.Deactivate("PhysicsBoss:BlackSky");
             SkyManager.Instance.Deactivate("PhysicsBoss:OpenTheGate");
+            SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
             base.PreSaveAndQuit();
         }
         public override void OnWorldUnload()
         {
             CameraPlayer.deActivate();
             SkyManager.Instance.Deactivate("PhysicsBoss:BlackSky");
+            SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
             SkyManager.Instance.Deactivate("PhysicsBoss:OpenTheGate");
             base.OnWorldUnload();
         }

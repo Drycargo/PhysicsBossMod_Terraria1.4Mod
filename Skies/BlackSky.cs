@@ -28,13 +28,14 @@ namespace PhysicsBoss.Skies
 
         public override void Draw(SpriteBatch spriteBatch, float minDepth, float maxDepth)
         {
-            if (minDepth < 0 && maxDepth >= 0)
+            //if (minDepth < 0 && maxDepth >= 0)
+            if (minDepth < float.MaxValue && maxDepth >= float.MaxValue)
             {
                 
                 spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(0, 0, Main.screenWidth, Main.screenHeight),
                     Color.Black * progress);
                 
-
+                #region oldImp
                 /*
                 GraphicsDevice graphicsDevice = Main.graphics.GraphicsDevice;
                 RenderTarget2D screenTemp = new RenderTarget2D(graphicsDevice, Main.screenTarget.Width, Main.screenTarget.Height);
@@ -62,6 +63,7 @@ namespace PhysicsBoss.Skies
                 Main.spriteBatch.End();
                 Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
                 */
+                #endregion
             }
         }
 
@@ -77,11 +79,17 @@ namespace PhysicsBoss.Skies
 
         public override void Update(GameTime gameTime)
         {
-            //Main.NewText("Updated");
             if (active && progress < 1f)
                 progress += 1f / 60f;
             else if (!active && progress > 0)
                 progress -= 1f / 60f;
         }
+        
+        /*
+        public override Color OnTileColor(Color inColor)
+        {
+            return Main.hslToRgb((float)((Main.time * 0.05f) % 1f), 0.9f, 0.6f);
+        }
+        */
     }
 }

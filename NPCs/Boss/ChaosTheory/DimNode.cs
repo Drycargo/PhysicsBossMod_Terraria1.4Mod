@@ -21,12 +21,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
     public class DimNode:NodeMinion
     {
         public const int SINGLE_PENDULUM_DIST = 750;
-        public const double SINGLE_PENDULUM_PERIOD = 21/4;
+        public const double SINGLE_PENDULUM_PERIOD = 21.5/4;
         public const float CHUA_STAR_POINT = 9;
 
         //public const float CHUA_ORBIT_PERIOD = 1.75f * 60 / CHUA_STAR_POINT;
         public const float CHUA_ORBIT_PERIOD = 1.5f * 60;
-        public const int TRAILING_CONST = 15;
+        public const int TRAILING_CONST = 25;
         private float bloomIntensity;
 
         public enum phase {
@@ -42,13 +42,15 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             THREEBODY_MOTION = 9,
             SPIRAL_SINK = 10,
             H_SHIFT = 11,
+            LORENZ_FINALE = 12,
         }
         public override void SetStaticDefaults()
         {
             base.SetDefaults();
             DisplayName.SetDefault("Dim Node");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "暗节点");
-
+            NPCID.Sets.TrailingMode[NPC.type] = 0;
+            NPCID.Sets.TrailCacheLength[NPC.type] = TRAILING_CONST;
             Main.npcFrameCount[NPC.type] = 1;
         }
         public override void SetDefaults()
@@ -72,12 +74,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             Timer = 0f;
             currentPhase = 0;
 
-            NPCID.Sets.TrailingMode[NPC.type] = 0;
-            NPCID.Sets.TrailCacheLength[NPC.type] = TRAILING_CONST;
-
             trailingStarController = null;
 
             bloomIntensity = -1;
+
+            baseColor = Color.Lerp(Color.DarkViolet, Color.Black, 0.3f);
+            contourColor = Color.Cyan;
+            trailTex = ModContent.Request<Texture2D>("PhysicsBoss/NPCs/Boss/ChaosTheory/DimNodeTrail").Value;
         }
 
         public override void AI()
@@ -86,8 +89,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 switch (currentPhase) {
                     case (int)phase.SIGNLE_PENDULUM: 
                         {
-                            if (drawTrail != trail.SHADOW)
-                                drawTrail = trail.SHADOW;
+                            if (drawTrail != trail.DEFAULT)
+                                drawTrail = trail.DEFAULT;
                             singlePendulum(true);
                             break;
                         }
@@ -178,6 +181,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                             Timer++;
                             break;
                         }
+                    case (int)phase.LORENZ_FINALE: {
+                            if (drawTrail != trail.TAIL)
+                                drawTrail = trail.TAIL;
+                            if (!NPC.dontTakeDamage)
+                                NPC.dontTakeDamage = true;
+                            orbit(owner.GeneralTimer / (ORBIT_PERIOD * 0.5f) * MathHelper.TwoPi, ChaosTheory.FINALE_RADIUS);
+                            break;
+                        }
                     default: break;
                 }
             }
@@ -234,19 +245,21 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             // shoot rising stars
             if (shootStars)
             {
-                if ((int)(Timer % (SINGLE_PENDULUM_PERIOD / 8 * 60)) == 0)
+                if ((int)Timer % (int)(SINGLE_PENDULUM_PERIOD / 8 * 60) == 0)
                 {
                     SoundEngine.PlaySound(SoundID.DD2_PhantomPhoenixShot);
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitY * 7.5f,
                         ModContent.ProjectileType<TrailingStar>(), 50, 0);
                 }
             }
+            /*
             else {
-                int factor = (int)(Timer % (SINGLE_PENDULUM_PERIOD / 2 * 60));
+                int factor = (int)Timer % (int)(SINGLE_PENDULUM_PERIOD / 2 * 60);
                 if (factor < 18 && factor % 6 == 0) {
                     owner.brightNode.summonBareLightning(12);
                 }
             }
+            */
         }
 
         private void chuaCircuit()
@@ -308,7 +321,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
             }
 
-            follow(2000f, 1f);
+            follow(2000f, 0.65f);
             //hover(currentCenter, 20f, 0.1f, 2400f, inertia: 0.99f);
             trailingStarController.Projectile.Center = NPC.Center;
 
@@ -467,6 +480,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             {
                 GlobalEffectController.bloom(-1, 0);
             }
+
+            fireWork();
+
             base.OnKill();
         }
 

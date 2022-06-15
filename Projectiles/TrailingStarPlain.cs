@@ -17,7 +17,7 @@ namespace PhysicsBoss.Projectiles
     public class TrailingStarPlain : ModProjectile
     {
         protected VertexStrip tail = new VertexStrip();
-        public const int TRAILING_CONST = 25;
+        public virtual int TRAILING_CONST => 25;
         protected Color drawColor = Color.Lerp(Color.Green, Color.White, 0.5f);
 
         protected Texture2D tex;

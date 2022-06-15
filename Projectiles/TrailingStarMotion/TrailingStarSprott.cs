@@ -9,7 +9,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
     public class TrailingStarSprott: TrailingStarChaotic
     {
         public const int SCALE_TRANSIT = 30;
-        public const int KILL_TRANSIT = 60;
+        public const int KILL_TRANSIT = 68;
     
         public override float SHRINK_CONST
         {

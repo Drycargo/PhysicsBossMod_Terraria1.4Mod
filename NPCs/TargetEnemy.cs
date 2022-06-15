@@ -85,7 +85,7 @@ namespace PhysicsBoss.NPCs
             for (int i = 0; i < 30; i++)
             {
                 Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RainbowRod);
-                d.velocity = Main.rand.NextVector2Unit() * 15f;
+                d.velocity = Main.rand.NextVector2Unit() * 7.5f;
                 d.color = c;
                 d.noGravity = true;
             }

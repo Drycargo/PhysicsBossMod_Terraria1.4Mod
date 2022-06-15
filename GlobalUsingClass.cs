@@ -24,3 +24,5 @@ global using PhysicsBoss.Projectiles.TrailingStarMotion;
 global using PhysicsBoss.Projectiles.ButterflyEffect;
 global using PhysicsBoss.Effects;
 global using PhysicsBoss.Dusts;
+global using PhysicsBoss.NPCs.Boss.ChaosTheory;
+global using PhysicsBoss.Skies;

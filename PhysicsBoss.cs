@@ -21,6 +21,8 @@ namespace PhysicsBoss
 
         private static PhysicsBoss instance;
 
+        public static Texture2D galaxyTex;
+        public static Texture2D fractalTex;
         public PhysicsBoss()
         {
             instance = this;
@@ -87,10 +89,15 @@ namespace PhysicsBoss
             SkyManager.Instance["PhysicsBoss:OpenTheGate"] = new OpenTheGate();
             SkyManager.Instance["PhysicsBoss:OpenTheGate"].Load();
 
+            SkyManager.Instance["PhysicsBoss:ColorSky"] = new ColorSky();
+            SkyManager.Instance["PhysicsBoss:ColorSky"].Load();
+
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
-            
+
+            galaxyTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LogisticMap/BlockMap").Value;
+            fractalTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LogisticMap/FractalMap").Value;
         }
 
         private void Main_OnResolutionChanged(Vector2 obj)
@@ -110,6 +117,7 @@ namespace PhysicsBoss
             GlobalEffectController.Main_applyFlash();
             GlobalEffectController.Main_applyVignette();
             GlobalEffectController.Main_applyCenterTwist();
+            GlobalEffectController.drawSpecialDusts();
 
             orig(self, finalTexture, screenTarget1, screenTarget2, clearColor);
         }

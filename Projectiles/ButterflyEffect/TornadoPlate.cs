@@ -119,11 +119,42 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
 
         public override bool PreDraw(ref Color lightColor)
         {
-            Main.spriteBatch.Draw(tex, new Rectangle((int)(Projectile.Center.X + dispX - Main.screenPosition.X),
-                (int)(Projectile.Center.Y + dispY - Main.screenPosition.Y), (int)(factor * WIDTH), (int)(factor * HEIGHT)), 
-                new Rectangle(0,Projectile.frame * Projectile.height, Projectile.width, Projectile.height),
-                Color.Lerp(Color.Black, Color.White, (factor * 0.6f + 0.4f)), tiltAngle, Vector2.Zero,SpriteEffects.None, 0);
+            if (released)
+            {
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                       BlendState.NonPremultiplied,
+                       Main.DefaultSamplerState,
+                       DepthStencilState.None,
+                       RasterizerState.CullNone, null,
+                       Main.GameViewMatrix.TransformationMatrix);
+
+                PhysicsBoss.shineEffect.Parameters["texSize"].SetValue(Projectile.Size);
+                PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(Color.Cyan.ToVector4());
+                PhysicsBoss.shineEffect.CurrentTechnique.Passes["Contour"].Apply();
+
+                specialDraw();
+
+                Main.spriteBatch.End();
+                Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                       BlendState.AlphaBlend,
+                       Main.DefaultSamplerState,
+                       DepthStencilState.None,
+                       RasterizerState.CullNone, null,
+                       Main.GameViewMatrix.TransformationMatrix);
+
+            } else {
+                specialDraw();
+            }
             return false;
+        }
+
+        private void specialDraw()
+        {
+            Main.spriteBatch.Draw(tex, new Rectangle((int)(Projectile.Center.X + dispX - Main.screenPosition.X),
+                                (int)(Projectile.Center.Y + dispY - Main.screenPosition.Y), (int)(factor * WIDTH), (int)(factor * HEIGHT)),
+                                new Rectangle(0, Projectile.frame * Projectile.height, Projectile.width, Projectile.height),
+                                Color.Lerp(Color.Black, Color.White, (factor * 0.6f + 0.4f)), tiltAngle, Vector2.Zero, SpriteEffects.None, 0);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

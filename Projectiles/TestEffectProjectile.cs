@@ -38,7 +38,29 @@ namespace PhysicsBoss.Projectiles
         {
             base.AI();
 
-            Dust.NewDust(Projectile.Center, 0,0, ModContent.DustType<BlockDust>());
+            if (Timer == 0)
+            {
+                if (!SkyManager.Instance["PhysicsBoss:ColorSky"].IsActive())
+                {
+                    SkyManager.Instance.Activate("PhysicsBoss:ColorSky", Vector2.Zero,1);
+                }
+                ColorSky.setColor(Color.Pink);
+                ColorSky.activateDrawWire(Color.Cyan);
+            }
+            else if (Timer == 180)
+            {
+                ColorSky.setColor(Color.Blue);
+                ColorSky.deActivateDrawWire();
+                ColorSky.activateDrawBlock(Color.White);
+            }
+            else if (Timer == 360) {
+                if (SkyManager.Instance["PhysicsBoss:ColorSky"].IsActive())
+                {
+                    SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
+                }
+            }
+
+            //Dust.NewDust(Projectile.Center, 0,0, ModContent.DustType<BlockDust>());
             //Projectile.velocity *= 0;
 
             /*

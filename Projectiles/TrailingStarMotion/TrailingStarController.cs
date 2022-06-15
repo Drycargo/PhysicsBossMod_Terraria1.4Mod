@@ -30,7 +30,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             set { Projectile.ai[0] = value; }
         }
 
-        private Queue<TrailingStarChaotic> stars;
+        protected Queue<TrailingStarChaotic> stars;
         private Player lastTarget;
         public override void SetDefaults()
         {
@@ -61,18 +61,25 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             Timer++;
         }
 
-        public void summonStarBundle<TSC>() where TSC: TrailingStarChaotic
+        public virtual void summonStarBundle<TSC>() where TSC: TrailingStarChaotic
         {
             for (int i = 0; i < 4; i++)
-                summonStar<TSC>(i);
+            {
+                try
+                {
+                    summonStar<TSC>(i);
+                }
+                catch (IndexOutOfRangeException e) {
+                    
+                }
+            }
             SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
         }
 
         private void summonStar<TSC>(int colorIndex) where TSC : TrailingStarChaotic
         {
-            int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),Projectile.Center 
-                + Main.rand.NextVector2Circular(100, 100), 
-                Vector2.Zero, ModContent.ProjectileType<TSC>(), 25, 0);
+            int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(), Projectile.Center,
+                    Vector2.Zero, ModContent.ProjectileType<TSC>(), 25, 0);
             TrailingStarChaotic tsc = (TrailingStarChaotic)Main.projectile[id].ModProjectile;
             tsc.setOwner(this);
             tsc.setColor(colorIndex);

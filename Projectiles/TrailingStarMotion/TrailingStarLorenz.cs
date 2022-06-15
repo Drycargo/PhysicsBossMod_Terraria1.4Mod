@@ -33,8 +33,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             DisplayName.SetDefault("Trailing Star Lorenz");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "拖尾星-洛伦茨吸引子");
-
-            base.SetStaticDefaults();
+            ProjectileID.Sets.TrailCacheLength[Projectile.type] = TRAILING_CONST;
+            ProjectileID.Sets.TrailingMode[Projectile.type] = 2;
+            //base.SetStaticDefaults();
         }
         protected override void setBasicDefaults()
         {
