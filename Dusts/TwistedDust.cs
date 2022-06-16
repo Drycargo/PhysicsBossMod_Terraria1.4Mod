@@ -39,7 +39,7 @@ namespace PhysicsBoss.Dusts
             ParticleOrchestraSettings settings = new ParticleOrchestraSettings
             {
                 PositionInWorld = dust.position,
-                MovementVector = Main.rand.NextVector2Unit() * 5f
+                MovementVector = Main.rand.NextVector2Unit() * 15f
             };
 
             ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.PrincessWeapon, settings);

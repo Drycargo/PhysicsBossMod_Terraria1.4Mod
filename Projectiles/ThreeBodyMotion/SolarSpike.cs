@@ -116,7 +116,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         {
             if (!released && aimLineTransparency > 0)
             {
-                GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center, Projectile.Center + vel, Color.Orange * aimLineTransparency, 20f);
+                GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center, Projectile.Center + vel, 
+                    Color.Orange * aimLineTransparency * 0.8f, 20f);
             }
 
             if (released)

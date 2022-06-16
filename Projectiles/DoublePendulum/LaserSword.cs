@@ -23,7 +23,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         public const int CIRCLE_TRAILING_CONST = 6;
         public const int CIRCLE_RADIUS = 30;
         public const int CIRCLE_DURATION = 30;
-        public const int TRANSIT = 35;
+        public const int TRANSIT = 60;
         private const float ACC = 1.5f;
         private Texture2D backTex;
 
@@ -123,10 +123,10 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
 
         public override bool PreDraw(ref Color lightColor)
         {
-            if (Timer < TRANSIT *1.5) {
+            if (Timer < TRANSIT *1.25) {
                 GlobalEffectController.drawRayLine(Main.spriteBatch, Projectile.Center,
                     Projectile.Center + Projectile.rotation.ToRotationVector2(),
-                    drawColor * 0.6f * (float)Math.Min(Math.Min(1, (TRANSIT * 1.5 - Timer)/((float)TRANSIT * 0.5)), 
+                    drawColor * 0.8f * (float)Math.Min(Math.Min(1, (TRANSIT * 1.5 - Timer)/((float)TRANSIT * 0.5)), 
                     Timer / ((float)TRANSIT * 0.5)), 8);
             }
             return false;

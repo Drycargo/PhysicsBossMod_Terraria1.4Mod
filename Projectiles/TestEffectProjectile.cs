@@ -44,16 +44,11 @@ namespace PhysicsBoss.Projectiles
                 {
                     SkyManager.Instance.Activate("PhysicsBoss:ColorSky", Vector2.Zero,1);
                 }
-                ColorSky.setColor(Color.Pink);
-                ColorSky.activateDrawWire(Color.Cyan);
             }
-            else if (Timer == 180)
-            {
-                ColorSky.setColor(Color.Blue);
-                ColorSky.deActivateDrawWire();
-                ColorSky.activateDrawBlock(Color.White);
-            }
-            else if (Timer == 360) {
+
+            ColorSky.setColor(Main.hslToRgb(Timer/(15f * 60), 0.95f, 0.5f));
+
+            if (Timer == 500) {
                 if (SkyManager.Instance["PhysicsBoss:ColorSky"].IsActive())
                 {
                     SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");

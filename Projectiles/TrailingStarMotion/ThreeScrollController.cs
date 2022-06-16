@@ -79,12 +79,12 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     */
                     if (accProgress < 1)
                     {
-                        Projectile.velocity += dir * SPEED / 45;
-                        accProgress += 1 / 45f;
+                        Projectile.velocity += dir * SPEED / 35;
+                        accProgress += 1 / 35f;
                     }
                     else
                     {
-                        Projectile.velocity *= 0.95f;
+                        Projectile.velocity *= 0.93f;
 
                         if (Projectile.velocity.Length() < 1f)
                         {
@@ -169,7 +169,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public void release()
         {
             activated = true;
-            Projectile.velocity = 1 * dir;
+            Projectile.velocity = 5 * dir;
             SoundEngine.PlaySound(SoundID.Item12, Projectile.Center);
         }
 

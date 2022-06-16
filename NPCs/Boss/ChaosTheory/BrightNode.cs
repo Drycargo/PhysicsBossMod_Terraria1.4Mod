@@ -632,15 +632,15 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         public void summonLaserPairNormal()
         {
-            summonLaserPair(0);
+            summonLaserPair(0, Color.Yellow * 2);
         }
 
         public void summonLaserPairTangent()
         {
-            summonLaserPair(MathHelper.PiOver2);
+            summonLaserPair(MathHelper.PiOver2, Color.Red * 2);
         }
 
-        private void summonLaserPair(float dev)
+        private void summonLaserPair(float dev, Color c)
         {
             if (owner == null || owner.dimNode == null)
                 return;
@@ -649,8 +649,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             LaserSword a = (LaserSword)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center + dir * 10f, dir,
                 ModContent.ProjectileType<LaserSword>(), 25, 0).ModProjectile);
 
-            float progress = (Timer % ChaosTheory.DOUBLE_PENDULUM_PERIOD)/ChaosTheory.DOUBLE_PENDULUM_PERIOD;
-            Color c = Color.Lerp(Color.Red, Color.Yellow, progress);
+            //float progress = (Timer % ChaosTheory.DOUBLE_PENDULUM_PERIOD)/ChaosTheory.DOUBLE_PENDULUM_PERIOD;
+            //Color c = Color.Lerp(Color.Red, Color.Yellow, progress);
 
             a.setColor(c);
             LaserSword b = (LaserSword)(Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center - dir * 10f, -dir,

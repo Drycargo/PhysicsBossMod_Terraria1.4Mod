@@ -23,6 +23,7 @@ namespace PhysicsBoss.Skies
             SkyManager.Instance.Deactivate("PhysicsBoss:BlackSky");
             SkyManager.Instance.Deactivate("PhysicsBoss:OpenTheGate");
             SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
+            SkyManager.Instance.Deactivate("PhysicsBoss:HindSky");
             base.PreSaveAndQuit();
         }
         public override void OnWorldUnload()
@@ -30,6 +31,7 @@ namespace PhysicsBoss.Skies
             CameraPlayer.deActivate();
             SkyManager.Instance.Deactivate("PhysicsBoss:BlackSky");
             SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
+            SkyManager.Instance.Deactivate("PhysicsBoss:HindSky");
             SkyManager.Instance.Deactivate("PhysicsBoss:OpenTheGate");
             base.OnWorldUnload();
         }

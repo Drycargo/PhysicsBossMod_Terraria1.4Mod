@@ -92,6 +92,9 @@ namespace PhysicsBoss
             SkyManager.Instance["PhysicsBoss:ColorSky"] = new ColorSky();
             SkyManager.Instance["PhysicsBoss:ColorSky"].Load();
 
+            SkyManager.Instance["PhysicsBoss:HindSky"] = new HindSky();
+            SkyManager.Instance["PhysicsBoss:HindSky"].Load();
+
             // render target
             On.Terraria.Graphics.Effects.FilterManager.EndCapture += FilterManager_EndCapture;
             Main.OnResolutionChanged += Main_OnResolutionChanged;
@@ -140,6 +143,8 @@ namespace PhysicsBoss
 
             SkyManager.Instance.Deactivate("PhysicsBoss:BlackSky");
             SkyManager.Instance.Deactivate("PhysicsBoss:OpenTheGate");
+            SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
+            SkyManager.Instance.Deactivate("PhysicsBoss:HindSky");
 
             On.Terraria.Graphics.Effects.FilterManager.EndCapture -= FilterManager_EndCapture;
             Main.OnResolutionChanged -= Main_OnResolutionChanged;

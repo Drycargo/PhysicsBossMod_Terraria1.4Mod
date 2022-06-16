@@ -22,7 +22,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
     public abstract class NodeMinion: TargetEnemy
     {
         public const int ORBIT_DIST = 25;
-        public const int ORBIT_PERIOD = (int)(5 * 60);
+        public const int ORBIT_PERIOD = (int)(4 * 60);
 
         protected Texture2D tex;
         protected ChaosTheory owner;
@@ -183,15 +183,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 progress => Color.White, progress => tex.Width * (1f - progress),
                 tex.Size() / 2 - Main.screenPosition, NPC.oldPos.Length);
 
-            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.3f);
-            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.95f);
+            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.375f);
+            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.8f);
             PhysicsBoss.worldEffect.Parameters["extractTint"].SetValue(contourColor.ToVector4());
             PhysicsBoss.worldEffect.CurrentTechnique.Passes["ExtractRangeTint"].Apply();
             tail.DrawTrail();
-
             
             PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.45f);
-            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.8f);
+            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.7f);
             PhysicsBoss.worldEffect.Parameters["extractTint"].SetValue(baseColor.ToVector4());
             PhysicsBoss.worldEffect.CurrentTechnique.Passes["ExtractRangeTint"].Apply();
             tail.DrawTrail();

@@ -78,8 +78,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             bloomIntensity = -1;
 
-            baseColor = Color.Lerp(Color.DarkViolet, Color.Black, 0.3f);
-            contourColor = Color.Cyan;
+            baseColor = Color.Lerp(Color.DarkViolet, Color.Black, 0.85f);
+            contourColor = Color.LightBlue;
             trailTex = ModContent.Request<Texture2D>("PhysicsBoss/NPCs/Boss/ChaosTheory/DimNodeTrail").Value;
         }
 

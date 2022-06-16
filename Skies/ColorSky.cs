@@ -8,7 +8,7 @@ namespace PhysicsBoss.Skies
 {
     public class ColorSky : CustomSky
     {
-        public const int TRANSIT = 30;
+        public const int TRANSIT = 60;
         public const int PERIOD = 30;
         public const int STAR_COUNT = 25;
         public const float STAR_STANDARD_VEL = (1f / 1.5f)/60f;
@@ -181,13 +181,13 @@ namespace PhysicsBoss.Skies
                 spriteBatch.Draw(TextureAssets.BlackTile.Value,
                     new Rectangle((int)(actualPos.Y - star.scale.Y * 0.5f),
                     (int)(actualPos.X - star.scale.X * 0.5f), (int)star.scale.Y, (int)star.scale.X),
-                    c * Math.Abs(0.5f - star.center.X) * 2f);
+                    c * Math.Abs(0.5f - star.center.X) * 1.5f);
             }
             else {
                 spriteBatch.Draw(TextureAssets.BlackTile.Value,
                     new Rectangle((int)(actualPos.X - star.scale.X * 0.5f),
                     (int)(actualPos.Y - star.scale.Y * 0.5f), (int)star.scale.X, (int)star.scale.Y),
-                    c * Math.Abs(0.5f - star.center.Y) * 2f);
+                    c * Math.Abs(0.5f - star.center.Y) * 1.5f);
             }
         }
 
@@ -253,19 +253,21 @@ namespace PhysicsBoss.Skies
                 for (int i = 0; i < STAR_COUNT; i++)
                 {
                     stars[i].center.X -= (starReverse ? -1 : 1) * stars[i].speed;
-                    if (stars[i].center.Y < 0)
+                    if (stars[i].center.X < 0)
                     {
                         stars[i].center.Y = Main.rand.NextFloat();
                         stars[i].center.X = 1;
                     }
-                    else if (stars[i].center.Y > 1) {
+                    else if (stars[i].center.X > 1) {
                         stars[i].center.Y = Main.rand.NextFloat();
                         stars[i].center.X = 0;
                     }
                 }
-                if (starProgress < 1)
-                    starProgress += 1f / TRANSIT;
-            } else if (!drawStars && starProgress > 0)
+            }
+
+            if (starProgress < 1 && drawStars)
+                starProgress += 1f / TRANSIT;
+            else if (!drawStars && starProgress > 0)
                 starProgress -= 1f / TRANSIT;
 
             timer++;

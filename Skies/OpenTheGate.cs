@@ -16,7 +16,7 @@ namespace PhysicsBoss.Skies
 {
     public class OpenTheGate : CustomSky
     {
-        public const float PERIOD = 5 * 60;
+        public const float PERIOD = 2 * 60;
         private float progress = 0f;
         private bool active;
         private int bossIndex = -1;
@@ -156,7 +156,7 @@ namespace PhysicsBoss.Skies
             if (active && progress < 1f)
                 progress += 1f / PERIOD;
             else if (!active && progress > 0)
-                progress -= 0.05f;
+                progress -= 1f/45f;
 
             timer++;
             timer %= 1000000;
