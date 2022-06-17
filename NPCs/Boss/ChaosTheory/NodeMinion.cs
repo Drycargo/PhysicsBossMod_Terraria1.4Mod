@@ -59,7 +59,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.noGravity = true;
             NPC.noTileCollide = true;
             NPC.dontTakeDamage = true;
-            NPC.HitSound = SoundID.NPCHit4;
+
+            SoundStyle s = SoundID.NPCHit4;
+            s.Volume *= 0.2f;
+            NPC.HitSound = s;
 
             drawTrail = trail.DEFAULT;
             drawConnection = false;
@@ -180,7 +183,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             Main.graphics.GraphicsDevice.Textures[0] = trailTex;
             //ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNBlock").Value;
             tail.PrepareStrip(NPC.oldPos, NPC.oldRot,
-                progress => Color.White, progress => tex.Width * (1f - progress),
+                progress => Color.White, progress => 0.75f * tex.Width * (1f - progress),
                 tex.Size() / 2 - Main.screenPosition, NPC.oldPos.Length);
 
             PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.375f);

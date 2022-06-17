@@ -172,7 +172,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 {
                     suns[i] = (Sun)(Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(),
                         Projectile.Center + (Timer / 600 * MathHelper.TwoPi + (float)i * MathHelper.TwoPi / 3).ToRotationVector2() * Sun.DIST_LIMIT * 0.7f,
-                        Main.rand.NextVector2Unit() * 10f, ModContent.ProjectileType<Sun>(), 50, 0).ModProjectile);
+                        Main.rand.NextVector2Unit() * 10f, ModContent.ProjectileType<Sun>(), 40, 0).ModProjectile);
 
                     suns[i].Timer = Sun.PERIOD * Main.rand.NextFloat();
                 }

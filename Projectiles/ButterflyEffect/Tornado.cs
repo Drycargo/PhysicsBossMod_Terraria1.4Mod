@@ -33,6 +33,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
         private TornadoPlate[] plates = new TornadoPlate[PLATE_COUNT];
         private int plateCount;
 
+        private Player target = null;
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("Tornado");
@@ -59,7 +60,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
         public override void AI()
         {
             if (Projectile.timeLeft == 1 && currPhase != phase.KILLED)
-                setKill(Projectile.Center + Vector2.UnitX);
+                setKill();
 
             switch (currPhase)
             {
@@ -97,7 +98,9 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
                             int topIndex = Projectile.timeLeft / RELEASE_INTERVAL - 1 + PLATE_COUNT / 2;
                             int bottomIndex = PLATE_COUNT - topIndex - 1;
 
-                            Vector2 dir = Vector2.UnitX * (Projectile.oldPosition.X < Projectile.Center.X ? 1 : -1);
+                            Vector2 dir = Vector2.UnitX;
+                            if (target != null && target.Center.X < Projectile.Center.X)
+                                dir *= -1;
 
                             try
                             {
@@ -129,16 +132,21 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             switch (currPhase) {
                 case phase.PREPARATION: {
                     Main.spriteBatch.End();
-                    Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                        BlendState.Additive,
-                        Main.DefaultSamplerState,
-                        DepthStencilState.None,
-                        RasterizerState.CullNone, null,
-                        Main.GameViewMatrix.TransformationMatrix);
 
-                        for (int i = 0; i < 3; i++) {
-                            drawTornadoKernel(i);
-                        }
+                    Main.spriteBatch.Begin(SpriteSortMode.Immediate,BlendState.Additive);
+
+                        /*
+                        Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                            BlendState.Additive,
+                            Main.DefaultSamplerState,
+                            DepthStencilState.None,
+                            RasterizerState.CullNone, null,
+                            Main.GameViewMatrix.TransformationMatrix);
+                        */
+
+                    for (int i = 0; i < 3; i++) {
+                        drawTornadoKernel(i);
+                    }
 
                     Main.spriteBatch.End();
                     Main.spriteBatch.Begin(SpriteSortMode.Deferred,
@@ -193,11 +201,11 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             return false;
         }
 
-        public void setKill(Vector2 targetPos) {
+        public void setKill(Player t = null) {
             if (currPhase != phase.KILLED) {
                 currPhase = phase.KILLED;
                 Projectile.timeLeft = (PLATE_COUNT + 1) / 2 * RELEASE_INTERVAL + 1;
-                Projectile.oldPosition = targetPos;
+                target = t;
             }
         }
     }

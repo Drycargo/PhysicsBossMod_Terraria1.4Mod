@@ -11,18 +11,18 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public const int TRANSIT = 90;
         public const int FRAME_COUNT = 3;
         public static Color DEACTIVATED_COLOR = Color.White * 0.65f;
-        public override float STEP => Timer < 120 ? (120 - Timer)/40 + 1 : 1;
-        public override float SPEED_LIMIT => MathHelper.Lerp(45, 2.5f, Math.Min(1,Timer/TRANSIT));
+        public override float STEP => Timer < TRANSIT ? (TRANSIT - Timer)/30 + 1 : 1;
+        public override float SPEED_LIMIT => MathHelper.Lerp(60f, 3f, Math.Min(1,Timer/TRANSIT));
 
         public override int TRAILING_CONST => 45;
 
         public static float generalRotation = 0;
-        public const float ROTATION_STEP = MathHelper.TwoPi / (90 * 60);
+        public const float ROTATION_STEP = MathHelper.TwoPi / (60 * 60);
 
         public override Matrix Transform =>
             Matrix.CreateRotationX(MathHelper.PiOver2)
             * Matrix.CreateTranslation(0, 25, 0)
-            * Matrix.CreateScale(4f)
+            * Matrix.CreateScale(4f * Math.Min((Timer/TRANSIT), 1))
             * Matrix.CreateRotationY((float)generalRotation);
 
 
@@ -100,6 +100,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 if (activationCharge == 0)
                     activate();
             }
+
+            Lighting.AddLight(Projectile.Center, drawColor.ToVector3());
         }
 
         protected override void motionUpdate()
@@ -145,7 +147,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         protected override Color colorFun(float progress)
         {
             if (activationCharge == 0)
-                return Main.hslToRgb(progress, 0.9f, 0.7f, (byte)(255 * (1 - progress))) * 0.75f;
+                return Main.hslToRgb(progress, 0.9f, 0.7f, (byte)(255 * (1 - progress))) * 0.9f;
 
             return drawColor * (1 - progress);
         }
@@ -154,7 +156,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
+                BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -164,7 +166,6 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 new Rectangle(0, Projectile.frameCounter * Projectile.height, Projectile.width, Projectile.height),
                 drawColor, 0, Projectile.Size / 2, 1f, ((Projectile.position.X < Projectile.oldPos[1].X) ? SpriteEffects.None : SpriteEffects.FlipHorizontally), 0);
 
-            Lighting.AddLight(Projectile.Center, drawColor.ToVector3());
 
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Deferred,
@@ -194,7 +195,8 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
             if(activationCharge == 0)
-                return base.Colliding(projHitbox, targetHitbox);
+                return Collision.CheckAABBvAABBCollision(projHitbox.TopLeft(), projHitbox.Size(),
+                    targetHitbox.TopLeft(), targetHitbox.Size());
 
             return false;
         }

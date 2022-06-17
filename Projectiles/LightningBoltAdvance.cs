@@ -130,7 +130,7 @@ namespace PhysicsBoss.Projectiles
             tail.DrawTrail();
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Cyan * 0.75f,
-                progress => Projectile.width, -Main.screenPosition, TRAILING_CONST);
+                progress => Projectile.width * 0.75f, -Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
 

@@ -35,14 +35,6 @@ namespace PhysicsBoss.Dusts
             dust.active = false;
             if (TwistedDust.count > 0)
                 TwistedDust.count--;
-
-            ParticleOrchestraSettings settings = new ParticleOrchestraSettings
-            {
-                PositionInWorld = dust.position,
-                MovementVector = Main.rand.NextVector2Unit() * 15f
-            };
-
-            ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.PrincessWeapon, settings);
         }
 
         public override Color? GetAlpha(Dust dust, Color lightColor)
@@ -55,10 +47,16 @@ namespace PhysicsBoss.Dusts
 
             foreach (Dust d in Main.dust)
             {
-
                 if (d.type == requiredType && d.active)
                 {
                     deActivate(d);
+                    ParticleOrchestraSettings settings = new ParticleOrchestraSettings
+                    {
+                        PositionInWorld = d.position,
+                        MovementVector = Main.rand.NextVector2Unit() * 15f
+                    };
+
+                    ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.PrincessWeapon, settings);
                 }
             }
 

@@ -104,7 +104,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     if (laser == null)
                     {
                         laser = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero,
-                            ModContent.ProjectileType<SolarLaser>(), 100, 0);
+                            ModContent.ProjectileType<SolarLaser>(), 45, 0);
                         aimLineTransparency = 0;
                     }
                 }
@@ -189,7 +189,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         public void fireSpike() {
             for (int i = 0; i < 8; i++) {
                 Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, ((float)i/8f * MathHelper.TwoPi).ToRotationVector2(),
-                    ModContent.ProjectileType<SolarSpike>(), 50, 0);
+                    ModContent.ProjectileType<SolarSpike>(), 25, 0);
             }
         }
 

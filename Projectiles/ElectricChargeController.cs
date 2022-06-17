@@ -19,7 +19,7 @@ namespace PhysicsBoss.Projectiles
     public class ElectricChargeController: ModProjectile
     {
         public const int CAPACITY = 8;
-        public const int RADIUS = 250;
+        public const int RADIUS = 325;
         public const float SE_CONST = 1250f;
         public const int CHARGE_LIMIT = (int)(1.25 * 60);
         public const float SPEED_LIMIT = 45f;
@@ -123,15 +123,24 @@ namespace PhysicsBoss.Projectiles
                 float offset = 0.25f + 0.5f * Main.rand.NextFloat();
 
                 for (int i = 0; i < CAPACITY; i++) {
-                    int id = Projectile.NewProjectile(Projectile.GetSource_FromThis(),
-                        Projectile.Center + RADIUS * (MathHelper.TwoPi * ((float) i + offset)/((float)CAPACITY)).ToRotationVector2(),
-                        Vector2.Zero, ModContent.ProjectileType<ElectricCharge>(), 30, 0);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        charges[i] = (ElectricCharge)Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(),
+                            Projectile.Center + RADIUS * (MathHelper.TwoPi * ((float)i + offset) / ((float)CAPACITY)).ToRotationVector2(),
+                            Vector2.Zero, ModContent.ProjectileType<ElectricCharge>(), 20, 0).ModProjectile;
 
-                    charges[i] = (ElectricCharge)Main.projectile[id].ModProjectile;
+                        if ((i == 0 && charges[i].getCharge() < 0)
+                            || (i == CAPACITY - 1 && charges[i].getCharge() > 0))
+                            charges[i].setCharge(-charges[i].getCharge());
+                    }
+
+                    //charges[i] = (ElectricCharge)Main.projectile[id].ModProjectile;
                 }
 
+                /*
                 if (charges[0].getCharge() * charges[CAPACITY - 1].getCharge() > 0)
                     charges[0].setCharge(-charges[0].getCharge());
+                */
                 initialized = true;
             }
 
@@ -175,7 +184,7 @@ namespace PhysicsBoss.Projectiles
                             Projectile.NewProjectileDirect(charges[i].Projectile.GetSource_FromThis(),
                                 charges[i].Projectile.Center,
                                 30f * displacement.SafeNormalize(Vector2.UnitX),
-                                ModContent.ProjectileType<LightningBoltAdvance>(), 50, 0);
+                                ModContent.ProjectileType<LightningBoltAdvance>(), 30, 0);
                         }
                     }
                 }

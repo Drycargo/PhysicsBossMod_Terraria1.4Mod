@@ -198,7 +198,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 {
                     BlockFractalLaser p = (BlockFractalLaser)Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(),
                         Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BlockFractalLaser>(),
-                        100, 0).ModProjectile;
+                        35, 0).ModProjectile;
                     p.Projectile.rotation = lastDir;
                     p.setColor(drawColor);
 

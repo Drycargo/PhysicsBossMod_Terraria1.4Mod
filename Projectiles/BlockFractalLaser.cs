@@ -51,7 +51,7 @@ namespace PhysicsBoss.Projectiles
             Projectile.penetrate = -1;
 
             Projectile.timeLeft = (int)(0.8 * 60);
-            Projectile.damage = 100;
+            Projectile.damage = 60;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
 

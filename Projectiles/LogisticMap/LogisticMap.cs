@@ -14,12 +14,12 @@ namespace PhysicsBoss.Projectiles.LogisticMap
         public const int PERIOD = 60;
         public const int FADE_TRANSIT = 15;
         public const int SWING_PERIOD = 120;
-        public const float TOT_WIDTH = 750f; 
-        public const float TOT_HEIGHT = 450f;
+        public const float TOT_WIDTH = 850f; 
+        public const float TOT_HEIGHT = 350f;
 
         public virtual float LASER_WIDTH => 35f;
         public virtual float WIDTH => TOT_WIDTH;
-        public virtual float HEIGHT => TOT_WIDTH;
+        public virtual float HEIGHT => TOT_HEIGHT;
 
         public enum phase: int {
             UNINITIALIZED = 0,

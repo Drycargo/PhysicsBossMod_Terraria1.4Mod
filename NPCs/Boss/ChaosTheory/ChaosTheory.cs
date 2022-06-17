@@ -29,6 +29,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
     {
         public const float MAX_DISTANCE = 2000f;
         public static readonly int PHASE_COUNT = Enum.GetNames(typeof(phase)).Length;
+        public const int MASK_FRAME = 26;
+
         public const int HOVER_DIST = 330;
         public const float ELE_CHARGE_DURATION = 2 * 1.185f* 60;
         public const float CHAOTIC_DURATION = 7.35f/3* 60;
@@ -44,12 +46,11 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public const int LOGISTIC_INITIALIZE_PEIOD = 10;
         public const int LOGISTIC_SPAWN_PERIOD = 25;
         public const int LOGISTIC_SPAWN_START = 300 - LOGISTIC_SPAWN_PERIOD * 8;
-        public const float FINALE_RADIUS = 800;
+        public const float FINALE_RADIUS = 750;
 
-        public const float FINALE_ONE_ANGULAR_ACC = MathHelper.TwoPi /720;
-        public const float FINALE_TWO_ANGULAR_ACC = - MathHelper.TwoPi /600;
+        public const float FINALE_ONE_ANGULAR_ACC = MathHelper.TwoPi /480;
+        public const float FINALE_TWO_ANGULAR_ACC = - MathHelper.TwoPi /390;
 
-        
         public enum phase:int
         {
             INIT = 0,
@@ -113,12 +114,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             60 * 2 + 41.85f, // LorenzFinalePreparation24
             60 * 2 + 44.3f, // LorenzFinaleOne25
             60 * 2 + 50.5f, // LorenzFinaleTwo26
-            60 * 2 + 58.75f, // EulogyPreparation27
+            60 * 2 + 58.5f, // EulogyPreparation27
             60 * 3 + 1.2f, // Eulogy
          };
         
 
-        public static float sub = 60 * 2 + 41.85f;
+        //public static float sub = 60 * 2 + 41.85f;
         /*
         public static readonly float[] phaseTiming = new float[] {
             0, // Init
@@ -155,6 +156,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
 
         private Texture2D tex;
+        private Texture2D maskTex;
         private phase currentPhase;
 
         public float GeneralTimer {
@@ -191,6 +193,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         private Vector2 dashTarget;
         private Vector2 dashStart;
         private float aimLineTransparency;
+        private Vector2 laserTarget;
 
         // for spiral sink
         private float target_Distance = -1;
@@ -221,13 +224,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             DisplayName.SetDefault("Chaos Theory");
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "混沌理论");
 
-            Main.npcFrameCount[NPC.type] = 2;
+            Main.npcFrameCount[NPC.type] = 1;
         }
 
         public override void SetDefaults()
         {
             base.SetDefaults();
             tex = ModContent.Request<Texture2D>(Texture).Value;
+            maskTex = ModContent.Request<Texture2D>(Texture + "Mask").Value;
             target = null;
             dimNode = null;
 
@@ -237,13 +241,16 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.damage = 50;
             NPC.friendly = false;
 
-            NPC.lifeMax = 11000;
-            NPC.defense = 100;
+            NPC.lifeMax = 150000;
+            NPC.defense = 50;
 
             NPC.knockBackResist = 0f;
 
             NPC.aiStyle = -1;
-            NPC.HitSound = SoundID.NPCHit4;
+
+            SoundStyle s = SoundID.NPCHit4;
+            s.Volume *= 0.2f;
+            NPC.HitSound = s;
             NPC.DeathSound = SoundID.NPCDeath6;
             NPC.value = Item.buyPrice(0, 0, 15, 0);
             NPC.dontCountMe = true;
@@ -259,7 +266,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
 
             Banner = NPC.type;
-            BannerItem = ItemID.Gel; //stub
+            BannerItem = ItemID.PlatinumCoin; //stub
 
             NPC.lavaImmune = true;
             NPC.dontTakeDamage = true;
@@ -293,6 +300,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             circleColor = Color.White;
             dashTarget = Vector2.Zero;
             aimLineTransparency = 0;
+            laserTarget = Vector2.Zero;
 
             lightningProgress = 0;
             rainProgress = 0;
@@ -304,10 +312,17 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             mapPair = new Queue<LogisticMap>();
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            NPC.oldPosition = NPC.position;
+            SpawnControlNPC.bossInd = NPC.whoAmI;
+        }
+
         public override void AI()
         {
             if (!summoned) {
-                Main.NewText("Hello, Lorentz.", Color.LightGreen);
+                //Main.NewText("Hello, Lorentz.", Color.LightGreen);
+                
                 NPC.alpha = 255;
                 summoned=true;
             }
@@ -331,9 +346,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
                 else {
                     if (dimNode != null)
+                    {
                         dimNode.NPC.active = false;
+                    }
                     if (brightNode != null)
-                        dimNode.NPC.active = false;
+                    {
+                        brightNode.NPC.active = false;
+                    }
                     NPC.active = false;
                     deActivate();
                 }
@@ -482,6 +501,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                         }
                     default: break;
                 }
+
+                target.wingTime = 60;
             }
 
             // update timer
@@ -507,6 +528,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     brightNode.NPC.life = NPC.life;
                 }
             }
+
+            // update rotation
+            NPC.rotation = (float)(Math.Atan((NPC.position.X - NPC.oldPosition.X)/20f) * 0.5f);
+            NPC.oldPosition = NPC.position;
         }
 
         public override void FindFrame(int frameHeight)
@@ -514,14 +539,42 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.frame.Y = (int)NPC.frameCounter * NPC.height;
         }
 
+        public int getMaskFrameHeight() {
+            int frame = ((int)GeneralTimer / 3) % MASK_FRAME;
+            return frame * maskTex.Height / MASK_FRAME;
+        }
+
+        public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+        {
+            spriteBatch.Draw(tex, NPC.position - screenPos,
+               new Rectangle(0, NPC.frame.Y, NPC.width, NPC.height), drawColor * Math.Min(1f, GeneralTimer/120),
+               NPC.rotation, Vector2.Zero, 1f, SpriteEffects.None, 0);
+            return false;
+        }
+
         public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
         {
+            if (GeneralTimer <= 210) {
+                Color c = Color.LightGreen;
+                if (GeneralTimer < 30)
+                    c *= (GeneralTimer / 30);
+                else if (GeneralTimer > 150)
+                    c *= (1 - (GeneralTimer - 150) / 60);
+
+                Utils.DrawBorderStringBig(spriteBatch, "你好，洛伦茨。\nHello, Lorenz.",
+                    Main.ScreenSize.ToVector2()/2, c, 1.5f, 0.5f, 0.5f);
+
+            }
+
             if (aimLineTransparency > 0) {
                 GlobalEffectController.drawRayLine(spriteBatch, NPC.Center, target.Center, Color.Orange * aimLineTransparency, 50f);
             }
 
-            Color c = Color.White * ((255f - NPC.alpha)/255f);
-            spriteBatch.Draw(tex, NPC.position - Main.screenPosition, new Rectangle(0,NPC.frame.Y, NPC.width, NPC.height) ,c);
+           // Color c = Color.White * ((255f - NPC.alpha)/255f);
+
+            spriteBatch.Draw(maskTex, NPC.position - screenPos, 
+                new Rectangle(0,getMaskFrameHeight(), maskTex.Width, maskTex.Height/MASK_FRAME),
+                Color.White * Math.Min(1f, GeneralTimer / 120));
 
             if (circleRadius > 0) {
                 GlobalEffectController.drawCircle(spriteBatch, NPC.Center, circleRadius, circleColor);
@@ -591,7 +644,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
 
             if (tornado != null) {
-                tornado.setKill(Vector2.Zero);
+                tornado.setKill();
                 tornado = null;
             }
 
@@ -640,7 +693,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             {
                 ParticleOrchestraSettings settings = new ParticleOrchestraSettings
                 {
-                    PositionInWorld = NPC.Center + Main.rand.NextVector2Circular(NPC.width, NPC.height),
+                    PositionInWorld = NPC.Center + 2 * Main.rand.NextVector2Circular(NPC.width, NPC.height),
                     MovementVector = Vector2.Zero
                 };
 
@@ -661,11 +714,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 {
                     brightNode.setPhase((int)BrightNode.phase.SIGNLE_PENDULUM_TWO);
                     brightNode.setConnectionTarget(dimNode);
-                }
-
-
-                if (SkyManager.Instance["PhysicsBoss:ColorSky"].IsActive()) {
-                    SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
                 }
 
             }
@@ -730,14 +778,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             if (brightNode != null)
             {
-                if ((int)Timer % (int)(DimNode.SINGLE_PENDULUM_PERIOD / 2 * 60) == 0)
-                {
-                    for (int i = -1; i <= 1; i++)
-                    {
-                        brightNode.summonBareLightning(12,
-                            (-target.Center + brightNode.NPC.Center).SafeNormalize(
-                                Vector2.UnitX).RotatedBy(i * MathHelper.Pi / 3) * 100);
-                    }
+                if (Timer != 0 && (int)Timer % (int)(DimNode.SINGLE_PENDULUM_PERIOD / 2 * 60) < 10)
+                {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+                    brightNode.summonBareLightning(12,
+                            (-target.Center + brightNode.NPC.Center).SafeNormalize(Vector2.UnitX) * 150);
                 }
             }
             Timer++;
@@ -772,6 +816,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 NPC.alpha = newA;
             }
             hover(target.Center - HOVER_DIST * Vector2.UnitY, 25, 0.3f, 600);
+
             Timer++;
         }
 
@@ -796,12 +841,17 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 brightNode.setPhase((int)BrightNode.phase.SIGNLE_PENDULUM_TWO);
                 brightNode.setConnectionTarget(dimNode);
             } else {
-                if ((int)(Timer - 10) % (int)(DimNode.SINGLE_PENDULUM_PERIOD / 2 * 60) == 0) {
+                if (Timer >= 10 && (int)(Timer - 10) % (int)(DimNode.SINGLE_PENDULUM_PERIOD / 2 * 60) < 10) {
+                        brightNode.summonBareLightning(12,
+                            (-target.Center + brightNode.NPC.Center).SafeNormalize(
+                                Vector2.UnitX) * 150);
+
+                    /*
                     for (int i = -1; i <= 1; i++) {
                         brightNode.summonBareLightning(12, 
                             (-target.Center + brightNode.NPC.Center).SafeNormalize(
                                 Vector2.UnitX).RotatedBy(i * MathHelper.Pi/3) * 150);
-                    }
+                    }*/
                 }
             }
 
@@ -955,7 +1005,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
 
             //hover(target.Center + (MathHelper.Pi * 5 / 6).ToRotationVector2() * 600f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
-            hover(target.Center - Vector2.UnitY * 450f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
+            hover(target.Center - Vector2.UnitY * 550f, 20f, 0.3f, 1200, 10, 500f, 0.85f);
 
             Timer++;
         }
@@ -969,7 +1019,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 dimNode.setPhase((int)DimNode.phase.DOUBLE_PENDULUM_PREPARATION);
                 dimNode.Timer = 0;
             }
-            hover(target.Center - Vector2.UnitY * 0.25f * DOUBLE_PENDULUM_TOTAL_LENGTH, 10f, 0.3f, 1200, 10, 500f, 0.85f);
+            hover(target.Center - Vector2.UnitY * 0.5f * DOUBLE_PENDULUM_TOTAL_LENGTH, 10f, 0.3f, 1200, 10, 500f, 0.85f);
             Timer++;
         }
 
@@ -1021,7 +1071,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             // brightNode Laser
             if (fac < DOUBLE_PENDULUM_PERIOD)
             {
-                if (fac > 0.05 * DOUBLE_PENDULUM_PERIOD && fac < 0.35 * DOUBLE_PENDULUM_PERIOD)
+                if (fac > 0.05 * DOUBLE_PENDULUM_PERIOD && fac < 0.325 * DOUBLE_PENDULUM_PERIOD)
                 {
                     if ((int)Timer % 3 == 0)
                     {
@@ -1073,8 +1123,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             for (int i = 0; i < 5; i++) {
                 Dust d = Dust.NewDustDirect(NPC.Center + Main.rand.NextVector2Unit() * len0, 0,0,
-                    DustID.MagicMirror);
-                d.velocity = (NPC.Center - d.position).SafeNormalize(Vector2.UnitX) * 10f;
+                    DustID.Firework_Blue);
+                d.velocity = (NPC.Center - d.position).SafeNormalize(Vector2.UnitX) * 3f;
+                d.noGravity = true;
                 d.noLight = false;
                 d.noLightEmittence = false;
             }
@@ -1145,8 +1196,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             for (int i = 0; i < 5; i++)
             {
                 Dust d = Dust.NewDustDirect(NPC.Center + Main.rand.NextVector2Unit() * len0, 0, 0, 
-                    DustID.CrimsonTorch);
-                d.velocity = (NPC.Center - d.position).SafeNormalize(Vector2.UnitX) * 10f;
+                    DustID.Firework_Red);
+                d.velocity = (NPC.Center - d.position).SafeNormalize(Vector2.UnitX) * 5f;
+                d.noGravity = true;
                 d.noLight = false;
                 d.noLightEmittence = false;
             }
@@ -1173,7 +1225,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         {
             if (fractalRing == null)
                 fractalRing = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<FractalRing>(), 100, 0);
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<FractalRing>(), 50, 0);
             fractalRing.Center = NPC.Center + 0.2f * DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY;
             fractalRing.timeLeft++;
         }
@@ -1310,7 +1362,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 {
                     SkyManager.Instance.Activate("PhysicsBoss:HindSky", Vector2.Zero, NPC.whoAmI);
                 }
-                HindSky.setColor(Color.OrangeRed, Color.Black * 0.5f);
+                HindSky.setColor(Color.OrangeRed, Color.Lerp(Color.DarkRed, Color.Black, 0.7f) * 0.5f);
                 HindSky.activateDebris();
             }
 
@@ -1412,16 +1464,25 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private void threeBodyMotionTwo13()
         {
-            if (Timer < 120) {
-                HindSky.setColor(Color.Lerp(Color.OrangeRed, Color.Red, Timer/120), Color.Black * 0.5f);
+            if (Timer < 60) {
+                if ((int)Timer == 0 && waterDropController != null)
+                    laserTarget = waterDropController.getCenter()
+                        + WaterDropController.RADIUS 
+                        * ((target.Center - waterDropController.getCenter()).ToRotation() 
+                        - MathHelper.TwoPi/3).ToRotationVector2();
+
+                HindSky.setColor(Color.Lerp(Color.OrangeRed, Color.Red, Timer/60), 
+                    Color.Lerp(Color.DarkRed, Color.Black, 0.7f) * 0.5f);
             }
 
+            /*
             if (Timer == 0) {
                 if (threeBodyController != null && waterDropController != null) {
                     threeBodyController[0].fireLaser(waterDropController.getCenter());
                     threeBodyController[1].fireLaser(waterDropController.getCenter());
                 }
             }
+            */
 
             if (threeBodyController != null)
             {
@@ -1442,14 +1503,26 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 // attract player
                 attractPlayer(WaterDropController.RADIUS, waterDropController.getCenter());
 
+                hover(waterDropController.getCenter(), 10f, 0.01f, 600, inertia: 0.95f);
+                /*
                 hover(waterDropController.getCenter(), WaterDropController.RADIUS * 0.75f, 0, 
                     THREE_BODY_PERIOD2 * MathHelper.Lerp(1f/2f,  1f/ 2.25f, Timer/THREE_BODY_PERIOD2),50, MAX_DISTANCE, 0.01f);
+                */
+            }
+
+            if (threeBodyController != null && waterDropController != null)
+            {
+                laserTarget = laserTarget.RotatedBy(MathHelper.TwoPi/(THREE_BODY_PERIOD2 *
+                    MathHelper.Lerp(1f / 1.65f, 1f / 1.9f, Timer / THREE_BODY_PERIOD2)),
+                    waterDropController.getCenter());
+
+                threeBodyController[0].fireLaser(laserTarget);
+                threeBodyController[1].fireLaser(laserTarget);
             }
 
 
             Timer++;
         }
-
 
         private void threeBodyMotionFinale14()
         {
@@ -1471,7 +1544,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
 
                 HindSky.setColor(Color.Lerp(Color.Red, Color.Purple, Timer/90), 
-                    Color.Black * MathHelper.Lerp(0.5f, 1, Timer / 90));
+                    Color.Lerp(Color.Lerp(Color.DarkRed, Color.Black, 0.7f) * 0.5f,
+                    Color.White * 0.05f, Timer / 90));
             } else if (Timer == 90) {
                 if (waterDropController != null)
                 {
@@ -1528,7 +1602,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     }
                 }
 
-                if (Timer > 60 && (int)(Timer - 60) % (int)(19f * 60 / 8) == 0) {
+                if (Timer > 55 && (int)(Timer - 55) % (int)(19.15f * 60 / 8) == 0) {
                     for (int i = -1; i <= 1; i++)
                     {
                         Vector2 dir = (target.Center - NPC.Center).SafeNormalize(Vector2.UnitX);
@@ -1839,7 +1913,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             {
                 if ((int)Timer == 15)
                 {
-                    tornado.setKill(target.Center);
+                    tornado.setKill(target);
                 }
                 else if (Timer < 15 + 30)
                 {
@@ -1848,9 +1922,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
             }
 
-            float devX = 200 + 1200 * (1 - rainProgress * Main.rand.NextFloat());
+            float devX = 200 + 900 * (1 - rainProgress * Main.rand.NextFloat());
             int relPos = target.Center.X < NPC.Center.X ? -1 : 1;
-            for (int i = 0; i < 24; i++) {
+            for (int i = 0; i < 18; i++) {
                 if (Main.netMode != NetmodeID.MultiplayerClient) {
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), new Vector2(
                         NPC.Center.X + 1000 * relPos + (i % 2 == 0 ? -1 : 1) * devX,
@@ -2176,7 +2250,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 d.noLight = false;
             }
 
-            ColorSky.setColor(Main.hslToRgb(GeneralTimer * COLOR_CIRCULATION_SPEED, 0.85f, 0.5f));
+            ColorSky.setColor(Main.hslToRgb((GeneralTimer * COLOR_CIRCULATION_SPEED) % 1f, 0.6f, 0.3f),
+                Math.Min(1, Timer/30));
             
             Timer++;
         }
@@ -2189,7 +2264,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 for (int i = 0; i < 2; i++) {
                     LogisticMap map = mapPair.Dequeue();
                     FractalMap newMap = (FractalMap)Projectile.NewProjectileDirect(NPC.GetSource_FromAI(), NPC.Center,
-                        Vector2.Zero, ModContent.ProjectileType<FractalMap>(), 30, 0).ModProjectile;
+                        Vector2.Zero, ModContent.ProjectileType<FractalMap>(), 40, 0).ModProjectile;
                     newMap.Projectile.rotation = map.Projectile.rotation;
                     newMap.initialize(map);
                     map.Projectile.Kill();
@@ -2280,7 +2355,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 d.noLight = false;
             }
 
-            ColorSky.setColor(Main.hslToRgb(GeneralTimer * COLOR_CIRCULATION_SPEED, 0.85f, 0.5f));
+            ColorSky.setColor(Main.hslToRgb((GeneralTimer * COLOR_CIRCULATION_SPEED) % 1f, 0.6f, 0.3f),1);
 
             Timer++;
         }
@@ -2300,7 +2375,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
                 ColorSky.deActivateStars();
 
-            } else if ((int)Timer == (int)(1.05 * 60)) {
+            } else if ((int)Timer == (int)(1.2 * 60)) {
                 if (mapPair != null) {
                     while (mapPair.Any())
                     {
@@ -2309,9 +2384,13 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     mapPair = null;
                 }
                 TwistedDust.deActivateAll();
-                SoundEngine.PlaySound(SoundID.MaxMana);
+                SoundEngine.PlaySound(SoundID.Item27);
 
-                ColorSky.setColor(Color.Transparent);
+                if (SkyManager.Instance["PhysicsBoss:ColorSky"].IsActive())
+                {
+                    SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
+                }
+                //ColorSky.setColor(Color.Transparent);
             }
 
             Timer++;

@@ -42,6 +42,8 @@ namespace PhysicsBoss.Skies
         public static void setColor(Color c, float prog = 0) {
             colorToSet = c;
             colorProgress = prog;
+            if (prog >= 1)
+                currentColor = c;
         }
 
         public static void activateDrawWire(Color c) {

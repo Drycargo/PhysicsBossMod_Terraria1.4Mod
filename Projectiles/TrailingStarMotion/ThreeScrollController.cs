@@ -84,7 +84,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     }
                     else
                     {
-                        Projectile.velocity *= 0.93f;
+                        Projectile.velocity *= 0.94f;
 
                         if (Projectile.velocity.Length() < 1f)
                         {

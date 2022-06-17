@@ -52,7 +52,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             {
                 waterDrops[count] = (WaterDrop)(Projectile.NewProjectileDirect(
                     o == null? null: o.GetSource_FromAI(), getPosition(count) - getRotationAngle(count).ToRotationVector2() * 800f,
-                    Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 80, 10).ModProjectile);
+                    Vector2.Zero, ModContent.ProjectileType<WaterDrop>(), 40, 10).ModProjectile);
                 waterDrops[count].Projectile.rotation = getRotationAngle(count);
                 count++;
             }

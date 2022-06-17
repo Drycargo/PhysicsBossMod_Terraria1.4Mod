@@ -13,6 +13,8 @@ namespace PhysicsBoss.Projectiles
 {
     public class TestEffectProjectile:ModProjectile
     {
+        public Player target = null;
+
         private Texture2D tex;
         private Vector2 targetOriginalPos;
         private WaterDropController wdc = null;
@@ -21,6 +23,7 @@ namespace PhysicsBoss.Projectiles
         private LogisticMap.LogisticMap[] maps = new LogisticMap.LogisticMap[10];
         private float lightningProgress = 0;
 
+        private Tornado tornado;
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -40,6 +43,19 @@ namespace PhysicsBoss.Projectiles
 
             if (Timer == 0)
             {
+                tornado = (Tornado)Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero,
+                        ModContent.ProjectileType<Tornado>(), 0, 0).ModProjectile;
+                tornado.spawn();
+            }
+            else if (Timer == 120) {
+                tornado.setKill(target);
+            }
+
+
+
+            /*
+            if (Timer == 0)
+            {
                 if (!SkyManager.Instance["PhysicsBoss:ColorSky"].IsActive())
                 {
                     SkyManager.Instance.Activate("PhysicsBoss:ColorSky", Vector2.Zero,1);
@@ -53,7 +69,7 @@ namespace PhysicsBoss.Projectiles
                 {
                     SkyManager.Instance.Deactivate("PhysicsBoss:ColorSky");
                 }
-            }
+            }*/
 
             //Dust.NewDust(Projectile.Center, 0,0, ModContent.DustType<BlockDust>());
             //Projectile.velocity *= 0;

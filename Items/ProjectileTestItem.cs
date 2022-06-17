@@ -58,15 +58,22 @@ namespace PhysicsBoss.Items
             {
                 SkyManager.Instance.Activate("PhysicsBoss:BlackSky");
             }*/
-            
-            Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
-                type, damage, knockback, player.whoAmI);
-            
+
+            for (int i = 0; i < 50; i++) {
+                Dust d = Dust.NewDustDirect(player.Center, 0, 0, DustID.Fireworks);
+            }
+
             /*
-            BlockMap l = (BlockMap)
+            Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
+                type, 50, knockback, player.whoAmI);
+            */
+            
+            TestEffectProjectile l = (TestEffectProjectile)
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI).ModProjectile;
 
+            l.target = player;
+            /*
             l.initialize();
             l.materialize();
             l.swing();

@@ -63,7 +63,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.width = tex.Width;
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
 
-            NPC.lifeMax = 11000;
+            NPC.lifeMax = NPC.lifeMax = 150000;
             NPC.defense = 100;
 
             NPC.knockBackResist = 0f;
@@ -248,8 +248,11 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 if ((int)Timer % (int)(SINGLE_PENDULUM_PERIOD / 8 * 60) == 0)
                 {
                     SoundEngine.PlaySound(SoundID.DD2_PhantomPhoenixShot);
-                    Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitY * 7.5f,
-                        ModContent.ProjectileType<TrailingStar>(), 50, 0);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitY * 7.5f,
+                            ModContent.ProjectileType<TrailingStar>(), 20, 0);
+                    }
                 }
             }
             /*
@@ -340,7 +343,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
         private Vector2 getChuaPosition(int posIndex)
         {
-            return target.Center + Vector2.UnitY * 100 + (posIndex * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 500f;
+            return target.Center + Vector2.UnitY * 100 + (posIndex * MathHelper.PiOver2 + MathHelper.Pi).ToRotationVector2() * 600f;
         }
 
         private void chuaCircuitFinale()
@@ -451,7 +454,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     int reverse = (i == 0) ? 1 : -1;
                     Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
                         NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 4.5),
-                        ModContent.ProjectileType<TrailingStarCircular>(), 75, 0);
+                        ModContent.ProjectileType<TrailingStarCircular>(), 35, 0);
                     TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
                     tsc.setRadius(1500f);
                     if (reverse > 0)

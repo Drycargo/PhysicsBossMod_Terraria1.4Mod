@@ -52,7 +52,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     drawRayLine = false;
                     laser = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(),
                         Projectile.Center, Vector2.Zero, ModContent.ProjectileType<BlockFractalLaser>(),
-                        70, 0);
+                        35, 0);
                     ((BlockFractalLaser)laser.ModProjectile).setColor(drawColor);
                 }
                 

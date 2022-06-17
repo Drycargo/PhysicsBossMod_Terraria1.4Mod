@@ -122,7 +122,7 @@ namespace PhysicsBoss.Effects
             
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
+                BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -133,7 +133,7 @@ namespace PhysicsBoss.Effects
 
             spriteBatch.Draw(ModContent.Request<Texture2D>("PhysicsBoss/Asset/Circle").Value,
                 new Rectangle((int)(pos.X), (int)pos.Y,
-                (int)(2* radius), (int)(2 * radius)), null, c);
+                (int)(2* radius), (int)(2 * radius)), null, c * 2f);
 
             spriteBatch.End();
             spriteBatch.Begin(SpriteSortMode.Deferred,

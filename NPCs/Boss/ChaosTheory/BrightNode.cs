@@ -83,7 +83,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
             NPC.rotation = 0;
 
-            NPC.lifeMax = 11000;
+            NPC.lifeMax = NPC.lifeMax = 150000;
             NPC.defense = 100;
 
             NPC.knockBackResist = 0f;
@@ -250,7 +250,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public void summonTriLasers() {
             for (int i = 0; i < 3; i++) {
                 triLasers[i] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<BlockFractalLaser>(),100,0);
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<BlockFractalLaser>(),45,0);
                 triLasers[i].rotation = triLaserAngle + MathHelper.TwoPi / 3 * (float)i;
             }
 
@@ -455,9 +455,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             if ((int)Timer == 0)
             {
                 sinlasers[0] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 50, 0);
                 sinlasers[1] = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 100, 0);
+                    NPC.Center, Vector2.Zero, ModContent.ProjectileType<SinLaser>(), 50, 0);
                 ((SinLaser)sinlasers[1].ModProjectile).reverseAmp();
             }
 
