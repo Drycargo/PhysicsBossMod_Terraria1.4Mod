@@ -61,8 +61,16 @@ namespace PhysicsBoss.Projectiles
             turn = -1;
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            Projectile.velocity = Projectile.velocity.SafeNormalize(Vector2.UnitX);
+        }
+
         public override void AI()
         {
+            if (Projectile.velocity.Length() < 17f)
+                Projectile.velocity *= 1.08f;
+
             if (dir == Vector2.Zero)
             {
                 dir = Projectile.velocity;
@@ -84,7 +92,7 @@ namespace PhysicsBoss.Projectiles
             #region drawtail
             Main.spriteBatch.End();
             Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                BlendState.NonPremultiplied,
+                BlendState.Additive,
                 Main.DefaultSamplerState,
                 DepthStencilState.None,
                 RasterizerState.CullNone, null,
@@ -92,20 +100,12 @@ namespace PhysicsBoss.Projectiles
 
             Main.graphics.GraphicsDevice.Textures[0] = tex;
 
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Red * 0.75f,
+                progress => widthFun(progress) * 2f, Projectile.Size/ 2 - Main.screenPosition, TRAILING_CONST);
+            tail.DrawTrail();
+
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot, progress => Color.Red * 2f,
-                progress => {
-                    double scaleFactor = 1;
-                    if (progress < 0.25)
-                    {
-                        scaleFactor = progress / 0.25;
-                    }
-                    else if (progress > 0.75)
-                    {
-                        scaleFactor = (1f - progress) / 0.25;
-                    }
-                    return (float)scaleFactor * Projectile.width/2;
-                },
-                Projectile.Size/ 2 - Main.screenPosition, TRAILING_CONST);
+                widthFun, Projectile.Size / 2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
             Main.spriteBatch.End();
@@ -120,6 +120,20 @@ namespace PhysicsBoss.Projectiles
             //Lighting.AddLight(Projectile.Center, Color.Red.ToVector3());
 
             return false;
+        }
+
+        private float widthFun(float progress)
+        {
+            double scaleFactor = 1;
+            if (progress < 0.25)
+            {
+                scaleFactor = progress / 0.25;
+            }
+            else if (progress > 0.75)
+            {
+                scaleFactor = (1f - progress) / 0.25;
+            }
+            return (float)scaleFactor * Projectile.width / 2;
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

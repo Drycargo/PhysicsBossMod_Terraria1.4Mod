@@ -8,21 +8,21 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 {
     public class TrailingStarLorenzFinale: TrailingStarChaotic
     {
-        public const int TRANSIT = 90;
+        public const int TRANSIT = 150;
         public const int FRAME_COUNT = 3;
         public static Color DEACTIVATED_COLOR = Color.White * 0.65f;
         public override float STEP => Timer < TRANSIT ? (TRANSIT - Timer)/30 + 1 : 1;
-        public override float SPEED_LIMIT => MathHelper.Lerp(60f, 3f, Math.Min(1,Timer/TRANSIT));
+        public override float SPEED_LIMIT => MathHelper.Lerp(60f, 2.25f, Math.Min(1,Timer/TRANSIT));
 
-        public override int TRAILING_CONST => 45;
+        public override int TRAILING_CONST => 30;
 
         public static float generalRotation = 0;
-        public const float ROTATION_STEP = MathHelper.TwoPi / (60 * 60);
+        public const float ROTATION_STEP = MathHelper.TwoPi / (90 * 60);
 
         public override Matrix Transform =>
             Matrix.CreateRotationX(MathHelper.PiOver2)
             * Matrix.CreateTranslation(0, 25, 0)
-            * Matrix.CreateScale(4f * Math.Min((Timer/TRANSIT), 1))
+            * Matrix.CreateScale(3.5f * Math.Min((Timer/TRANSIT), 1))
             * Matrix.CreateRotationY((float)generalRotation);
 
 

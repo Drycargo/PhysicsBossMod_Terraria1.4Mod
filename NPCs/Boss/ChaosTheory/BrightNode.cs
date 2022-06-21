@@ -32,13 +32,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         public const int STAR_POINT_NUM = 9;
         public const int HALVORSEN_PERIOD = (int)(2.7f * 60);
         public const float HALVORSEN_FINALE_PERIOD = HALVORSEN_PERIOD / STAR_POINT_NUM;
-
-
+        public const float HALVORSEN_FINALE_RADIUS = 500f;
         public static readonly int TRAILING_CONST = 25;
         private VertexStrip tail = new VertexStrip();
         private Texture2D backTex;
-        private Texture2D luminanceTex;
-        private Texture2D colorTex;
 
         private Projectile[] triLasers;
 
@@ -83,7 +80,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
             NPC.rotation = 0;
 
-            NPC.lifeMax = NPC.lifeMax = 150000;
+            NPC.lifeMax = NPC.life = 300000;
             NPC.defense = 100;
 
             NPC.knockBackResist = 0f;
@@ -98,10 +95,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             backTex =
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNMotion").Value;
-            luminanceTex =
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/LuminanceGradient").Value;
-            colorTex =
-                ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/RedOrangeGradient").Value;
 
             sinlasers = new Projectile[2];
 
@@ -231,6 +224,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     default: break;
                 }
             }
+
+            Lighting.AddLight(NPC.Center, Color.LightPink.ToVector3());
+
             base.AI();
         }
 
@@ -413,6 +409,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             PhysicsBoss.trailingEffect.Parameters["intensity"].SetValue(0.05f);
             spriteBatch.Draw(screenTemp, Vector2.Zero, Color.White);
             spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive);
+            spriteBatch.Draw(Main.screenTargetSwap, Vector2.Zero, Color.White);
+            spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred,
                 BlendState.AlphaBlend,
@@ -504,7 +503,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
             if (factor == 0) {
                 fireWork();
-                NPC.Center = new Vector2(target.Center.X + (posIndex % 2 == 0 ? -1 : 1) * 450f, target.Center.Y - 600f);
+                NPC.Center = new Vector2(target.Center.X + (posIndex % 2 == 0 ? -1 : 1) * 750f, target.Center.Y - 600f);
                 for (int i = 0; i < TRAILING_CONST; i++)
                 {
                     NPC.oldPos[i] = NPC.Center - tex.Size()/2;
@@ -549,17 +548,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             if ((int)Timer == (int)(HALVORSEN_PERIOD) + 14)
             {
-                /*
-                foreach (Projectile p in Main.projectile)
-                {
-                    if (p.type == ModContent.ProjectileType<TrailingStarHalvorsenRaise>())
-                    {
-                        if (p.Center.X < target.Center.X)
-                        {
-                            ((TrailingStarHalvorsenRaise)p.ModProjectile).changeClockWise();
-                        }
-                    }
-                }*/
 
                 Timer = 0;
                 setPhase((int)phase.DOUBLE_PENDULUM_PREPARATION);
@@ -579,8 +567,10 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }
             else if (Timer < HALVORSEN_PERIOD && (int)Timer % (int)HALVORSEN_FINALE_PERIOD == 0) {
                 int factor = (int)Timer / (int)HALVORSEN_FINALE_PERIOD;
-                Vector2 newPos = target.Center +
-                    (5f * (float)factor / (float)STAR_POINT_NUM * MathHelper.TwoPi).ToRotationVector2() * 500f;
+
+                // CHANGED
+                Vector2 newPos = owner.getTargetOriginalPos() +
+                    (5f * (float)factor / (float)STAR_POINT_NUM * MathHelper.TwoPi).ToRotationVector2() * HALVORSEN_FINALE_RADIUS;
                 float dir = (newPos - NPC.Center).ToRotation();
 
                 for (int i = 0; i < TRAILING_CONST; i++){
@@ -592,36 +582,28 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 fireWork();
 
                 for (int i = 0; i < 2; i++) {
-                    TrailingStarHalvorsenRaise tshr = (TrailingStarHalvorsenRaise)(Projectile.NewProjectileDirect(
-                        NPC.GetSource_FromAI(), NPC.Center, (NPC.Center - target.Center).SafeNormalize(Vector2.Zero) * 20f,
-                        ModContent.ProjectileType<TrailingStarHalvorsenRaise>(), 0, 0).ModProjectile);
-                    tshr.releaseProj(target);
-                    tshr.setColor(factor);
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
+                    {
+                        TrailingStarHalvorsenRaise tshr = (TrailingStarHalvorsenRaise)(Projectile.NewProjectileDirect(
+                            NPC.GetSource_FromAI(), NPC.Center, (NPC.Center - target.Center).SafeNormalize(Vector2.Zero) * 20f,
+                            ModContent.ProjectileType<TrailingStarHalvorsenRaise>(), 0, 0).ModProjectile);
+                        tshr.releaseProj(target);
+                        tshr.setColor(factor);
+                    }
 
+                    /*
                     Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center,
                         (target.Center - NPC.Center).RotatedBy((i % 2 == 0 ? -1 : 1) * 
-                        MathHelper.Pi * 25f/180f).SafeNormalize(Vector2.UnitX) * 20f, ModContent.ProjectileType<LightningBolt>(), 30,0);
+                        MathHelper.Pi * 25f/180f).SafeNormalize(Vector2.UnitX) * 20f, 
+                        ModContent.ProjectileType<LightningBolt>(), 30,0);
+                    */
                 }
 
-                /*
-                if (factor % 2 == 0)
-                {
-                    trailingStarController.summonStarBundle<TrailingStarHalvorsenRaise>();
-                }
-                else {
-                    trailingStarController.releaseStarBundle();
-                }
-                */
+                NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y,
+                    ModContent.NPCType<BrightNodePhantom>());
+
             }
             
-            /*
-            } else if ((int)Timer < (int)(HALVORSEN_PERIOD) &&
-                (int)Timer % (int)(0.3 * HALVORSEN_PERIOD) == 0) {
-                trailingStarController.summonStarBundle<TrailingStarHalvorsenRaise>();
-                trailingStarController.releaseStarBundle(); // CHANGED
-            }
-            */
-
             Timer++;
         }
 

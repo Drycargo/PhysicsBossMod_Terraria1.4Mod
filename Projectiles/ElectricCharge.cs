@@ -47,20 +47,28 @@ namespace PhysicsBoss.Projectiles
 
         public override void AI()
         {
+            
             if (!initialized) {
-                charge = 0.5f * Main.rand.NextFloat() + 0.75f;
+                charge = (0.5f * Main.rand.NextFloat() + 0.75f) * Projectile.velocity.X;
+                
+                /*
                 if (Main.rand.NextBool())
                 {
                     charge *= -1;
                 }
+                */
+
                 initialized = true;
+                Projectile.velocity *= 0;
             }
+
 
             int dustId = (charge > 0f) ? DustID.FlameBurst: DustID.Clentaminator_Cyan;
 
-            for (int i = 0; i < 5; i++) {
-                Dust d = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, dustId);
-                d.velocity *= 0;
+            for (int i = 0; i < 3; i++) {
+                Dust d = Dust.NewDustDirect(Projectile.Center + Main.rand.NextVector2Unit() * Projectile.width
+                    ,0,0, dustId);
+                d.velocity *= 0.1f;
                 d.noGravity = true;
             }
 
@@ -76,7 +84,6 @@ namespace PhysicsBoss.Projectiles
             return false;
         }
 
-
         public override void Kill(int timeLeft)
         {
             int dustId = (charge > 0f) ? DustID.FlameBurst : DustID.Clentaminator_Cyan;
@@ -88,6 +95,10 @@ namespace PhysicsBoss.Projectiles
             }
 
             base.Kill(timeLeft);
+        }
+
+        public void alterCharge() {
+            charge *= -1;
         }
 
         public float getCharge() { 

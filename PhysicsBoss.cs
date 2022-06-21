@@ -23,6 +23,9 @@ namespace PhysicsBoss
 
         public static Texture2D galaxyTex;
         public static Texture2D fractalTex;
+
+        public static SoundStyle weakTing;
+        public static SoundStyle weakClang;
         public PhysicsBoss()
         {
             instance = this;
@@ -101,6 +104,12 @@ namespace PhysicsBoss
 
             galaxyTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LogisticMap/BlockMap").Value;
             fractalTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LogisticMap/FractalMap").Value;
+
+            weakTing = SoundID.Item25;
+            weakTing.Volume *= 0.35f;
+
+            weakClang = SoundID.NPCHit4;
+            weakClang.Volume *= 0.25f;
         }
 
         private void Main_OnResolutionChanged(Vector2 obj)

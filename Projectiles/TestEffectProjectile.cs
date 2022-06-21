@@ -40,7 +40,8 @@ namespace PhysicsBoss.Projectiles
         public override void AI()
         {
             base.AI();
-
+            Projectile.velocity *= 0;
+            /*
             if (Timer == 0)
             {
                 tornado = (Tornado)Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero,
@@ -50,7 +51,7 @@ namespace PhysicsBoss.Projectiles
             else if (Timer == 120) {
                 tornado.setKill(target);
             }
-
+            */
 
 
             /*
@@ -89,7 +90,7 @@ namespace PhysicsBoss.Projectiles
                 }
             }*/
 
-            /*
+            
             if (Timer < 120) {
                 if ((int)Timer % 12 == 0) {
                     int ind = (int)(Timer / 12);
@@ -104,11 +105,11 @@ namespace PhysicsBoss.Projectiles
                 int ind = (int)((Timer - 120) / 8);
                 if (ind < 10)
                 {
-                    maps[ind].materialize();
-                    maps[ind].swing();
+                    //maps[ind].materialize();
+                    maps[ind].setFall();
                 }
             }
-            */
+            
 
             /*
             for (int i = 0; i < 2; i++)

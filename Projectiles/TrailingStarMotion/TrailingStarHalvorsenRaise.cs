@@ -58,7 +58,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 
                 float progress = ((float)LASER_PERIOD - (float)Projectile.timeLeft) / (float)LASER_PERIOD;
                 angle = initialAngle +
-                    clockwise * (MathHelper.TwoPi * 5f/6f)
+                    clockwise * (MathHelper.TwoPi * 4.5f/6f)
                     * progress * progress * progress;
 
                 if (laser != null)
@@ -89,7 +89,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         {
             if (target != null)
             {
-                initialAngle = (target.Center - Projectile.Center).ToRotation() + MathHelper.Pi * 15 / 180;
+                initialAngle = (target.Center - Projectile.Center).ToRotation() + MathHelper.Pi /6f; // 30 / 180
                 angle = initialAngle;
             }
             base.releaseProj(target);

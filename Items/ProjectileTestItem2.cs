@@ -46,26 +46,31 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType<FractalMap>();
+            Item.shoot = ModContent.ProjectileType<ElectricChargeController>();
             Item.shootSpeed = 10f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
         {
+            
+            NPC.NewNPC(player.GetSource_FromThis(), (int)Main.MouseWorld.X, (int)Main.MouseWorld.Y,
+                ModContent.NPCType<BrightNodePhantom>());
             /*
             LorenzFinaleController t = (LorenzFinaleController)
                Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                type, damage, knockback, player.whoAmI).ModProjectile;
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 24; i++)
                 t.summonStar();
-            */
-            /*
+
+            t.activateAll();
+            
+            
             TrailingStarController t = (TrailingStarController)
                Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                type, damage, knockback, player.whoAmI).ModProjectile;
 
             t.summonStarBundle<TrailingStarLorenzFinale>();
-            */
+            
             
             FractalMap l = (FractalMap)
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
@@ -74,7 +79,7 @@ namespace PhysicsBoss.Items
             l.initialize();
             l.materialize();
 
-            /*
+            
             
             int tot = Enum.GetNames(typeof(ParticleOrchestraType)).Length;
             for (int i = 0; i < tot; i++) {

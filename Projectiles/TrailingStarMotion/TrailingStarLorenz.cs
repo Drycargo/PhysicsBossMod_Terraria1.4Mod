@@ -120,7 +120,10 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         protected override Color colorFun(float progress)
         {
-            return Main.hslToRgb(progress, 0.9f, 0.7f, (byte)(255 * (1 - progress)));
+            if (!released)
+                return Main.hslToRgb(progress, 1f, 0.55f, (byte)(255 * (1 - progress)));
+            else
+                return Main.hslToRgb((progress + (Timer /90f))%1f, 1f, 0.7f, (byte)(255 * (1 - progress)));
         }
 
         protected override float widthFun(float progress)

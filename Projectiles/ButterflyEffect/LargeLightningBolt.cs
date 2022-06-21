@@ -40,6 +40,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
 
             Projectile.timeLeft = (int)(50);
             Projectile.damage = 60;
+            Projectile.hide = true;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
             Projectile.oldPos = new Vector2[TRAILING_CONST];
@@ -51,6 +52,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
 
             currWidth = 0;
         }
+
 
         public override void AI()
         {
@@ -76,7 +78,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
                     }
                 }
 
-                GlobalEffectController.shake(((float)TRANSIT - Timer)/ (float)TRANSIT * 5f);
+                GlobalEffectController.shake(((float)TRANSIT - Timer)/ (float)TRANSIT * 8f);
             }
 
             if ((int)Timer % 2 == 0) {
@@ -142,7 +144,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
 
         public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
         {
-            behindProjectiles.Add(index);
+            behindNPCsAndTiles.Add(index);
         }
     }
 }

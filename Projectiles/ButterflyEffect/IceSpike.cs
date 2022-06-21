@@ -37,7 +37,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(1 * 60);
+            Projectile.timeLeft = (int)(0.8f * 60);
             Projectile.damage = 30;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
@@ -68,7 +68,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             }
 
             if (Timer < 2 * TRANSIT) {
-                GlobalEffectController.shake(Math.Max(0,(1 - (Timer - 1)/(2 * TRANSIT)) * 1.5f));
+                GlobalEffectController.shake(Math.Max(0,(1 - (Timer - 1)/(2 * TRANSIT)) * 5f));
             }
 
             Timer++;

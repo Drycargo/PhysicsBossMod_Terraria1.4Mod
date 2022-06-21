@@ -56,11 +56,16 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             tex = ModContent.Request<Texture2D>(Texture).Value;
             trailTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvance").Value;
             NPC.friendly = false;
+            NPC.dontTakeDamageFromHostiles = true;
 
             NPC.width = tex.Width;
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
-            NPC.HitSound = SoundID.NPCHit5;
-            NPC.DeathSound = SoundID.NPCHit5;
+
+            SoundStyle s = SoundID.NPCHit5;
+            s.Volume *= 0.15f;
+
+            NPC.HitSound = s;
+            NPC.DeathSound = s;
 
             NPC.lifeMax = 100;
             NPC.defense = 15;
@@ -216,5 +221,6 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 ParticleOrchestrator.RequestParticleSpawn(clientOnly: true, ParticleOrchestraType.RainbowRodHit, settings, NPC.whoAmI);
             }
         }
+
     }
 }

@@ -81,7 +81,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
                         }
 
                         if (Timer < 120) {
-                            GlobalEffectController.shake((120f - Timer)/120f * 10f);
+                            GlobalEffectController.shake((120f - Timer)/120f * 20f);
                             GlobalEffectController.blur((120f - Timer)/120f);
                         }
 

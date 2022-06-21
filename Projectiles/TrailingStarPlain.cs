@@ -18,7 +18,7 @@ namespace PhysicsBoss.Projectiles
     {
         protected VertexStrip tail = new VertexStrip();
         public virtual int TRAILING_CONST => 25;
-        protected Color drawColor = Color.Lerp(Color.Green, Color.White, 0.5f);
+        protected Color drawColor = Color.Lerp(Color.Green, Color.White, 0.5f) * 2;
 
         protected Texture2D tex;
         public override void SetStaticDefaults()
@@ -81,6 +81,14 @@ namespace PhysicsBoss.Projectiles
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
                 colorFun, widthFun,
+                Projectile.Size / 2 - Main.screenPosition, TRAILING_CONST);
+            tail.DrawTrail();
+
+            Main.graphics.GraphicsDevice.Textures[0] =
+                ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvance").Value;
+
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
+                progress => colorFun(progress) * 0.8f, progress => 0.5f * widthFun(progress),
                 Projectile.Size / 2 - Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 

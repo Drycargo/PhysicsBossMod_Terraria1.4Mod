@@ -62,16 +62,43 @@ namespace PhysicsBoss.Projectiles
                 ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/BlueGreenGradient").Value;
         }
 
+        public override void OnSpawn(IEntitySource source)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                Dust d = Dust.NewDustDirect(Projectile.position, 0, 0, DustID.FireworkFountain_Blue);
+                d.noGravity = true;
+                d.velocity *= 10;
+            }
+
+            Projectile.velocity = 30f * (MathHelper.Pi*3f/5).ToRotationVector2();
+        }
+
         public override void AI()
         {
-            Timer++;
-            if (Projectile.velocity.Length() < 45) {
-                Projectile.velocity.Y -= (float)(0.5);
+            if (Timer < 30)
+            {
+                if ((int)Timer % 6 == 0)
+                    Projectile.velocity = Projectile.velocity.RotatedBy(4f / 5f * MathHelper.Pi);
+            }
+            else if ((int)Timer == 30)
+            {
+                Projectile.velocity = -10f * Vector2.UnitY;
+            }
+            else
+            {
+                if (Projectile.velocity.Length() < 45)
+                {
+                    Projectile.velocity.Y -= 0.5f;
+                }
             }
 
             for (int i = 0; i < 3; i++) {
                 Dust.NewDustDirect(Projectile.Center, 0,0,DustID.RainbowRod).noGravity = true;
             }
+
+            Projectile.rotation = Projectile.velocity.ToRotation();
+            Timer++;
         }
 
         public override bool PreDraw(ref Color lightColor)

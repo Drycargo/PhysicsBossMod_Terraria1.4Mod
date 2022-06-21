@@ -39,6 +39,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
             DisplayName.AddTranslation((int)GameCulture.CultureName.Chinese, "拖尾星-蔡氏电路");
             base.SetStaticDefaults();
         }
+
         protected override void setBasicDefaults()
         {
             base.setBasicDefaults();
@@ -112,7 +113,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 return;
 
             Vector2 disp = target.Center - Projectile.Center;
-            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.35 || disp.Length() < 250f)
+            if (Projectile.velocity.Length() >= SPEED_LIMIT * 0.32f || disp.Length() < 275f)
                 stopAcc = true;
             else if (target.active)
             {

@@ -51,7 +51,7 @@ namespace PhysicsBoss.Projectiles.LogisticMap
                     }
                 case phase.INITIALZIED:
                     {
-                        drawInitialized(Color.LightBlue * 0.5f);
+                        drawInitialized(Color.LightBlue * 0.75f);
                         break;
                     }
                 default:

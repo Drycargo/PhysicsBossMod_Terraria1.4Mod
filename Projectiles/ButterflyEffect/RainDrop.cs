@@ -22,7 +22,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
             Projectile.tileCollide = true;
             Projectile.penetrate = 1;
 
-            Projectile.timeLeft = (int)(1f * 60);
+            Projectile.timeLeft = (int)(0.5f * 60);
             Projectile.damage = 15;
 
             Projectile.width = 60;

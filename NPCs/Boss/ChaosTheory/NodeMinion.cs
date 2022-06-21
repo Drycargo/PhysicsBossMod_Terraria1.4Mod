@@ -59,10 +59,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.noGravity = true;
             NPC.noTileCollide = true;
             NPC.dontTakeDamage = true;
+            NPC.lifeRegen = 0;
 
-            SoundStyle s = SoundID.NPCHit4;
-            s.Volume *= 0.2f;
-            NPC.HitSound = s;
+            NPC.HitSound = PhysicsBoss.weakClang;
 
             drawTrail = trail.DEFAULT;
             drawConnection = false;
@@ -97,6 +96,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 onSummon = true;
             }
 
+            
             base.AI();
         }
 
@@ -186,14 +186,14 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 progress => Color.White, progress => 0.75f * tex.Width * (1f - progress),
                 tex.Size() / 2 - Main.screenPosition, NPC.oldPos.Length);
 
-            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.375f);
-            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.8f);
+            PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.25f);
+            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.35f);
             PhysicsBoss.worldEffect.Parameters["extractTint"].SetValue(contourColor.ToVector4());
             PhysicsBoss.worldEffect.CurrentTechnique.Passes["ExtractRangeTint"].Apply();
             tail.DrawTrail();
             
             PhysicsBoss.worldEffect.Parameters["extractThreshold"].SetValue(0.45f);
-            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.7f);
+            PhysicsBoss.worldEffect.Parameters["extractMin"].SetValue(0.4f);
             PhysicsBoss.worldEffect.Parameters["extractTint"].SetValue(baseColor.ToVector4());
             PhysicsBoss.worldEffect.CurrentTechnique.Passes["ExtractRangeTint"].Apply();
             tail.DrawTrail();

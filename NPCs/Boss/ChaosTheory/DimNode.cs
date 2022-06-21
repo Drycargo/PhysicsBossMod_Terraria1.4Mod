@@ -63,7 +63,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             NPC.width = tex.Width;
             NPC.height = tex.Height / Main.npcFrameCount[NPC.type];
 
-            NPC.lifeMax = NPC.lifeMax = 150000;
+            NPC.lifeMax = NPC.life = 300000;
             NPC.defense = 100;
 
             NPC.knockBackResist = 0f;
@@ -134,8 +134,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                         }
                     case (int)phase.DOUBLE_PENDULUM_PREPARATION:
                         {
-                            if (drawTrail != trail.SHADOW)
-                                drawTrail = trail.SHADOW;
+                            if (drawTrail != trail.DEFAULT)
+                                drawTrail = trail.DEFAULT;
 
                             hover(owner.NPC.Center - 0.5f * ChaosTheory.DOUBLE_PENDULUM_TOTAL_LENGTH * Vector2.UnitY, 20, 0.3f, 60);
                             Timer++;
@@ -192,6 +192,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     default: break;
                 }
             }
+
+            Lighting.AddLight(NPC.Center, Color.LightBlue.ToVector3());
+
             base.AI();
         }
 
@@ -287,12 +290,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
 
             int posIndex = (int)Timer / (int)ChaosTheory.CHAOTIC_DURATION;
 
+            Vector2 newPos = getChuaPosition(posIndex);
             // movement
             if (factor == 0)
             {
                 fireWork();
-                Vector2 newPos = getChuaPosition(posIndex);
-
+                
                 Vector2 dispStart = NPC.Center - target.Center;
                 Vector2 dispEnd = newPos - target.Center;
                 for (int i = 0; i < TRAILING_CONST; i++) {
@@ -300,8 +303,8 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                     float length = MathHelper.Lerp(dispStart.Length(), dispEnd.Length(), (float)i/TRAILING_CONST);
                     float angle = MathHelper.Lerp(dispStart.ToRotation(), dispEnd.ToRotation(), (float)i / TRAILING_CONST);
 
-                    NPC.oldPos[i] = length * angle.ToRotationVector2() + target.Center - NPC.Size/2;
-                    NPC.oldRot[i] = angle + MathHelper.PiOver2;
+                    NPC.oldPos[TRAILING_CONST - 1 - i] = length * angle.ToRotationVector2() + target.Center - NPC.Size/2;
+                    NPC.oldRot[TRAILING_CONST - 1 - i] = angle + MathHelper.PiOver2;
                 }
 
                 NPC.Center = newPos;
@@ -324,8 +327,12 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 }
             }
 
-            follow(2000f, 0.65f);
-            //hover(currentCenter, 20f, 0.1f, 2400f, inertia: 0.99f);
+
+            if (factor < (int)(ChaosTheory.CHAOTIC_DURATION / 2))
+                hover(newPos, 20f, 0.1f, 2400f);
+            else
+                follow(1500f, 0.65f);
+
             trailingStarController.Projectile.Center = NPC.Center;
 
 
@@ -361,7 +368,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
             }else if ((int)Timer % (int)(0.1f * CHUA_ORBIT_PERIOD) == 0) {
                 Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.UnitX * (target.Center.X - NPC.Center.X),
                     ModContent.ProjectileType<StarRetrieve>(), 0, 0);
-                SoundEngine.PlaySound(SoundID.Item25, NPC.position);
+                SoundEngine.PlaySound(PhysicsBoss.weakTing, NPC.position);
             }
             Timer++;
             #region oldImplementation
@@ -439,7 +446,9 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
         {
             if (bloomIntensity >= 0)
                 bloomIntensity = -1;
-            fireCircularStar();
+
+            if (Timer >= 25)
+                fireCircularStar();
 
             Timer++;
         }
@@ -453,7 +462,7 @@ namespace PhysicsBoss.NPCs.Boss.ChaosTheory
                 {
                     int reverse = (i == 0) ? 1 : -1;
                     Projectile p = Projectile.NewProjectileDirect(NPC.GetSource_FromAI(),
-                        NPC.Center, 65f * dir.RotatedBy((float)reverse * MathHelper.Pi / 4.5),
+                        NPC.Center, 65f * dir.RotatedBy(reverse * MathHelper.Pi / 4.15f),
                         ModContent.ProjectileType<TrailingStarCircular>(), 35, 0);
                     TrailingStarCircular tsc = (TrailingStarCircular)p.ModProjectile;
                     tsc.setRadius(1500f);

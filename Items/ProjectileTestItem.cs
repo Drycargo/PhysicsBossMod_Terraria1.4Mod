@@ -48,7 +48,7 @@ namespace PhysicsBoss.Items
             Item.useStyle = 5;
 
             Item.autoReuse = false;
-            Item.shoot = ModContent.ProjectileType <TestEffectProjectile>();
+            Item.shoot = ModContent.ProjectileType <LargeLightningBolt>();
             Item.shootSpeed = 5f;
         }
         public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -58,22 +58,22 @@ namespace PhysicsBoss.Items
             {
                 SkyManager.Instance.Activate("PhysicsBoss:BlackSky");
             }*/
-
+            /*
             for (int i = 0; i < 50; i++) {
                 Dust d = Dust.NewDustDirect(player.Center, 0, 0, DustID.Fireworks);
             }
-
-            /*
+            */
+            
             Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, 50, knockback, player.whoAmI);
-            */
+            /*
             
             TestEffectProjectile l = (TestEffectProjectile)
                 Projectile.NewProjectileDirect(source, Main.MouseWorld, Item.shootSpeed * (Main.MouseWorld - player.Center).SafeNormalize(Vector2.UnitX),
                 type, damage, knockback, player.whoAmI).ModProjectile;
 
             l.target = player;
-            /*
+            
             l.initialize();
             l.materialize();
             l.swing();

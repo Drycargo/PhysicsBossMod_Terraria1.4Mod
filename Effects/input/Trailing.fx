@@ -70,8 +70,8 @@ float4 Displacement(float2 coords: TEXCOORD0) : COLOR0
 
 float4 BladeTrail(float2 coords : TEXCOORD0) : COLOR0
 {
-    float c = tex2D(uImage0, coords);
-    float transparency = c.r * coords.y * (1 - coords.x)*amplitude;
+    float4 c = tex2D(uImage0, coords);
+    float transparency = min(c.a, c.r) * coords.y * (1 - coords.x) * amplitude;
 
     if (coords.y < 0.4)
         return transparency * outsideBlade;
@@ -84,6 +84,15 @@ float4 BladeTrail(float2 coords : TEXCOORD0) : COLOR0
 float4 DynamicTrailSimple(float2 coords : TEXCOORD0) : COLOR0
 {
     float4 origC = tex2D(uImage0, float2(coords.x + uTime, coords.y + uTime));
+    
+    float transparency = sqrt(2 * (0.5 - abs(0.5 - coords.y))) * min(origC.a, origC.r);
+    
+    return origC * transparency * lerp(tailStart, tailEnd, coords.x);
+}
+
+float4 DynamicTrailSimpleX(float2 coords : TEXCOORD0) : COLOR0
+{
+    float4 origC = tex2D(uImage0, float2(coords.x + uTime, coords.y));
     
     float transparency = sqrt(2 * (0.5 - abs(0.5 - coords.y))) * min(origC.a, origC.r);
     
@@ -145,6 +154,11 @@ technique Technique1 {
     pass DynamicTrailSimple
     {
         PixelShader = compile ps_2_0 DynamicTrailSimple();
+    }
+
+    pass DynamicTrailSimpleX
+    {
+        PixelShader = compile ps_2_0 DynamicTrailSimpleX();
     }
 
     pass DynamicTrailSimpleFade

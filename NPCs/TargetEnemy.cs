@@ -82,7 +82,7 @@ namespace PhysicsBoss.NPCs
         }
 
         protected void fireWork(Color c) {
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 60; i++)
             {
                 Dust d = Dust.NewDustDirect(NPC.Center, 0, 0, DustID.RainbowRod);
                 d.velocity = Main.rand.NextVector2Unit() * 7.5f;

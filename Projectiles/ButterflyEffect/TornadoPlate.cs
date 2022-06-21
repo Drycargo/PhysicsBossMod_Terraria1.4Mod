@@ -130,7 +130,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
                        Main.GameViewMatrix.TransformationMatrix);
 
                 PhysicsBoss.shineEffect.Parameters["texSize"].SetValue(Projectile.Size);
-                PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(Color.Cyan.ToVector4());
+                PhysicsBoss.shineEffect.Parameters["shineColor"].SetValue(2 * Color.Cyan.ToVector4());
                 PhysicsBoss.shineEffect.CurrentTechnique.Passes["Contour"].Apply();
 
                 specialDraw();
@@ -176,6 +176,7 @@ namespace PhysicsBoss.Projectiles.ButterflyEffect
         {
             behindNPCs.Add(index);
         }
+        
 
         public override void Kill(int timeLeft)
         {

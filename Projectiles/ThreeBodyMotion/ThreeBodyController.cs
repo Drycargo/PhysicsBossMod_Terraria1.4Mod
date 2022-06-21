@@ -138,7 +138,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     for (int j = 0; j < 8; j++) {
                         Dust d = Dust.NewDustDirect(Projectile.Center + 0.7f * Sun.DIST_LIMIT * 
                             (Timer/600 * MathHelper.TwoPi + (float)i * MathHelper.TwoPi/3).ToRotationVector2()
-                            + Main.rand.NextVector2Unit() * 30f,
+                            + Main.rand.NextVector2Unit() * 25f,
                             0,0,DustID.FlameBurst);
                         d.velocity *= 0.5f;
                         d.scale *= 3f;
@@ -146,14 +146,14 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                     }
                 }
 
-                bloomIntensity = 0.8f * Math.Min(1, (Timer / 75f));
+                bloomIntensity = 0.7f * Math.Min(1, (Timer / 75f));
             }
 
             if (visualEffectIntensity > 0)
             {
                 GlobalEffectController.centerTwist(visualEffectIntensity * 0.2f,
                     (INTENSITY_MAX - visualEffectIntensity) / INTENSITY_MAX * 2500 + 50, 50, Projectile.Center);
-                GlobalEffectController.shake(2 * visualEffectIntensity);
+                GlobalEffectController.shake(2.5f * visualEffectIntensity);
                 GlobalEffectController.blur(visualEffectIntensity / INTENSITY_MAX * 0.5f);
             }
 
@@ -191,9 +191,9 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         public override void PostDraw(Color lightColor)
         {
             if (bloomIntensity > 0)
-                GlobalEffectController.bloom(bloomIntensity, 0.3f);
+                GlobalEffectController.bloom(bloomIntensity, 0);
             if (Projectile.timeLeft <= 1)
-                GlobalEffectController.bloom(-1, 0.9f);
+                GlobalEffectController.bloom(-1, 0);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

@@ -40,7 +40,7 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
             Projectile.tileCollide = false;
             Projectile.penetrate = -1;
 
-            Projectile.timeLeft = (int)(100 * 60);
+            Projectile.timeLeft = (int)(10 * 60);
             Projectile.damage = 100;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;

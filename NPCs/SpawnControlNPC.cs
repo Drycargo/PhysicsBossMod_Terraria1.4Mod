@@ -15,37 +15,67 @@ namespace PhysicsBoss.NPCs
             NPCID.WyvernBody3,
             NPCID.WyvernLegs,
             NPCID.WyvernTail,
-            NPCID.Harpy
+            NPCID.Harpy,
+            NPCID.PossessedArmor,
+            NPCID.Werewolf,
+            NPCID.Wraith,
+            NPCID.BlueSlime,
+            NPCID.GreenSlime,
+            NPCID.PurpleSlime,
+            NPCID.YellowSlime,
+            NPCID.DemonEye,
+            NPCID.DemonEye2,
+            NPCID.CataractEye,
+            NPCID.CataractEye2,
+            NPCID.DialatedEye,
+            NPCID.DialatedEye2,
+            NPCID.GreenEye,
+            NPCID.GreenEye2,
+            NPCID.PurpleEye,
+            NPCID.PurpleEye2,
+            NPCID.SleepyEye,
+            NPCID.SleepyEye2,
+            NPCID.WanderingEye,
+            NPCID.BaldZombie,//
+            NPCID.BigBaldZombie,
+            NPCID.SmallBaldZombie,
+            NPCID.Zombie,//
+            NPCID.BigZombie,
+            NPCID.SmallZombie,
+            NPCID.SlimedZombie,//
+            NPCID.BigSlimedZombie,
+            NPCID.SmallSlimedZombie,
+            NPCID.SwampZombie,//
+            NPCID.BigSwampZombie,
+            NPCID.SmallSwampZombie,
+            NPCID.TwiggyZombie,//
+            NPCID.BigTwiggyZombie,
+            NPCID.SmallTwiggyZombie,
+            NPCID.PincushionZombie,//
+            NPCID.SmallPincushionZombie,
+            NPCID.BigPincushionZombie,
+            NPCID.FemaleZombie,//
+            NPCID.SmallFemaleZombie,
+            NPCID.BigFemaleZombie,
+            NPCID.ArmedZombie,//
+            NPCID.ArmedTorchZombie,
+            NPCID.ArmedZombiePincussion,
+            NPCID.ArmedZombieSlimed,
+            NPCID.ArmedZombieSwamp,
+            NPCID.ArmedZombieTwiggy,
         };
         
         public static readonly HashSet<int> ANNOYING_CREATURES = new HashSet<int>(ANNOYING_CREATURES_ARRAY);
         
         public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
         {
-            if (bossActive()) {
-                foreach (int type in ANNOYING_CREATURES_ARRAY) {
-                    pool.Remove(type);
-                }
-                /*
-                pool.Remove(NPCID.WyvernHead);
-                pool.Remove(NPCID.WyvernBody);
-                pool.Remove(NPCID.WyvernBody2);
-                pool.Remove(NPCID.WyvernBody3);
-                pool.Remove(NPCID.WyvernLegs);
-                pool.Remove(NPCID.WyvernTail);
-                pool.Remove(NPCID.Harpy);*/
-            }
-            /*
             if (bossActive())
             {
-                pool[NPCID.WyvernHead] = -10;
-                pool[NPCID.Harpy] = -10;
-            } else {
-                pool[NPCID.WyvernHead] = 0;
-                pool[NPCID.Harpy] = 0;
+                foreach (int type in ANNOYING_CREATURES_ARRAY)
+                {
+                    pool.Remove(type);
+                }
             }
-            */
-            //base.EditSpawnPool(pool, spawnInfo);
         }
 
         public override void OnSpawn(NPC npc, IEntitySource source)

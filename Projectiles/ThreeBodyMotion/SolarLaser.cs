@@ -29,6 +29,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
         private Color drawColor = Color.Yellow;
 
         protected Texture2D tex;
+        protected Texture2D beamTex;
         protected Texture2D coverTex;
 
         public float Timer
@@ -56,6 +57,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             Projectile.damage = 100;
 
             tex = ModContent.Request<Texture2D>(Texture).Value;
+            beamTex = ModContent.Request<Texture2D>("PhysicsBoss/Asset/BeamHorizontal").Value;
             coverTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/ThreeBodyMotion/SolarLaserCover").Value;
 
             Projectile.width = tex.Width;
@@ -82,7 +84,7 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
             if (Timer < TRANSIT)
             {
                 GlobalEffectController.blur(1f * (1 - (Timer / TRANSIT)));
-                GlobalEffectController.shake(12f * (1 - (Timer / TRANSIT)));
+                GlobalEffectController.shake(15f * (1 - (Timer / TRANSIT)));
             }
 
             if (Timer < 3 * TRANSIT)
@@ -105,8 +107,8 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 }
             }
 
-            if ((int)Timer % 30 == 0) {
-                SoundEngine.PlaySound(SoundID.Item34);
+            if ((int)Timer % 60 == 0) {
+                SoundEngine.PlaySound(SoundID.Item93, Projectile.Center);
             }
 
             update();
@@ -128,13 +130,14 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 RasterizerState.CullNone, null,
                 Main.GameViewMatrix.TransformationMatrix);
 
+            // turbulence
             Main.graphics.GraphicsDevice.Textures[0] = tex;
             Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
             PhysicsBoss.trailingEffect.Parameters["tailStart"].SetValue(2 * Color.White.ToVector4());
-            PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(2 * Color.Yellow.ToVector4());
+            PhysicsBoss.trailingEffect.Parameters["tailEnd"].SetValue(1.25f * Color.Yellow.ToVector4());
             PhysicsBoss.trailingEffect.Parameters["uTime"].SetValue(-(float)Main.time * 0.03f);
-            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["DynamicTrailSimple"].Apply();
+            PhysicsBoss.trailingEffect.CurrentTechnique.Passes["DynamicTrailSimpleX"].Apply();
 
             tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
                 progress => Color.White,
@@ -142,9 +145,24 @@ namespace PhysicsBoss.Projectiles.ThreeBodyMotion
                 -Main.screenPosition, TRAILING_CONST);
             tail.DrawTrail();
 
+            
+            // beam
+            Main.graphics.GraphicsDevice.Textures[0] = beamTex;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
+
+            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
+                progress => Color.White,
+                progress => WIDTH * prog * progress * 0.85f,
+                -Main.screenPosition, TRAILING_CONST);
+            tail.DrawTrail();
+            
+
+            // fluid
+            Main.graphics.GraphicsDevice.Textures[0] = coverTex;
+            Main.graphics.GraphicsDevice.SamplerStates[0] = SamplerState.PointWrap;
 
             PhysicsBoss.maskEffect.Parameters["timer"].SetValue((float)Main.time * 0.03f);
-            PhysicsBoss.maskEffect.Parameters["tint"].SetValue(Color.Orange.ToVector4() * 0.8f);
+            PhysicsBoss.maskEffect.Parameters["tint"].SetValue(Color.Orange.ToVector4() * 2f);
             PhysicsBoss.maskEffect.Parameters["fadeThreshold"].SetValue(0.1f);
             PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicColorTintVFade"].Apply();
 

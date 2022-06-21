@@ -32,6 +32,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         protected Queue<TrailingStarChaotic> stars;
         private Player lastTarget;
+        private SoundStyle releaseSound;
         public override void SetDefaults()
         {
             base.SetDefaults();
@@ -52,6 +53,9 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
             stars = new Queue<TrailingStarChaotic>();
             lastTarget = null;
+
+            releaseSound = SoundID.Item25;
+            releaseSound.Volume *= 0.35f;
         }
 
         public override void AI()
@@ -73,7 +77,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     
                 }
             }
-            SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
+            SoundEngine.PlaySound(releaseSound, Projectile.Center);
         }
 
         private void summonStar<TSC>(int colorIndex) where TSC : TrailingStarChaotic
@@ -144,7 +148,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 ModProjectile p = stars.Dequeue();
                 p.Projectile.Kill();
             }
-            SoundEngine.PlaySound(SoundID.Item25, Projectile.Center);
+            SoundEngine.PlaySound(releaseSound, Projectile.Center);
         }
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)

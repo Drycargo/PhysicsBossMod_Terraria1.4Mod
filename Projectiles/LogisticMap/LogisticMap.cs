@@ -15,9 +15,9 @@ namespace PhysicsBoss.Projectiles.LogisticMap
         public const int FADE_TRANSIT = 15;
         public const int SWING_PERIOD = 120;
         public const float TOT_WIDTH = 850f; 
-        public const float TOT_HEIGHT = 350f;
+        public const float TOT_HEIGHT = 400f;
 
-        public virtual float LASER_WIDTH => 35f;
+        public virtual float LASER_WIDTH => 20f;
         public virtual float WIDTH => TOT_WIDTH;
         public virtual float HEIGHT => TOT_HEIGHT;
 
@@ -33,6 +33,9 @@ namespace PhysicsBoss.Projectiles.LogisticMap
         private float[] data;
         protected Texture2D tex, contentTex, edgeTex;
         protected VertexStrip tail = new VertexStrip();
+        private bool materialized;
+        private float angularVel;
+
         public float Timer
         {
             get { return Projectile.ai[0]; }
@@ -67,6 +70,9 @@ namespace PhysicsBoss.Projectiles.LogisticMap
             tex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LightningBoltAdvanceTransparent").Value;
             edgeTex = ModContent.Request<Texture2D>("PhysicsBoss/Projectiles/LogisticMap/CrossStar").Value;
             contentTex = ModContent.Request<Texture2D>(Texture).Value;
+
+            materialized = false;
+            angularVel = 0;
         }
 
         public override void AI()
@@ -91,8 +97,12 @@ namespace PhysicsBoss.Projectiles.LogisticMap
 
             if (currPhase == phase.FALL)
             {
-                Projectile.velocity += 0.25f * Vector2.UnitY;
-                Projectile.rotation += (Main.rand.NextFloat() - 0.5f) * 0.01f;
+                Projectile.velocity -= 0.5f * Vector2.UnitY;
+
+                if (Projectile.timeLeft == 90)
+                    materialize();
+                angularVel += (Main.rand.NextFloat() - 0.5f) * 0.0015f;
+                Projectile.rotation += angularVel;
             }
             else
             {
@@ -148,19 +158,23 @@ namespace PhysicsBoss.Projectiles.LogisticMap
         }
 
         public void materialize() {
-            if (currPhase != phase.MATERIALIZED)
+            if (currPhase == phase.INITIALZIED)
             {
                 currPhase = phase.MATERIALIZED;
 
-                for (int i = 0; i < 50; i++)
-                    summonDust();
-
-                SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
             }
+            materialized = true;
+
+            for (int i = 0; i < 50; i++)
+                summonDust();
+
+            SoundEngine.PlaySound(SoundID.Item4, Projectile.Center);
+
         }
 
         public void setFall() {
             currPhase = phase.FALL;
+            Projectile.velocity.Y = 30;
             Projectile.timeLeft = 150;
         }
 
@@ -186,45 +200,50 @@ namespace PhysicsBoss.Projectiles.LogisticMap
                 case phase.UNINITIALIZED: {
                         break;
                     }
-                case phase.INITIALZIED:
-                    {
-                        drawInitialized(Color.Red * 0.5f);
-                        break;
-                    }
                 default:
                     {
-                        Main.spriteBatch.End();
-                        Main.spriteBatch.Begin(SpriteSortMode.Immediate,
-                            BlendState.NonPremultiplied,
-                            Main.DefaultSamplerState,
-                            DepthStencilState.None,
-                            RasterizerState.CullNone, null,
-                            Main.GameViewMatrix.TransformationMatrix);
-                        drawEdges();
+                        if (!materialized)
+                        {
+                            drawInitialized(Color.Red);
+                        }
+                        else
+                        {
 
-                        PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(contentTex);
-                        PhysicsBoss.maskEffect.Parameters["threshold"].SetValue(0.35f);
-                        PhysicsBoss.maskEffect.Parameters["ordinaryTint"].SetValue(2 * Color.Red.ToVector4());
-                        PhysicsBoss.maskEffect.Parameters["contentTint"].SetValue(Color.White.ToVector4());
-                        PhysicsBoss.maskEffect.Parameters["timer"].SetValue(Timer / PERIOD);
-                        PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicMaskTint"].Apply();
+                            Main.spriteBatch.End();
+                            Main.spriteBatch.Begin(SpriteSortMode.Immediate,
+                                BlendState.NonPremultiplied,
+                                Main.DefaultSamplerState,
+                                DepthStencilState.None,
+                                RasterizerState.CullNone, null,
+                                Main.GameViewMatrix.TransformationMatrix);
+                            drawEdges();
 
-                        Main.graphics.GraphicsDevice.Textures[0] = tex;
+                            
+                            PhysicsBoss.maskEffect.Parameters["texContent"].SetValue(tex);
+                            PhysicsBoss.maskEffect.Parameters["threshold"].SetValue(0.35f);
+                            PhysicsBoss.maskEffect.Parameters["ordinaryTint"].SetValue(2 * Color.Red.ToVector4());
+                            PhysicsBoss.maskEffect.Parameters["contentTint"].SetValue(Color.White.ToVector4());
+                            PhysicsBoss.maskEffect.Parameters["timer"].SetValue(Timer / PERIOD);
+                            PhysicsBoss.maskEffect.CurrentTechnique.Passes["DynamicMaskTint"].Apply();
 
-                        tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
-                            progress => Color.White,
-                            progress => LASER_WIDTH * 0.75f * Math.Min(1, (float)Projectile.timeLeft / FADE_TRANSIT),
-                            -Main.screenPosition, STEP);
 
-                        tail.DrawTrail();
+                            Main.graphics.GraphicsDevice.Textures[0] = tex;
 
-                        Main.spriteBatch.End();
-                        Main.spriteBatch.Begin(SpriteSortMode.Deferred,
-                            BlendState.AlphaBlend,
-                            Main.DefaultSamplerState,
-                            DepthStencilState.None,
-                            RasterizerState.CullNone, null,
-                            Main.GameViewMatrix.TransformationMatrix);
+                            tail.PrepareStrip(Projectile.oldPos, Projectile.oldRot,
+                                progress => Color.White,
+                                progress => LASER_WIDTH * 0.75f * Math.Min(1, (float)Projectile.timeLeft / FADE_TRANSIT),
+                                -Main.screenPosition, STEP);
+
+                            tail.DrawTrail();
+
+                            Main.spriteBatch.End();
+                            Main.spriteBatch.Begin(SpriteSortMode.Deferred,
+                                BlendState.AlphaBlend,
+                                Main.DefaultSamplerState,
+                                DepthStencilState.None,
+                                RasterizerState.CullNone, null,
+                                Main.GameViewMatrix.TransformationMatrix);
+                        }
                         break;
                     }
             }
@@ -271,7 +290,7 @@ namespace PhysicsBoss.Projectiles.LogisticMap
 
         public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
         {
-            if (currPhase == phase.UNINITIALIZED || currPhase == phase.INITIALZIED)
+            if (!materialized)
                 return false;
 
             for (int i = 0; i < STEP - 1; i++) {

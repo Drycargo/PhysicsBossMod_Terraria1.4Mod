@@ -21,8 +21,8 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
         private VertexStrip tail = new VertexStrip();
         public const int TRAILING_CONST = 15;
         public const int CIRCLE_TRAILING_CONST = 6;
-        public const int CIRCLE_RADIUS = 30;
-        public const int CIRCLE_DURATION = 30;
+        public const int CIRCLE_RADIUS = 60;
+        public const int CIRCLE_DURATION = 35;
         public const int TRANSIT = 60;
         private const float ACC = 1.5f;
         private Texture2D backTex;
@@ -116,9 +116,17 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 circleRot[j] = circleRot[j - 1];
             }
 
-            circleRot[0] = angle + dir.ToRotation() + MathHelper.PiOver2;
-            circlePos[0] = CIRCLE_RADIUS * 0.5f * dir.RotatedBy(angle) + Projectile.Center;
-            Dust.NewDust(circlePos[0], 10,10,DustID.CrimsonTorch);
+            float basicAngle = angle + dir.ToRotation();
+
+            circleRot[0] = basicAngle + MathHelper.PiOver2;
+            circlePos[0] = (1.05f + 0.7f * (float)Math.Abs(MathHelper.PiOver2 
+                - angle % MathHelper.Pi)/ MathHelper.PiOver2) 
+                * CIRCLE_RADIUS * 0.5f * dir.RotatedBy(angle) + Projectile.Center;
+
+            Dust d = Dust.NewDustDirect(circlePos[0], 10,10,DustID.RainbowMk2);
+            d.velocity = basicAngle.ToRotationVector2() * 8f;
+            d.color = Color.Lerp(Color.White, drawColor, 0.3f);
+            d.noGravity = true;
         }
 
         public override bool PreDraw(ref Color lightColor)
@@ -168,18 +176,32 @@ namespace PhysicsBoss.Projectiles.DoublePendulum
                 VertexStrip circleTail = new VertexStrip();
 
                 Main.graphics.GraphicsDevice.Textures[0] = 
-                    ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/FNNormal").Value;
+                    ModContent.Request<Texture2D>("PhysicsBoss/Effects/Materials/ThickSmoke").Value;
 
-                PhysicsBoss.trailingEffect.Parameters["outsideBlade"].SetValue(Color.White.ToVector4());
-                PhysicsBoss.trailingEffect.Parameters["insideBlade"].SetValue(drawColor.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["outsideBlade"].SetValue(drawColor.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["insideBlade"].SetValue(Color.White.ToVector4());
                 PhysicsBoss.trailingEffect.Parameters["amplitude"].SetValue(3f);
                 PhysicsBoss.trailingEffect.CurrentTechnique.Passes["BladeTrail"].Apply();
 
-
                 circleTail.PrepareStrip(circlePos, circleRot,
                     progress =>  Color.White * (1f - progress),
-                    progress => 0.5f * CIRCLE_RADIUS * (1f - progress),
+                    progress => 0.4f * CIRCLE_RADIUS * (1f - progress) * (1f - progress),
                     - Main.screenPosition, TRAILING_CONST);
+
+                circleTail.DrawTrail();
+
+                Main.graphics.GraphicsDevice.Textures[0] =
+                    ModContent.Request<Texture2D>("PhysicsBoss/Asset/BeamHorizontal").Value;
+
+                PhysicsBoss.trailingEffect.Parameters["outsideBlade"].SetValue(drawColor.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["insideBlade"].SetValue(Color.White.ToVector4());
+                PhysicsBoss.trailingEffect.Parameters["amplitude"].SetValue(0.5f);
+                PhysicsBoss.trailingEffect.CurrentTechnique.Passes["BladeTrail"].Apply();
+
+                circleTail.PrepareStrip(circlePos, circleRot,
+                    progress => Color.White * (1f - progress),
+                    progress => 0.5f * CIRCLE_RADIUS * (1f - progress) * (1f - progress),
+                    -Main.screenPosition, TRAILING_CONST);
 
                 circleTail.DrawTrail();
             }

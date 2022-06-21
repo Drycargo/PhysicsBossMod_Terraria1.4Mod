@@ -24,6 +24,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
 
         public virtual float DECCELERATE => 0.675f;
 
+
         public override float STEP => 3;
 
         public const float AIM_TIME = 100;
@@ -34,7 +35,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
         private float lastDir;
 
         public override Matrix Transform =>
-            Matrix.CreateTranslation(5f, 4f, 0) * Matrix.CreateScale(0.15f);
+            Matrix.CreateTranslation(5f, 4f, 0) * Matrix.CreateScale(0.25f);
 
         public override void SetStaticDefaults()
         {

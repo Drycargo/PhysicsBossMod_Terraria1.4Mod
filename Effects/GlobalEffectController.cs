@@ -174,6 +174,7 @@ namespace PhysicsBoss.Effects
         }
 
         public static void shake(float intensity) {
+            /*
             if (intensity < 0 && Filters.Scene["PhysicsBoss:Shake"].IsActive())
             {
                 Filters.Scene.Deactivate("PhysicsBoss:Shake");
@@ -187,6 +188,12 @@ namespace PhysicsBoss.Effects
 
             PhysicsBoss.worldEffect.Parameters["vibInten"].SetValue(
                      Main.rand.NextVector2Unit() * intensity);
+            */
+
+            if (intensity < 0)
+                return;
+
+            CameraPlayer.setShake(Main.rand.NextVector2Unit() * intensity);
         }
 
         public static void blur(float intensity)

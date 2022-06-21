@@ -127,20 +127,14 @@ namespace PhysicsBoss.Projectiles
                     {
                         charges[i] = (ElectricCharge)Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(),
                             Projectile.Center + RADIUS * (MathHelper.TwoPi * ((float)i + offset) / ((float)CAPACITY)).ToRotationVector2(),
-                            Vector2.Zero, ModContent.ProjectileType<ElectricCharge>(), 20, 0).ModProjectile;
+                            new Vector2((i == CAPACITY - 1 || (i != 0 && Main.rand.NextBool())) ? -1f : 1f,0), ModContent.ProjectileType<ElectricCharge>(), 20, 0).ModProjectile;
 
-                        if ((i == 0 && charges[i].getCharge() < 0)
-                            || (i == CAPACITY - 1 && charges[i].getCharge() > 0))
-                            charges[i].setCharge(-charges[i].getCharge());
+                        /*
+                        if (i == CAPACITY || (i != 0 && Main.rand.NextBool()))
+                            charges[i].alterCharge();
+                        */
                     }
-
-                    //charges[i] = (ElectricCharge)Main.projectile[id].ModProjectile;
                 }
-
-                /*
-                if (charges[0].getCharge() * charges[CAPACITY - 1].getCharge() > 0)
-                    charges[0].setCharge(-charges[0].getCharge());
-                */
                 initialized = true;
             }
 
@@ -195,7 +189,7 @@ namespace PhysicsBoss.Projectiles
                 charges[i].Projectile.Kill();
             }
 
-            SoundEngine.PlaySound(SoundID.DD2_LightningBugZap);
+            SoundEngine.PlaySound(SoundID.DD2_LightningBugZap, Projectile.Center);
         }
 
         /*

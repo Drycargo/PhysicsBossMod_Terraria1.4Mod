@@ -13,6 +13,7 @@ namespace PhysicsBoss
     public class CameraPlayer : ModPlayer
     {
         private static Vector2 displacement = Vector2.Zero;
+        private static Vector2 shake = Vector2.Zero;
         private static int bossIndex = -1;
 
         private static bool activated = false;
@@ -46,11 +47,21 @@ namespace PhysicsBoss
                 Main.screenPosition.Y = Math.Max(Main.screenPosition.Y, 0);
             }
 
+            Main.screenPosition += shake;
+            shake *= 0.95f;
+            if (shake.Length() < 0.5f)
+                shake *= 0;
+
             base.ModifyScreenPosition();
         }
 
         public static void setDisplacement(Vector2 disp) {
             displacement = disp;
+        }
+
+        public static void setShake(Vector2 disp)
+        {
+            shake = disp;
         }
 
         public static void activate(int bossIndex) {

@@ -68,7 +68,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                 {
                     star = Projectile.NewProjectileDirect(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero,
                         ModContent.ProjectileType<TrailingStarPlain>(), 25, 0);
-                    SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
+                    SoundEngine.PlaySound(PhysicsBoss.weakTing, Projectile.Center);
                     for (int i = 0; i < 30; i++)
                     {
                         Dust d = Dust.NewDustDirect(Projectile.Center, 0, 0, DustID.RainbowRod);
@@ -92,7 +92,7 @@ namespace PhysicsBoss.Projectiles.TrailingStarMotion
                     + (indicator > 0 ? 0 : 0.5f)) * MathHelper.TwoPi).ToRotationVector2() * RADIUS;
                 star.timeLeft++;
                 ((TrailingStarPlain)star.ModProjectile).setColor(
-                    Color.Lerp(Color.Green, Color.Blue, (Timer % (2 * ROTATION_PERIOD)) / (float)(2 * ROTATION_PERIOD)) * 2f);
+                    Color.Lerp(Color.Green, Color.Blue, (Timer % (2 * ROTATION_PERIOD)) / (float)(2 * ROTATION_PERIOD)) * 3f);
             }
 
             Timer++;
