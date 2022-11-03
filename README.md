@@ -1,6 +1,8 @@
 ﻿# PhysicsBossMod_Terraria1.4Mod
 Mod of Physics-themed Bosses in Terraria, based on TModLoader
 
+**[Video Demo](https://www.bilibili.com/video/BV1E3411u7xR/)**
+
 ## Introduction
 This is a **[TModLoader](https://github.com/tModLoader/tModLoader)** based mod for the game Terraria. 
 The initial intention of designing this mod is to implement Physics-related simulations into gaming, 
@@ -51,9 +53,13 @@ charges with randomly assigned charge (positive or negative) move in unpredictab
 are therefore formed as well;
 - **Conway's Game of Life:** an automatic cellular simulation designed by John Horton Conway, which simulates life in the form of blocks, which live, compete, reproduce 
 or die based on the population nearby. It can be designed as a large chess board that moves with respect to the player, and release projectile attacks from the living blocks;
-- *(Implementing)Lorentz Attractor*
-- *(Implementing)Rössler attractor*
-- *(Implementing)Chen attractor*
-- *(Implementing)Double Pendulum*
-- *(Implementing)Three-body Problem*
-- *(Implementing)Butterfly Effect (purely conceptual)*
+- **Chua's Circuit**
+- **Halvorsen Attractor**
+- **Double Pendulum**
+- **Three-Scroll Attractor**
+- **Aizawa Attractor**
+- **Three-body Problem**
+- **Dynamic System in Linear Algebra**
+- **Lorentz Attractor**
+- **Butterfly Effect**
+- **Logistics Mapping**
